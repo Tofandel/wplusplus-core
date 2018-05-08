@@ -1,0 +1,29 @@
+{
+  "name": "tofandel/wplusplus",
+  "version": "1.0",
+  "authors": [
+    {
+      "name": "Tofandel"
+    }
+  ],
+  "type": "wordpress-plugin",
+  "description": "W++ is a Wordpress Plugin acting as a core for other plugins",
+  "license": "Apache 2.0",
+  "keywords": [
+    "plugin",
+    "wordpress",
+    "options",
+    "framework",
+    "core",
+    "boilerplate",
+    "theme"
+  ],
+  "support": {
+    "issues": "https://github.com/tofandel/wplusplus/issues"
+  },
+  "require": {
+    "redux-framework/redux-framework": ">=3.6.9",
+    "php": ">=5.4.0",
+    "composer/installers": "~1.0"
+  }
+}
