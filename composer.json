@@ -6,11 +6,11 @@
       "name": "Tofandel"
     }
   ],
-  "type": "wordpress-plugin",
+  "type": "wordpress-muplugin",
   "description": "W++ is a Wordpress Plugin acting as a core for other plugins",
   "license": "Apache 2.0",
   "keywords": [
-    "plugin",
+    "mu-plugin",
     "wordpress",
     "options",
     "framework",
@@ -21,9 +21,31 @@
   "support": {
     "issues": "https://github.com/tofandel/wplusplus/issues"
   },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    }
+  ],
   "require": {
-    "redux-framework/redux-framework": ">=3.6.9",
-    "php": ">=5.4.0",
-    "composer/installers": "~1.0"
+    "php": ">=5.6.0",
+    "composer/installers": "~1.0",
+    "tgmpa/tgm-plugin-activation": ">=2.6",
+    "yahnis-elsts/plugin-update-checker": "*",
+    "oomphinc/composer-installers-extender": "*"
+  },
+  "minimum-stability": "dev",
+  "extra": {
+    "installer-paths": {
+      "wp-content/mu-plugins/{$name}/": [
+        "type:wordpress-muplugin"
+      ],
+      "wp-content/plugins/{$name}/": [
+        "type:wordpress-plugin"
+      ],
+      "wp-content/themes/{$name}/": [
+        "type:wordpress-theme"
+      ]
+    }
   }
 }

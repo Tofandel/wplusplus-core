@@ -1,6 +1,14 @@
 <?php
 
-namespace Abstracts;
+namespace Tofandel\Classes;
+
+use Tofandel\Traits\Initializable;
+use function Tofandel\delete_post_transient;
+use function Tofandel\get_post_transient;
+use function Tofandel\set_post_transient;
+use function Tofandel\wpp_apply_filters;
+use function Tofandel\wpp_is_integer;
+use function Tofandel\wpp_slugify;
 
 /**
  * Class WP_Post_Entity
@@ -12,7 +20,7 @@ namespace Abstracts;
  * @property $post_name
  * @property $post_parent
  */
-abstract class WP_Post_Entity {
+abstract class WP_Post_Entity implements \Tofandel\Interfaces\WP_Post_Entity {
 	use WP_Entity {
 		get as parentGet;
 		set as parentSet;
@@ -224,7 +232,7 @@ abstract class WP_Post_Entity {
 	/**
 	 * @return bool
 	 */
-	public function isCreated(): bool {
+	public function isCreated() {
 		return $this->is_created;
 	}
 
@@ -245,8 +253,8 @@ abstract class WP_Post_Entity {
 			return $this->parentGet( 'post', $name );
 		}
 
-		if ( isset( $this->_new_data[ $name ] ) ) {
-			return $this->_new_data[ $name ];
+		if ( isset( $this->_meta[ $name ] ) ) {
+			return $this->_meta[ $name ];
 		}
 
 		if ( ! isset( $_retrieved_metas[ $this->ID ][ $name ] ) ) {
@@ -266,6 +274,27 @@ abstract class WP_Post_Entity {
 		}
 
 		return $this->ParentIsset( $name );
+	}
+
+	public function set_transient( $transient, $time = 3600, $val = null ) {
+		if ( isset( $val ) ) {
+			$this->setOverride( $transient, $val );
+		}
+		set_post_transient( $this->ID, $transient, $this->get( 'transient' ), $time );
+	}
+
+
+	public function get_transient( $transient ) {
+		$val = get_post_transient( $this->ID, $transient );
+		if ( $val !== false ) {
+			$this->setOverride( $transient, $val );
+		}
+
+		return $this->get( $transient );
+	}
+
+	public function delete_transient( $transient ) {
+		delete_post_transient( $this->ID, $transient );
 	}
 
 	/**

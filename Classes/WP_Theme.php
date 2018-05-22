@@ -15,7 +15,7 @@ use Tofandel\Traits\Singleton;
  *
  * @author Adrien Foulon <tofandel@tukan.hu>
  */
-abstract class WP_Theme extends WP_Plugin {
+abstract class WP_Theme extends WP_Plugin implements \Tofandel\Interfaces\WP_Theme {
 	use Singleton;
 
 	protected $parent = false;

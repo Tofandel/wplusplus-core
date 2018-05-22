@@ -2,6 +2,10 @@
 
 namespace Tofandel\Classes;
 
+use function Tofandel\delete_object_transient;
+use function Tofandel\get_object_transient;
+use function Tofandel\set_object_transient;
+
 /**
  * Class WP_Entity
  *
@@ -15,9 +19,31 @@ trait WP_Entity {
 	 * @var int $ID
 	 */
 	private $ID = null;
+	protected $_object_type = null;
 
 	public function isNew() {
 		return empty( $this->ID );
+	}
+
+	public function set_transient( $transient, $time = 3600, $val = null ) {
+		if ( isset( $val ) ) {
+			$this->setOverride( $transient, $val );
+		}
+		set_object_transient( $this->_object_type, $this->ID, $transient, $this->get( 'transient' ), $time );
+	}
+
+
+	public function get_transient( $transient ) {
+		$val = get_object_transient( $this->_object_type, $this->ID, $transient );
+		if ( $val !== false ) {
+			$this->setOverride( $transient, $val );
+		}
+
+		return $this->get( $transient );
+	}
+
+	public function delete_transient( $transient ) {
+		delete_object_transient( $this->_object_type, $this->ID, $transient );
 	}
 
 	/**
@@ -92,7 +118,7 @@ trait WP_Entity {
 			if ( ( $val = call_user_func_array( [
 					$this,
 					'getArray'
-				], array( '_new_data' ) + func_get_args() ) ) !== null ) {
+				], array( '_meta' ) + func_get_args() ) ) !== null ) {
 				return $val;
 			}
 

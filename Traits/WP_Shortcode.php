@@ -23,7 +23,7 @@ trait WP_Shortcode {
 		$class       = new \ReflectionClass( static::class );
 		self::$_name = strtolower( $class->getShortName() );
 
-		new \Instances\WP_Shortcode( self::$_name, [ self::class, 'shortcode' ], self::$atts );
+		new \Tofandel\Objects\WP_Shortcode( self::$_name, [ self::class, 'shortcode' ], self::$atts );
 		//add_shortcode( self::$_name, [ self::class, 'do_shortcode' ] );
 	}
 

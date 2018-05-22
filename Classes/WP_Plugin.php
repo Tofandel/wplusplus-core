@@ -4,13 +4,17 @@ namespace Tofandel\Classes;
 
 use Exception;
 use ReflectionClass;
+use Tofandel\Traits\Singleton;
+use function Tofandel\wpp_slugify;
 
 /**
  * Class WP_Plugin
  *
  * @author Adrien Foulon <tofandel@tukan.hu>
+ *
+ * A text domain constant will be defined as SHORTCLASSNAME_TD
  */
-abstract class WP_Plugin {
+abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	use Singleton;
 
 	protected $text_domain;
@@ -19,6 +23,8 @@ abstract class WP_Plugin {
 	protected $file;
 	protected $version = false;
 	protected $class;
+
+	protected $is_muplugin = false;
 
 	//private $settings = array();
 	//private $option_groups = array();
@@ -38,6 +44,10 @@ abstract class WP_Plugin {
 		$this->class = new ReflectionClass( $this );
 		$this->slug  = $this->class->getShortName();
 		$this->file  = $this->class->getFileName();
+
+		if ( strpos( $this->file, 'mu-plugin' ) ) {
+			$this->is_muplugin = true;
+		}
 
 		$comment = $this->class->getDocComment();
 
@@ -69,7 +79,7 @@ abstract class WP_Plugin {
 		//Read the text domain of the plugin from the comments
 		if ( $comment && preg_match( '#text[- ]?domain[: ]*(\S+)#i', $comment, $matches ) ) {
 			$this->text_domain = $matches[1];
-			define( strtoupper( $this->class->getShortName() ) . '_DN', $this->text_domain );
+			define( strtoupper( $this->class->getShortName() ) . '_TD', $this->text_domain );
 		}
 	}
 
@@ -409,7 +419,7 @@ abstract class WP_Plugin {
 	 * Prepare plugin internationalisation
 	 */
 	public function loadTextdomain() {
-		load_plugin_textdomain( $this->textDomain(), false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
+		call_user_func( 'load_' . ( $this->is_muplugin ? 'mu' : '' ) . 'plugin_textdomain', $this->textDomain(), false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
 	}
 
 	/**
@@ -465,12 +475,12 @@ abstract class WP_Plugin {
 			//An old version existed before
 			$last_version = get_option( $this->slug . '_version' );
 			//Fresh install
-			foreach ( $this->db_tables as $table ) {
+			//foreach ( $this->db_tables as $table ) {
 				/**
 				 * @var WP_DB_Table $table
 				 */
-				$table->upgrade();
-			}
+			//	$table->upgrade();
+			//}
 			//Check the version number
 			if ( version_compare( $last_version, $this->version, '>' ) ) {
 				$this->multisiteUpgrade( $last_version );
@@ -480,14 +490,14 @@ abstract class WP_Plugin {
 			if ( $last_version != $this->version ) {
 				update_option( $this->slug . '_version', $this->version );
 			}
-		} else {
+			//} else {
 			//Fresh install
-			foreach ( $this->db_tables as $table ) {
+			//foreach ( $this->db_tables as $table ) {
 				/**
 				 * @var WP_DB_Table $table
 				 */
-				$table->register();
-			}
+			//	$table->register();
+			//}
 		}
 
 		//Setup default plugin folders
