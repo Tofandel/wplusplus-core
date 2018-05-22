@@ -31,7 +31,7 @@
  * Plugin:
  * require_once dirname( __FILE__ ) . '/path/to/class-tgm-plugin-activation.php';
  */
-require_once dirname( __FILE__ ) . '/TGMPluginActivation/class-tgm-plugin-activation.php';
+require_once dirname( __FILE__ ) . 'vendor/tgmpa/tgm-plugin-activation/class-tgm-plugin-activation.php';
 
 add_action( 'tgmpa_register', 'wplusplus_register_required_plugins' );
 
