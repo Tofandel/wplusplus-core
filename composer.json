@@ -47,5 +47,10 @@
         "type:wordpress-theme"
       ]
     }
+  },
+  "autoload": {
+    "psr-0": {
+      "Tofandel": "src"
+    }
   }
 }

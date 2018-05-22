@@ -51,30 +51,7 @@ abstract class WP_Theme extends WP_Plugin implements \Tofandel\Interfaces\WP_The
 			$comment = false;
 		}
 
-		//Read the version of the theme from the comments
-		if ( $comment && preg_match( '#version[: ]*([0-9\.]+)#i', $comment, $matches ) ) {
-			$version = $matches[1];
-		} else {
-			$version = '1.0';
-		}
-
-		//Read the name of the theme from the comments
-		if ( $comment && preg_match( '#theme[- ]?name[: ]*(\S+)#i', $comment, $matches ) ) {
-			$this->name = $matches[1];
-		} else {
-			$this->name = $this->slug;
-		}
-
-		//Read the text domain of the theme from the comments
-		if ( $comment && preg_match( '#text[- ]?domain[: ]*(\S+)#i', $comment, $matches ) ) {
-			$this->text_domain = $matches[1];
-			define( strtoupper( $this->class->getShortName() ) . '_DN', $this->text_domain );
-		}
-		$this->version = get_option( $this->slug . '_version' );
-		if ( version_compare( $version, $this->version, '!=' ) ) {
-			$this->version = $version;
-			add_action( 'init', [ $this, 'activate' ], 1 );
-		}
+		$this->extractFromComment( $comment );
 
 		$this->setup();
 	}

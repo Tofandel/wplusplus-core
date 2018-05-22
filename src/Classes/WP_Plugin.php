@@ -7,6 +7,9 @@ use ReflectionClass;
 use Tofandel\Traits\Singleton;
 use function Tofandel\wpp_slugify;
 
+
+require_once __DIR__ . '/../../lib/tgmpa-config.php';
+
 /**
  * Class WP_Plugin
  *
@@ -29,7 +32,9 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	//private $settings = array();
 	//private $option_groups = array();
 	protected $option_group = 'general';
-	protected $db_tables = array();
+	//protected $db_tables = array();
+
+	protected $download_url;
 
 	protected $menu_pages;
 
@@ -70,7 +75,7 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 		}
 
 		//Read the name of the plugin from the comments
-		if ( $comment && preg_match( '#plugin[- ]?name[: ]*(\S+)#i', $comment, $matches ) ) {
+		if ( $comment && preg_match( '#(?:plugin|theme)[- ]?name[: ]*(\S+)#i', $comment, $matches ) ) {
 			$this->name = $matches[1];
 		} else {
 			$this->name = $this->slug;
@@ -80,6 +85,16 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 		if ( $comment && preg_match( '#text[- ]?domain[: ]*(\S+)#i', $comment, $matches ) ) {
 			$this->text_domain = $matches[1];
 			define( strtoupper( $this->class->getShortName() ) . '_TD', $this->text_domain );
+		}
+
+		if ( $comment && preg_match( '#download[- ]?url[: ]*(\S+)#i', $comment, $matches ) ) {
+			$this->download_url = $matches[1];
+			require __DIR__ . '../../vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
+			\Puc_v4_Factory::buildUpdateChecker(
+				$this->download_url,
+				$this->file, //Full path to the main plugin file or functions.php.
+				$this->slug
+			);
 		}
 	}
 
@@ -476,9 +491,9 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 			$last_version = get_option( $this->slug . '_version' );
 			//Fresh install
 			//foreach ( $this->db_tables as $table ) {
-				/**
-				 * @var WP_DB_Table $table
-				 */
+			/**
+			 * @var WP_DB_Table $table
+			 */
 			//	$table->upgrade();
 			//}
 			//Check the version number
@@ -493,9 +508,9 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 			//} else {
 			//Fresh install
 			//foreach ( $this->db_tables as $table ) {
-				/**
-				 * @var WP_DB_Table $table
-				 */
+			/**
+			 * @var WP_DB_Table $table
+			 */
 			//	$table->register();
 			//}
 		}
