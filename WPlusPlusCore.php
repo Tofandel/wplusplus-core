@@ -23,7 +23,7 @@ use Tofandel\Classes\WP_Plugin;
 require_once __DIR__ . '/vendor/autoload.php';
 require_once 'functions.php';
 
-class wplusplus extends WP_Plugin {
+class WPlusPlusCore extends WP_Plugin {
 	const MULOADER_DIR = ABSPATH . 'mu-plugins/wplusplus-muloader';
 
 	public function actionsAndFilters() {
