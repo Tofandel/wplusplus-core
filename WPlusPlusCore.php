@@ -8,16 +8,16 @@ use Tofandel\Classes\WP_Plugin;
  * Class wplusplus
  * @package Tofandel
  *
- * Plugin Name: WPlusPlus
- * Plugin URI: https://github.com/tofandel/wplusplus
+ * Plugin Name: WPlusPlus Core
+ * Plugin URI: https://github.com/tofandel/wplusplus-core/
  * Description: A powerful wordpress plugin for developers to create forms and so much more!
  * Version: 1.0
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
- * Text Domain: wplusplus
+ * Text Domain: wpluspluscore
  * Domain Path: /languages/
  * WC tested up to: 4.8
- * Download Url: https://github.com/tofandel/wplusplus/
+ * Download Url: https://github.com/tofandel/wplusplus-core/
  */
 
 require_once __DIR__ . '/vendor/autoload.php';
