@@ -466,7 +466,7 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	}
 
 	public static function checkCompatibility() {
-		if ( version_compare( phpversion(), '7.0', '<' ) ) {
+		if ( version_compare( phpversion(), '5.6', '<' ) ) {
 			return false;
 		}
 
@@ -474,7 +474,7 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	}
 
 	public function disabled_notice() {
-		echo '<strong>' . sprintf( esc_html__( '%s requires PHP 7.0 or higher!', self::textDomain() ), $this->name ) . '</strong>';
+		echo '<strong>' . sprintf( esc_html__( '%s requires PHP 5.6 or higher!', self::textDomain() ), $this->name ) . '</strong>';
 	}
 
 	/**
@@ -516,13 +516,13 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 		}
 
 		//Setup default plugin folders
-		$this->mkdir( 'languages' );
-		$this->mkdir( 'css' );
-		$this->mkdir( 'js' );
+		//$this->mkdir( 'languages' );
+		//$this->mkdir( 'css' );
+		//$this->mkdir( 'js' );
 		add_action( 'init', 'flush_rewrite_rules' );
 	}
 
-	protected function multisiteUpgrade( $last_version ) {
+	private function multisiteUpgrade( $last_version ) {
 		if ( ! is_multisite() ) {
 			$this->upgrade( $last_version );
 		} else {

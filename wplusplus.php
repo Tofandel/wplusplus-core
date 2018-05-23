@@ -24,6 +24,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once 'functions.php';
 
 class wplusplus extends WP_Plugin {
+	const MULOADER_DIR = ABSPATH . 'mu-plugins/wplusplus-muloader';
+
 	public function actionsAndFilters() {
 		//Silence is golden
 	}
@@ -38,5 +40,18 @@ class wplusplus extends WP_Plugin {
 
 	public function upgrade( $last_version ) {
 		// Nothing yet
+	}
+
+	public function activate() {
+		parent::activate();
+		//Create the muloader so the core get's loaded before any plugin, thus removing the need to require it in every child plugin
+		mkdir( self::MULOADER_DIR );
+		copy( __DIR__ . '/wplusplus-muloader.php.bak', self::MULOADER_DIR . '/wplusplus-muloader.php' );
+	}
+
+	public function deactivate() {
+		//Clean the muloader
+		rmdir( self::MULOADER_DIR );
+		unlink( self::MULOADER_DIR . '/wplusplus-muloader.php' );
 	}
 }
