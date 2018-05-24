@@ -7,7 +7,7 @@ use ReflectionClass;
 use Tofandel\Traits\Singleton;
 
 
-require_once __DIR__ . '/../../lib/tgmpa-config.php';
+require_once __DIR__ . '/../../admin/tgmpa-config.php';
 
 /**
  * Class WP_Plugin
