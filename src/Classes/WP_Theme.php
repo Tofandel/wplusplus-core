@@ -76,8 +76,8 @@ abstract class WP_Theme extends WP_Plugin implements \Tofandel\Interfaces\WP_The
 	 * Prepare theme internationalisation
 	 */
 	public function loadTextdomain() {
-		$this->parent ? load_child_theme_textdomain( $this->textDomain(), $this->folder( '/languages/' ) ) :
-			load_theme_textdomain( $this->textDomain(), $this->folder( '/languages/' ) );
+		$this->parent ? load_child_theme_textdomain( $this->text_domain, $this->folder( '/languages/' ) ) :
+			load_theme_textdomain( $this->text_domain, $this->folder( '/languages/' ) );
 	}
 
 	/**

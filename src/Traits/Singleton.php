@@ -19,8 +19,8 @@ trait Singleton {
 	 */
 	public static final function __init__() {
 		global $singletons;
-		$class = get_called_class();
-		if ( ! array_key_exists( $class, $singletons ) ) {
+		$class = static::class;
+		if ( ! isset( $singletons[ $class ] ) ) {
 			$singletons[ $class ] = new $class();
 		}
 

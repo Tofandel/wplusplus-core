@@ -29,36 +29,7 @@ interface WP_Plugin {
 	 */
 	public function actionsAndFilters();
 
-	public function optionGroup( $option_group );
-
 	public function pluginName();
-
-	/**
-	 * @param string $page_title The page title
-	 * @param callable $function The function to display the page
-	 * @param string $capability The capability required to see the page
-	 * @param string $icon_url Can be a Dashicon helper class, a Base64 encoded SVG or 'none' if style is added via CSS
-	 * @param null $position The position the menu should appear.
-	 * @param array $stylesheets An array of css filenames to be included on that page ('.css' or '.min.css' are not necessary) must be in plugin's css folder
-	 * @param array $javascripts An array of js filenames to be included on that page ('.js' or '.min.js' are not necessary) must be in plugin's js folder
-	 *
-	 * @return string Menu's hook
-	 */
-	public function addMenuPage( $page_title, $function, $capability = 'manage_options', $icon_url = '', $position = null, array $stylesheets = array(), array $javascripts = array() );
-
-	/**
-	 * @param string $parent_slug
-	 * @param string $page_title
-	 * @param callable $function
-	 * @param string $capability
-	 * @param array $stylesheets
-	 * @param array $javascripts
-	 *
-	 * @return string Menu's hook
-	 */
-	public function addSubmenuPage( $parent_slug, $page_title, $function, $capability = 'manage_options', array $stylesheets = array(), array $javascripts = array() );
-
-	public function enqueueMenuScripts();
 
 	/**
 	 * Searchs if a file exists in the plugin folder (minified or not)
@@ -78,8 +49,6 @@ interface WP_Plugin {
 	 * @return string Path to the plugin's folder
 	 */
 	public function folder( $folder = '' );
-
-	public function enqueueMenuStyles();
 
 	/**
 	 * @param string $js Filename (optional extension)
@@ -120,7 +89,7 @@ interface WP_Plugin {
 	 * Returns the text domain for internationalisation
 	 * @return string
 	 */
-	public function textDomain();
+	public static function TextDomain();
 
 	/**
 	 * Returns the list of version information for the plugin
@@ -140,8 +109,10 @@ interface WP_Plugin {
 
 	/**
 	 * Add menus, sub-menus and settings page in this function
+	 *
+	 * @see https://docs.reduxframework.com/core/redux-api/ For a complete documentation on how to use redux framework
 	 */
-	public function menusAndSettings();
+	public function reduxOptions();
 
 	/**
 	 * Called function on plugin deactivation

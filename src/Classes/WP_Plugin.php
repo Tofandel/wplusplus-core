@@ -30,6 +30,11 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 
 	protected $download_url;
 
+	static $text_domains = array();
+
+	public static function TextDomain() {
+		static::__init__()->text_domain;
+	}
 
 	/**
 	 * Plugin constructor.
@@ -341,15 +346,7 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	 * Prepare plugin internationalisation
 	 */
 	public function loadTextdomain() {
-		call_user_func( 'load_' . ( $this->is_muplugin ? 'mu' : '' ) . 'plugin_textdomain', $this->textDomain(), false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
-	}
-
-	/**
-	 * Returns the text domain for internationalisation
-	 * @return string
-	 */
-	public function textDomain() {
-		return $this->text_domain;
+		call_user_func( 'load_' . ( $this->is_muplugin ? 'mu' : '' ) . 'plugin_textdomain', $this->text_domain, false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
 	}
 
 	/**
@@ -386,7 +383,7 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	}
 
 	public function disabled_notice() {
-		echo '<strong>' . sprintf( esc_html__( '%s requires PHP 5.6 or higher!', self::textDomain() ), $this->name ) . '</strong>';
+		echo '<strong>' . sprintf( esc_html__( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', self::textDomain() ), $this->name, '5.6', PHP_VERSION ) . '</strong>';
 	}
 
 	/**
@@ -395,7 +392,7 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	public function activate() {
 		if ( ! self::checkCompatibility() ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( sprintf( __( '%s requires PHP 7.0 or higher!', self::textDomain() ), $this->name ) );
+			wp_die( sprintf( __( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', self::textDomain() ), $this->name, '5.6', PHP_VERSION ) );
 		}
 
 		if ( ! add_option( $this->slug . '_version', $this->version ) ) {
