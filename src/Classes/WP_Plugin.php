@@ -5,7 +5,6 @@ namespace Tofandel\Classes;
 use Exception;
 use ReflectionClass;
 use Tofandel\Traits\Singleton;
-use function Tofandel\wpp_slugify;
 
 
 require_once __DIR__ . '/../../lib/tgmpa-config.php';
@@ -29,14 +28,7 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 
 	protected $is_muplugin = false;
 
-	//private $settings = array();
-	//private $option_groups = array();
-	protected $option_group = 'general';
-	//protected $db_tables = array();
-
 	protected $download_url;
-
-	protected $menu_pages;
 
 
 	/**
@@ -108,8 +100,34 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 		register_uninstall_hook( $this->file, get_called_class() . '::uninstall' );
 		$this->definitions();
 		$this->actionsAndFilters();
-		add_action( 'admin_init', [ $this, 'menusAndSettings' ] );
+
+		add_action( 'admin_init', [ $this, '_reduxOptions' ] );
 		add_action( 'admin_init', [ $this, 'checkCompat' ] );
+	}
+
+	protected function loadRedux() {
+		$plugins = get_option( 'active_plugins' );
+
+		$loaded = false;
+		foreach ( $plugins as $plugin ) {
+			if ( strpos( $plugin, 'redux-framework' ) !== false ) {
+				//We load redux's plugin
+				if ( file_exists( ABSPATH . '/plugins/' . $plugin ) ) {
+					require_once ABSPATH . '/plugins/' . $plugin;
+					$loaded = true;
+					break;
+				}
+			}
+		}
+		if ( ! $loaded ) {
+			if ( file_exists( __DIR__ . '../../admin/redux-framework/framework.php' ) ) {
+				require_once __DIR__ . '../../admin/redux-framework/framework.php';
+			}
+		}
+
+		if ( file_exists( __DIR__ . '../../admin/redux-extensions/extensions-init.php' ) ) {
+			require_once __DIR__ . '../../admin/redux-extensions/extensions-init.php';
+		}
 	}
 
 	/**
@@ -141,110 +159,9 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 		return $this->slug;
 	}
 
-	public function optionGroup( $option_group ) {
-		$this->option_group = $option_group;
-	}
-
 
 	public function pluginName() {
 		return esc_html__( str_replace( array( '-', '_' ), ' ', (string) $this ) );
-	}
-
-	/**
-	 * @param string $page_title The page title
-	 * @param callable $function The function to display the page
-	 * @param string $capability The capability required to see the page
-	 * @param string $icon_url Can be a Dashicon helper class, a Base64 encoded SVG or 'none' if style is added via CSS
-	 * @param null $position The position the menu should appear.
-	 * @param array $stylesheets An array of css filenames to be included on that page ('.css' or '.min.css' are not necessary) must be in plugin's css folder
-	 * @param array $javascripts An array of js filenames to be included on that page ('.js' or '.min.js' are not necessary) must be in plugin's js folder
-	 *
-	 * @return string Menu's hook
-	 */
-	public function addMenuPage( $page_title, $function, $capability = 'manage_options', $icon_url = '', $position = null, array $stylesheets = array(), array $javascripts = array() ) {
-		$slug = self::uniqueSlug( $page_title, $this->slug );
-		$hook = add_menu_page( $page_title, $page_title, $capability, $slug, $function, $icon_url, $position );
-		//global $menu, $admin_page_hooks, $_registered_pages, $_parent_pages;
-		if ( $hook ) {
-			//$this->menu_pages[ $slug ] = array( 'hook' => $hook, 'css' => $stylesheets, 'js' => $javascripts );
-			if ( ! empty( $stylesheets ) ) {
-				add_action( 'load-' . $hook, [ $this, 'enqueueMenuStyles' ] );
-			}
-
-			if ( ! empty( $javascripts ) ) {
-				add_action( 'load-' . $hook, [ $this, 'enqueueMenuScripts' ] );
-			}
-		}
-
-		return $hook;
-	}
-
-	/**
-	 * Security to make sure the generated slug is unique, concatenating with plugin name and checking against other declared slugs
-	 *
-	 * @param string $string The string to slugifiy
-	 * @param string|bool $plugin_name The plugin name to concatenate
-	 *
-	 * @return string
-	 */
-	protected static function uniqueSlug( $string, $plugin_name = false ) {
-		static $slugs = array();
-
-		$string = ( $plugin_name ? wpp_slugify( $plugin_name ) . '-' : '' ) . wpp_slugify( $string );
-		if ( ! in_array( $string, $slugs ) ) {
-			$slugs[] = $string;
-
-			return $string;
-		}
-		/** @noinspection PhpStatementHasEmptyBodyInspection */
-		for ( $i = 2; in_array( $string . $i, $slugs ); $i ++ ) {
-			;
-		}
-		$slugs[] = $string . $i;
-
-		return $string . $i;
-	}
-
-	/**
-	 * @param string $parent_slug
-	 * @param string $page_title
-	 * @param callable $function
-	 * @param string $capability
-	 * @param array $stylesheets
-	 * @param array $javascripts
-	 *
-	 * @return string Menu's hook
-	 */
-	public function addSubmenuPage( $parent_slug, $page_title, $function, $capability = 'manage_options', array $stylesheets = array(), array $javascripts = array() ) {
-		$slug = self::uniqueSlug( $page_title, $this->slug );
-		$hook = add_submenu_page( $parent_slug, $page_title, $page_title, $capability, $slug, $function );
-
-		if ( $hook ) {
-			$this->menu_pages[ $slug ] = array( 'hook' => $hook, 'css' => $stylesheets, 'js' => $javascripts );
-
-			if ( ! empty( $stylesheets ) ) {
-				add_action( 'load-' . $hook, [ $this, 'enqueueMenuStyles' ] );
-			}
-
-			if ( ! empty( $javascripts ) ) {
-				add_action( 'load-' . $hook, [ $this, 'enqueueMenuScripts' ] );
-			}
-		}
-
-		return $hook;
-	}
-
-	public function enqueueMenuScripts() {
-		global $plugin_page;
-		foreach ( $this->menu_pages[ $plugin_page ]['js'] as $js ) {
-			if ( ! wp_script_is( $js, 'registered' ) && $f = $this->searchFile( $js, 'js', true, 'js' ) ) {
-				wp_register_script( $js, $f, array(
-					'jquery',
-					'jquery-ui-core',
-				), $this->version );
-			}
-			wp_enqueue_script( $js );
-		}
 	}
 
 	/**
@@ -331,16 +248,6 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	 */
 	public function folder( $folder = '' ) {
 		return trailingslashit( dirname( $this->file ) ) . "$folder";
-	}
-
-	public function enqueueMenuStyles() {
-		global $plugin_page;
-		foreach ( $this->menu_pages[ $plugin_page ]['css'] as $css ) {
-			if ( ! wp_style_is( $css, 'registered' ) && $f = $this->searchFile( $css, 'css', true, 'js' ) ) {
-				wp_register_style( $css, $f, $this->version );
-			}
-			wp_enqueue_style( $css );
-		}
 	}
 
 	/**
@@ -465,6 +372,11 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 
 	}
 
+	/**
+	 * Check that the required version of php is installed before activating the plugin
+	 *
+	 * @return bool
+	 */
 	public static function checkCompatibility() {
 		if ( version_compare( phpversion(), '5.6', '<' ) ) {
 			return false;
@@ -556,7 +468,9 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 
 	/**
 	 * Called function if a plugin is downgraded (incompatibility or something)
-	 * Rarely supported but still including this function
+	 * Rarely supported/used but still including it just in case
+	 *
+	 * @param $last_version
 	 */
 	protected function downgrade( $last_version ) {
 	}
@@ -568,9 +482,18 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * Add menus, sub-menus and settings page in this function
+	 * Add redux framework menus, sub-menus and settings page in this function
 	 */
-	abstract public function menusAndSettings();
+	abstract public function reduxOptions();
+
+	public function _reduxOptions() {
+		if ( ! class_exists( 'Redux' ) ) {
+			$this->loadRedux();
+		}
+		if ( class_exists( 'Redux' ) ) {
+			$this->reduxOptions();
+		}
+	}
 
 	/**
 	 * Called function on plugin deactivation

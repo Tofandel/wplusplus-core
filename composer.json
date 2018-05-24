@@ -1,12 +1,12 @@
 {
-  "name": "tofandel/wplusplus",
+  "name": "tofandel/wplusplus-core",
   "version": "1.0",
   "authors": [
     {
       "name": "Tofandel"
     }
   ],
-  "type": "wordpress-muplugin",
+  "type": "wordpress-plugin",
   "description": "W++ is a Wordpress Plugin acting as a core for other plugins",
   "license": "Apache 2.0",
   "keywords": [
@@ -19,7 +19,7 @@
     "theme"
   ],
   "support": {
-    "issues": "https://github.com/tofandel/wplusplus/issues"
+    "issues": "https://github.com/tofandel/wplusplus-core/issues"
   },
   "repositories": [
     {

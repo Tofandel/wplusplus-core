@@ -5,6 +5,29 @@ namespace Tofandel;
 use stdClass;
 use WP_Error;
 
+/**
+ * @param string $string The string to slugifiy
+ * @param bool $prepend Can be (and should) be used as a vendor name to separate slugs
+ *
+ * @return string
+ */
+function wpp_unique_slug( $string, $prepend = false ) {
+	static $slugs = array();
+
+	$string = ( $prepend ? wpp_slugify( $prepend ) . '-' : '' ) . wpp_slugify( $string );
+	if ( ! in_array( $string, $slugs ) ) {
+		$slugs[] = $string;
+
+		return $string;
+	}
+	/** @noinspection PhpStatementHasEmptyBodyInspection */
+	for ( $i = 2; in_array( $string . $i, $slugs ); $i ++ ) {
+		;
+	}
+	$slugs[] = $string . $i;
+
+	return $string . $i;
+}
 
 function wpp_get_editable_users( $args = array() ) {
 	static $users;

@@ -31,7 +31,7 @@
  * Plugin:
  * require_once dirname( __FILE__ ) . '/path/to/class-tgm-plugin-activation.php';
  */
-require_once dirname( __FILE__ ) . 'vendor/tgmpa/tgm-plugin-activation/class-tgm-plugin-activation.php';
+require_once dirname( __FILE__ ) . '/../vendor/tgmpa/tgm-plugin-activation/class-tgm-plugin-activation.php';
 
 add_action( 'tgmpa_register', 'wplusplus_register_required_plugins' );
 
@@ -69,7 +69,7 @@ function wplusplus_register_required_plugins() {
 			// The plugin source.
 			'required'           => true,
 			// If false, the plugin is only 'recommended' instead of required.
-			'version'            => '3.6.9',
+			'version'            => '3.6.5',
 			// E.g. 1.0.0. If set, the active plugin must be this version or higher. If the plugin version is higher than the plugin version installed, the user will be notified to update the plugin.
 			'force_activation'   => true,
 			// If true, plugin is activated upon theme activation and cannot be deactivated until theme switch.
@@ -80,45 +80,6 @@ function wplusplus_register_required_plugins() {
 			//'is_callable'        => '',
 			// If set, this callable will be be checked for availability to determine if a plugin is active.
 		),
-		/*
-				// This is an example of how to include a plugin from an arbitrary external source in your theme.
-				array(
-					'name'         => 'TGM New Media Plugin', // The plugin name.
-					'slug'         => 'tgm-new-media-plugin', // The plugin slug (typically the folder name).
-					'source'       => 'https://s3.amazonaws.com/tgm/tgm-new-media-plugin.zip', // The plugin source.
-					'required'     => true, // If false, the plugin is only 'recommended' instead of required.
-					'external_url' => 'https://github.com/thomasgriffin/New-Media-Image-Uploader', // If set, overrides default API URL and points to an external URL.
-				),
-
-				// This is an example of how to include a plugin from a GitHub repository in your theme.
-				// This presumes that the plugin code is based in the root of the GitHub repository
-				// and not in a subdirectory ('/src') of the repository.
-				array(
-					'name'      => 'Adminbar Link Comments to Pending',
-					'slug'      => 'adminbar-link-comments-to-pending',
-					'source'    => 'https://github.com/jrfnl/WP-adminbar-comments-to-pending/archive/master.zip',
-				),
-
-				// This is an example of how to include a plugin from the WordPress Plugin Repository.
-				array(
-					'name'      => 'BuddyPress',
-					'slug'      => 'buddypress',
-					'required'  => false,
-				),
-
-				// This is an example of the use of 'is_callable' functionality. A user could - for instance -
-				// have WPSEO installed *or* WPSEO Premium. The slug would in that last case be different, i.e.
-				// 'wordpress-seo-premium'.
-				// By setting 'is_callable' to either a function from that plugin or a class method
-				// `array( 'class', 'method' )` similar to how you hook in to actions and filters, TGMPA can still
-				// recognize the plugin as being installed.
-				array(
-					'name'        => 'WordPress SEO by Yoast',
-					'slug'        => 'wordpress-seo',
-					'is_callable' => 'wpseo_init',
-				),
-
-			);*/
 
 		/*
 		 * Array of configuration settings. Amend each line as needed.
@@ -151,82 +112,6 @@ function wplusplus_register_required_plugins() {
 			'message'      => '',
 			// Message to output right before the plugins table.
 
-			/*
-			'strings'      => array(
-				'page_title'                      => __( 'Install Required Plugins', 'wplusplus' ),
-				'menu_title'                      => __( 'Install Plugins', 'wplusplus' ),
-				/* translators: %s: plugin name. * /
-				'installing'                      => __( 'Installing Plugin: %s', 'wplusplus' ),
-				/* translators: %s: plugin name. * /
-				'updating'                        => __( 'Updating Plugin: %s', 'wplusplus' ),
-				'oops'                            => __( 'Something went wrong with the plugin API.', 'wplusplus' ),
-				'notice_can_install_required'     => _n_noop(
-					/* translators: 1: plugin name(s). * /
-					'This theme requires the following plugin: %1$s.',
-					'This theme requires the following plugins: %1$s.',
-					'wplusplus'
-				),
-				'notice_can_install_recommended'  => _n_noop(
-					/* translators: 1: plugin name(s). * /
-					'This theme recommends the following plugin: %1$s.',
-					'This theme recommends the following plugins: %1$s.',
-					'wplusplus'
-				),
-				'notice_ask_to_update'            => _n_noop(
-					/* translators: 1: plugin name(s). * /
-					'The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s.',
-					'The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s.',
-					'wplusplus'
-				),
-				'notice_ask_to_update_maybe'      => _n_noop(
-					/* translators: 1: plugin name(s). * /
-					'There is an update available for: %1$s.',
-					'There are updates available for the following plugins: %1$s.',
-					'wplusplus'
-				),
-				'notice_can_activate_required'    => _n_noop(
-					/* translators: 1: plugin name(s). * /
-					'The following required plugin is currently inactive: %1$s.',
-					'The following required plugins are currently inactive: %1$s.',
-					'wplusplus'
-				),
-				'notice_can_activate_recommended' => _n_noop(
-					/* translators: 1: plugin name(s). * /
-					'The following recommended plugin is currently inactive: %1$s.',
-					'The following recommended plugins are currently inactive: %1$s.',
-					'wplusplus'
-				),
-				'install_link'                    => _n_noop(
-					'Begin installing plugin',
-					'Begin installing plugins',
-					'wplusplus'
-				),
-				'update_link' 					  => _n_noop(
-					'Begin updating plugin',
-					'Begin updating plugins',
-					'wplusplus'
-				),
-				'activate_link'                   => _n_noop(
-					'Begin activating plugin',
-					'Begin activating plugins',
-					'wplusplus'
-				),
-				'return'                          => __( 'Return to Required Plugins Installer', 'wplusplus' ),
-				'plugin_activated'                => __( 'Plugin activated successfully.', 'wplusplus' ),
-				'activated_successfully'          => __( 'The following plugin was activated successfully:', 'wplusplus' ),
-				/* translators: 1: plugin name. * /
-				'plugin_already_active'           => __( 'No action taken. Plugin %1$s was already active.', 'wplusplus' ),
-				/* translators: 1: plugin name. * /
-				'plugin_needs_higher_version'     => __( 'Plugin not activated. A higher version of %s is needed for this theme. Please update the plugin.', 'wplusplus' ),
-				/* translators: 1: dashboard link. * /
-				'complete'                        => __( 'All plugins installed and activated successfully. %1$s', 'wplusplus' ),
-				'dismiss'                         => __( 'Dismiss this notice', 'wplusplus' ),
-				'notice_cannot_install_activate'  => __( 'There are one or more required or recommended plugins to install, update or activate.', 'wplusplus' ),
-				'contact_admin'                   => __( 'Please contact the administrator of this site for help.', 'wplusplus' ),
-
-				'nag_type'                        => '', // Determines admin notice type - can only be one of the typical WP notice classes, such as 'updated', 'update-nag', 'notice-warning', 'notice-info' or 'error'. Some of which may not work as expected in older WP versions.
-			),
-			*/
 		)
 	);
 

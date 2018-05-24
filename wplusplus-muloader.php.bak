@@ -16,7 +16,9 @@ $plugins = get_option('active_plugins');
 foreach ($plugins as $plugin) {
 	if (strpos($plugin, 'wplusplus.php') !== false) {
 		//We load wplusplus core if it's active to load it early
-		require_once ABSPATH.'/plugins/'.$plugin;
-		break;
+		if (file_exists(ABSPATH.'/plugins/'.$plugin) {
+    		require_once ABSPATH.'/plugins/'.$plugin;
+		    break;
+		}
 	}
 }
