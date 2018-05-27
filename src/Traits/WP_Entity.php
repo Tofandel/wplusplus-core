@@ -1,6 +1,6 @@
 <?php
 
-namespace Tofandel\Classes;
+namespace Tofandel\Traits;
 
 use function Tofandel\delete_object_transient;
 use function Tofandel\get_object_transient;
