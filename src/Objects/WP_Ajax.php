@@ -117,11 +117,11 @@ class WP_Ajax {
 	 * Only for poedit
 	 */
 	public function typeStr() {
-		__( 'Success', WPlusPlusCore::t );
-		__( 'Error', WPP_TD );
-		__( 'Warning', WPP_TD );
-		__( 'Info', WPP_TD );
-		__( 'Question', WPP_TD );
+		__( 'Success', WPlusPlusCore::TextDomain() );
+		__( 'Error', WPlusPlusCore::TextDomain() );
+		__( 'Warning', WPlusPlusCore::TextDomain() );
+		__( 'Info', WPlusPlusCore::TextDomain() );
+		__( 'Question', WPlusPlusCore::TextDomain() );
 	}
 
 	/**
@@ -141,7 +141,7 @@ class WP_Ajax {
 	 */
 	public function swalRedirect( $type, $redirect = false, $delay = false, $msg = "", $msg2 = "" ) {
 		if ( empty( $msg ) ) {
-			$msg = __( ucfirst( $type ), WPP_TD );
+			$msg = __( ucfirst( $type ), WPlusPlusCore::TextDomain() );
 		}
 
 		if ( $type == self::T_ERROR ) {
@@ -164,7 +164,7 @@ class WP_Ajax {
 
 	public function check_nonce( $nonce ) {
 		if ( ! check_ajax_referer( $nonce, '_wpnonce', false ) ) {
-			$this->swal( 'error', __( 'Invalid nonce', WPP_TD ), __( 'It has probably expired, you should try again!', WPP_TD ) );
+			$this->swal( 'error', __( 'Invalid nonce', WPlusPlusCore::TextDomain() ), __( 'It has probably expired, you should try again!', WPlusPlusCore::TextDomain() ) );
 			$this->send();
 			die();
 		}
@@ -179,7 +179,7 @@ class WP_Ajax {
 	 */
 	public function swal( $type, $msg = "", $msg2 = "", $confirm_button = null, $cancel_button = false ) {
 		if ( empty( $msg ) ) {
-			$msg = __( ucfirst( $type ), WPP_TD );
+			$msg = __( ucfirst( $type ), WPlusPlusCore::TextDomain() );
 		}
 
 		if ( $type == self::T_ERROR ) {
@@ -195,14 +195,14 @@ class WP_Ajax {
 		if ( $confirm_button === false ) {
 			$this->addResponse( 'swal', 'showConfirmButton', false );
 		} else {
-			$this->addResponse( 'swal', 'confirmButtonText', isset( $confirm_button ) ? $confirm_button : __( 'Ok', WPP_TD ) );
+			$this->addResponse( 'swal', 'confirmButtonText', isset( $confirm_button ) ? $confirm_button : __( 'Ok', WPlusPlusCore::TextDomain() ) );
 		}
 
 
 		if ( $cancel_button === false ) {
 			$this->addResponse( 'swal', 'showCancelButton', false );
 		} else {
-			$this->addResponse( 'swal', 'cancelButtonText', isset( $cancel_button ) ? $cancel_button : __( 'Cancel', WPP_TD ) );
+			$this->addResponse( 'swal', 'cancelButtonText', isset( $cancel_button ) ? $cancel_button : __( 'Cancel', WPlusPlusCore::TextDomain() ) );
 		}
 	}
 }

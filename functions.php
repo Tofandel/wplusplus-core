@@ -448,6 +448,12 @@ if ( ! function_exists( 'delete_expired_object_transients' ) ) {
 			$wpdb->esc_like( '_transient_timeout_' ) . '%',
 			time()
 		) );
+
+		$wpdb->query( $wpdb->prepare(
+			"DELETE FROM {$wpdb->options}
+			WHERE option_name LIKE %s",
+			$wpdb->esc_like( '_transient_' ) . '%'
+		) );
 	}
 }
 

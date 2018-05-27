@@ -11,7 +11,7 @@
  * Time: 15:04
  */
 
-namespace Instances;
+namespace Tofandel\Objects;
 
 
 class WP_Cron {
