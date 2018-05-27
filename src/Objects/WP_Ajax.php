@@ -19,8 +19,9 @@ class WP_Ajax {
 	public $response = array();
 	protected $action;
 	protected $func;
-	protected $logged_in;
+	protected $private;
 	protected $code;
+	protected $referer;
 	private $is_called = false;
 
 	/**
@@ -29,18 +30,25 @@ class WP_Ajax {
 	 * @param string $action
 	 * @param callable $func
 	 * @param bool $private
+	 * @param string $referer
 	 */
-	public function __construct( $action, $func, $private = false ) {
+	public function __construct( $action, $func, $private = false, $referer = null ) {
 		add_action( 'wp_ajax_' . $action, [ $this, 'call' ], 10, 0 );
 		if ( ! $private ) {
 			add_action( 'wp_ajax_nopriv_' . $action, [ $this, 'call' ], 10, 0 );
+		} else {
+			if ( $referer == true ) {
+				$referer = $action;
+			}
+			$this->referer = $referer;
 		}
 
 		$this->action = $action;
 
 		$this->func = $func;
 
-		$this->logged_in = $private;
+		$this->private = $private;
+
 		/*
 				add_action('wp_enqueue_scripts', function () {
 					wp_add_inline_script( 'wp-ajax', 'var ajax_url=' . admin_url( 'admin-ajax.php' ) . ';' );
@@ -48,9 +56,9 @@ class WP_Ajax {
 	}
 
 	public function call() {
-		//if ($this->logged_in) {
-		//	check_ajax_referer( $this->action );
-		//}
+		if ( isset( $this->referer ) ) {
+			check_ajax_referer( $this->referer );
+		}
 		$this->is_called = true;
 		call_user_func( $this->func, $this );
 		$this->send();
