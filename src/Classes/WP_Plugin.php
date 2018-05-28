@@ -124,13 +124,13 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 			}
 		}
 		if ( ! $loaded ) {
-			if ( file_exists( __DIR__ . '../../admin/redux-framework/framework.php' ) ) {
-				require_once __DIR__ . '../../admin/redux-framework/framework.php';
+			if ( file_exists( __DIR__ . '/../../admin/redux-framework/framework.php' ) ) {
+				require_once __DIR__ . '/../../admin/redux-framework/framework.php';
 			}
 		}
 
-		if ( file_exists( __DIR__ . '../../admin/redux-extensions/extensions-init.php' ) ) {
-			require_once __DIR__ . '../../admin/redux-extensions/extensions-init.php';
+		if ( file_exists( __DIR__ . '/../../admin/redux-extensions/extensions-init.php' ) ) {
+			require_once __DIR__ . '/../../admin/redux-extensions/extensions-init.php';
 		}
 	}
 
