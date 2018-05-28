@@ -2,7 +2,7 @@
 
 namespace Tofandel;
 
-use Classes\WP_Metabox;
+use Tofandel\Classes\WP_Metabox;
 use Tofandel\Classes\WP_Plugin;
 
 /**
@@ -31,6 +31,9 @@ class WPlusPlusCore extends WP_Plugin {
 		//Silence is golden
 	}
 
+	/**
+	 * @throws \ReflectionException
+	 */
 	public function definitions() {
 		WP_Metabox::__init__();
 	}
