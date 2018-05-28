@@ -49,8 +49,8 @@
     }
   },
   "autoload": {
-    "psr-0": {
-      "Tofandel": "src"
+    "psr-4": {
+      "Tofandel\\": "src/"
     }
   }
 }
