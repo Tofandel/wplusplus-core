@@ -14,7 +14,6 @@ require_once __DIR__ . '/../../admin/tgmpa-config.php';
  *
  * @author Adrien Foulon <tofandel@tukan.hu>
  *
- * A text domain constant will be defined as SHORTCLASSNAME_TD
  */
 abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	use Singleton;

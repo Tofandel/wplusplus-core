@@ -2,6 +2,7 @@
 
 namespace Tofandel;
 
+use Classes\WP_Metabox;
 use Tofandel\Classes\WP_Plugin;
 
 /**
@@ -31,7 +32,7 @@ class WPlusPlusCore extends WP_Plugin {
 	}
 
 	public function definitions() {
-
+		WP_Metabox::__init__();
 	}
 
 	public function menusAndSettings() {
@@ -54,4 +55,19 @@ class WPlusPlusCore extends WP_Plugin {
 		rmdir( self::MULOADER_DIR );
 		unlink( self::MULOADER_DIR . '/wplusplus-muloader.php' );
 	}
+
+	/**
+	 * Add redux framework menus, sub-menus and settings page in this function
+	 */
+	public function reduxOptions() {
+		// TODO: Implement reduxOptions() method.
+	}
+}
+
+global $WPlusPlusCore;
+
+try {
+	$WPlusPlusCore = new WPlusPlusCore();
+} catch ( \Exception $e ) {
+	echo $e->getMessage();
 }
