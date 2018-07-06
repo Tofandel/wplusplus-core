@@ -70,10 +70,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 			// Only run metaboxes on the pages/posts, not the front-end.
 			// The DOING_AJAX check allows for redux_post_meta to work inside
 			// AJAX calls. - kp
-			if ( ! is_admin() ) {
-				return;
-			}
-			if ( ! ( $pagenow == "post-new.php" || $pagenow == "post.php" || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) ) {
+			if ( ! is_admin() || ! ( $pagenow == "post-new.php" || $pagenow == "post.php" || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) ) {
 				return;
 			}
 
