@@ -1,0 +1,17 @@
+Welcome to the Redux JS Button extension!  Thank you for your support and purchase.
+
+Online instructions for installing extensions may be found here:  http://docs.reduxframework.com/core/advanced/loading-extensions
+
+Included in the /example directory is a working example for the JS buttonn extension.
+
+From the section_code.txt file in the /example folder, cut and paste the code into the setSections() function located in your redux options config PHP file and save changes.
+
+Copy the sample.js file into the root directory of your theme.
+
+Refresh the Redux options panel.
+
+Click the 'JS Button' tab in the options panel.
+
+Experiment to your heart's delight.
+
+Full documentation for the JS Button extension may be found here: http://docs.reduxframework.com/extensions/js-button.

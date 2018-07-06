@@ -1,8 +1,6 @@
 <?php
 
-namespace Tofandel\Objects;
-
-use function Tofandel\wpp_slugify;
+namespace Tofandel\Core\Objects;
 
 /**
  * Class WP_Shortcode
@@ -37,6 +35,11 @@ class WP_Shortcode {
 
 	public function call( $attr, $content, $shortcode ) {
 		$attr = shortcode_atts( $this->default_atts, $attr, $shortcode );
+		//$content = do_shortcode($content);
+		//This makes tree execution ascendant (the default behavior being descendant)
+		//This might not be a desired effect if for example you need the shortcodes tag during the execution of a parent shortcode
+		//Unfortunately that is the case for me so not including this functionality :D
+		//As such you'll have to keep calling do_shortcode() on the shortcode's content
 		if ( has_filter( 'override_shortcode_' . $this->name ) ) {
 			return apply_filters( 'override_shortcode_' . $this->name, $attr, $content, $shortcode );
 		} elseif ( has_filter( 'shortcode_' . $this->name ) ) {

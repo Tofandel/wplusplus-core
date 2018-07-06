@@ -1,0 +1,102 @@
+Example 1: Basic setup.
+
+$this->sections[] = array(
+    'title'     => __('Extensions', 'redux-framework-demo'),    
+    'desc'      => __('Redux Framework  extensions', 'redux-framework-demo'),
+    'icon'      => 'el-icon-home',
+
+    'fields'    => array(
+
+        array(
+            'id'            => 'opt-social-profiles',
+            'type'          => 'social_profiles',
+            'title'         => 'Social Profiles',
+            'subtitle'      => 'Click an icon to activate it, drag and drop to change the icon order.',
+        ),
+    )
+);
+
+// Legacy method
+$this->sections[] = $section;
+
+// API Method
+Redux::setSection($opt_name, $section);
+
+Example 2: Include only specific profiles.
+
+
+$section = array(
+    'title'     => __('Extensions', 'redux-framework-demo'),    
+    'desc'      => __('Redux Framework  extensions', 'redux-framework-demo'),
+    'icon'      => 'el-icon-home',
+
+    'fields'    => array(
+
+        array(
+            'id'            => 'opt-social-profiles',
+            'type'          => 'social_profiles',
+            'title'         => 'Social Profiles',
+            'subtitle'      => 'Click an icon to activate it, drag and drop to change the icon order.',
+            'include'       => array(
+                'facebook',
+                'twitter',
+                'yelp'
+            ),
+        ),
+    )
+);
+
+// Legacy method
+$this->sections[] = $section;
+
+// API Method
+Redux::setSection($opt_name, $section);
+
+Example 3: Add additional profiles and edit existing profiles
+
+$section = array(
+    'title'     => __('Extensions', 'redux-framework-demo'),    
+    'desc'      => __('Redux Framework  extensions', 'redux-framework-demo'),
+    'icon'      => 'el-icon-home',
+
+    'fields'    => array(
+
+        array(
+            'id'            => 'opt-social-profiles',
+            'type'          => 'social_profiles',
+            'title'         => 'Social Profiles',
+            'subtitle'      => 'Click an icon to activate it, drag and drop to change the icon order.',
+            'icons'         => array(
+
+                // Change Twitter URL input label
+                array(
+                    'id' => 'twitter',
+                    'label' => 'Twitter username (no @)'
+                ),
+
+                // Add Paypal profile
+                array (
+                    'id'    => 'paypal',
+                    'icon' => 'fa-paypal',
+                    'enabled' => false,
+                    'name' => __ ( 'PayPal', 'redux-framework-demo' ),
+                    'background' => '',
+                    'color' => '#1769ff',
+                    'url' => '',
+                ),
+
+                // Edit Apple profile
+                array( 
+                    'id'    => 'apple',
+                    'name' => __ ( 'CrApple', 'redux-framework' ),
+                ),                            
+            )
+        ),
+    )
+);
+
+// Legacy method
+$this->sections[] = $section;
+
+// API Method
+Redux::setSection($opt_name, $section);

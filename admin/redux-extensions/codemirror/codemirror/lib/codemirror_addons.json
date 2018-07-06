@@ -1,0 +1,188 @@
+{
+  "activeline": {
+    "depends-before": [
+      "searchcursor"
+    ],
+    "file": "addon/selection/active-line.js",
+    "settings": {
+      "styleActiveLine": true
+    }
+  },
+  "closebrackets": {
+    "file": "addon/edit/closebrackets.js",
+    "settings": {
+      "autoCloseBrackets": true
+    }
+  },
+  "closetag": {
+    "depends-after": [
+      "xmlfold"
+    ],
+    "file": "addon/edit/closetag.js",
+    "settings": {
+      "autoCloseTags": true
+    }
+  },
+  "continuelist": {
+    "file": "addon/edit/continuelist.js",
+    "settings": {
+      "extraKeys": {
+        "Enter": "newlineAndIndentContinueMarkdownList"
+      }
+    }
+  },
+  "dialog": {
+    "css": [
+      "addon/dialog/dialog.css"
+    ],
+    "file": "addon/dialog/dialog.js"
+  },
+  "foldcode": {
+    "depends-before": [
+      "foldgutter"
+    ],
+    "file": "addon/fold/foldcode.js",
+    "settings": {
+      "extraKeys": {
+        "Ctrl-Q": "[function]function(cm){ cm.foldCode(cm.getCursor()); }"
+      },
+      "foldGutter": true,
+      "gutters": [
+        "CodeMirror-linenumbers",
+        "CodeMirror-foldgutter"
+      ]
+    }
+  },
+  "foldcode-comment": {
+    "depends-before": [
+      "foldcode"
+    ],
+    "file": "addon/fold/comment-fold.js"
+  },
+  "foldcode-css": {
+    "depends-before": [
+      "foldcode-js"
+    ]
+  },
+  "foldcode-html": {
+    "depends-before": [
+      "xmlfold",
+      "foldcode"
+    ]
+  },
+  "foldcode-indent": {
+    "depends-before": [
+      "foldcode"
+    ],
+    "file": "addon/fold/indent-fold.js"
+  },
+  "foldcode-js": {
+    "depends-before": [
+      "foldcode",
+      "foldcode-comment"
+    ],
+    "file": "addon/fold/brace-fold.js"
+  },
+  "foldcode-markdown": {
+    "depends-before": [
+      "foldcode"
+    ],
+    "file": "addon/fold/markdown-fold.js"
+  },
+  "foldgutter": {
+    "css": [
+      "addon/fold/foldgutter.css"
+    ],
+    "file": "addon/fold/foldgutter.js"
+  },
+  "fullscreen": {
+    "css": [
+      "addon/display/fullscreen.css"
+    ],
+    "file": "addon/display/fullscreen.js",
+    "settings": {
+      "extraKeys": {
+        "Esc": "[function]function(cm) { if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false); }",
+        "F11": "[function]function(cm) { cm.setOption('fullScreen', !cm.getOption('fullScreen')); }"
+      }
+    }
+  },
+  "markselection": {
+    "css": [
+      "addon/selection/mark-selection.css"
+    ],
+    "depends-before": [
+      "searchcursor"
+    ],
+    "file": "addon/selection/mark-selection.js",
+    "settings": {
+      "styleSelectedText": true
+    }
+  },
+  "matchbrackets": {
+    "file": "addon/edit/matchbrackets.js",
+    "settings": {
+      "matchBrackets": true
+    }
+  },
+  "matchhighlights": {
+    "css": [
+      "addon/search/match-highlighter.css"
+    ],
+    "depends-before": [
+      "searchcursor"
+    ],
+    "file": "addon/search/match-highlighter.js",
+    "settings": {
+      "highlightSelectionMatches": {
+        "showToken": "[regexp]\\w"
+      }
+    }
+  },
+  "matchtags": {
+    "depends-before": [
+      "xmlfold"
+    ],
+    "file": "addon/edit/matchtags.js",
+    "settings": {
+      "matchTags": true
+    }
+  },
+  "placeholder": {
+    "file": "addon/display/placeholder.js"
+  },
+  "rulers": {
+    "css": [
+      "addon/display/default-rulers.css"
+    ],
+    "file": [
+      "addon/display/default-rulers.js",
+      "addon/display/rulers.js"
+    ],
+    "settings": {
+      "rulers": "[object]rulers"
+    }
+  },
+  "search": {
+    "depends-before": [
+      "dialog",
+      "searchcursor"
+    ],
+    "file": "addon/search/search.js"
+  },
+  "searchcursor": {
+    "file": "addon/search/searchcursor.js"
+  },
+  "trailingspace": {
+    "file": "addon/edit/trailingspace.js",
+    "css": [
+      "addon/edit/trailingspace.css"
+    ],
+    "settings": {
+      "showTrailingSpace": true
+    }
+  },
+  "xmlfold": {
+    "file": "addon/fold/xml-fold.js"
+  }
+}

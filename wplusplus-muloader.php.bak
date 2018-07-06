@@ -2,22 +2,22 @@
 
 /**
  * Plugin Name: WPlusPlus MuLoader
- * Plugin URI: https://github.com/tofandel/wplusplus
+ * Plugin URI: https://github.com/tofandel/wplusplus-core
  * Description: The must use plugin loader for WPlusPlus to load it before anything else
  * Version: 1.0
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
  */
 
-defined('ABSPATH') or die;
+defined('WP_PLUGIN_DIR') or die(' WP_PLUGIN_DIR not defined')
 
 $plugins = get_option('active_plugins');
 
 foreach ($plugins as $plugin) {
-	if (strpos($plugin, 'wplusplus.php') !== false) {
+	if (strpos($plugin, 'WPlusPlusCore.php') !== false) {
 		//We load wplusplus core if it's active to load it early
-		if (file_exists(ABSPATH.'/plugins/'.$plugin) {
-    		require_once ABSPATH.'/plugins/'.$plugin;
+		if (file_exists( WP_PLUGIN_DIR.'/'.$plugin)) {
+    		require_once (WP_PLUGIN_DIR.'/'.$plugin);
 		    break;
 		}
 	}

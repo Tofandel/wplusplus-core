@@ -1,0 +1,51 @@
+.redux-widget_area-delete {
+	position: absolute;
+	right: 50px;
+	margin-top: -28px;
+	display: block;
+	height: 26px;
+	width: 26px;
+	z-index: 500;
+	content: "\f182";
+
+}
+
+#redux-add-widget h3 {
+	text-align: center !important;
+}
+
+.redux-widget_area-area-delete:hover {
+	content: "\f182";
+	cursor: pointer;
+	margin-top: -30px;
+}
+
+.activate_spinner {
+	display: block !important;
+	position: absolute;
+	top: 10px;
+	right: 4px;
+	background-color: #ECECEC;
+}
+
+#redux-add-widget form {
+	text-align: center;
+}
+
+#widget_area-redux-custom, #widget_area-redux-custom h3 {
+	position: relative;
+}
+
+#redux-add-widget p {
+	margin-top: 0;
+}
+
+#redux-add-widget {
+	w2idth: 285px;
+	margin: 0 auto;
+	position: relative;
+}
+
+#redux-add-widget-input {
+	max-width: 95%;
+}

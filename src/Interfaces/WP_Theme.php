@@ -6,7 +6,7 @@
  * Time: 16:26
  */
 
-namespace Tofandel\Interfaces;
+namespace Tofandel\Core\Interfaces;
 
 
 /**

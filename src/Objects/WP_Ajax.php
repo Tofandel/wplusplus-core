@@ -4,7 +4,7 @@
  * Copyright © 2018 - All Rights Reserved
  */
 
-namespace Tofandel\Objects;
+namespace Tofandel\Core\Objects;
 
 
 use Tofandel\WPlusPlusCore;

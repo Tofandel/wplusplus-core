@@ -6,7 +6,7 @@
  * Time: 16:26
  */
 
-namespace Tofandel\Interfaces;
+namespace Tofandel\Core\Interfaces;
 
 
 /**
@@ -84,12 +84,6 @@ interface WP_Plugin {
 	 * Prepare plugin internationalisation
 	 */
 	public function loadTextdomain();
-
-	/**
-	 * Returns the text domain for internationalisation
-	 * @return string
-	 */
-	public static function TextDomain();
 
 	/**
 	 * Returns the list of version information for the plugin

@@ -1,0 +1,7 @@
+.CodeMirror-selected {
+	background-color: blue !important;
+}
+
+.CodeMirror-selectedtext {
+	color: white;
+}

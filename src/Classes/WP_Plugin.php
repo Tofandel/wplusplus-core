@@ -1,10 +1,10 @@
 <?php
 
-namespace Tofandel\Classes;
+namespace Tofandel\Core\Classes;
 
 use Exception;
 use ReflectionClass;
-use Tofandel\Traits\Singleton;
+use Tofandel\Core\Traits\Singleton;
 
 
 require_once __DIR__ . '/../../admin/tgmpa-config.php';
@@ -15,10 +15,10 @@ require_once __DIR__ . '/../../admin/tgmpa-config.php';
  * @author Adrien Foulon <tofandel@tukan.hu>
  *
  */
-abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
+abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	use Singleton;
 
-	protected $text_domain;
+	public $text_domain;
 	protected $slug;
 	protected $name;
 	protected $file;
@@ -28,12 +28,6 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	protected $is_muplugin = false;
 
 	protected $download_url;
-
-	static $text_domains = array();
-
-	public static function TextDomain() {
-		static::__init__()->text_domain;
-	}
 
 	/**
 	 * Plugin constructor.
@@ -58,6 +52,9 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 		if ( version_compare( $version, $this->version, '!=' ) ) {
 			add_action( 'init', [ $this, 'activate' ], 1 );
 		}
+
+		$GLOBALS[ $this->class->getShortName() ] = $this;
+
 		$this->setup();
 	}
 
@@ -65,26 +62,26 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 
 		//Read the version of the plugin from the comments
 		if ( $comment && preg_match( '#version[: ]*([0-9\.]+)#i', $comment, $matches ) ) {
-			$this->version = $matches[1];
+			$this->version = trim( $matches[1] );
 		} else {
 			$this->version = '1.0';
 		}
 
 		//Read the name of the plugin from the comments
-		if ( $comment && preg_match( '#(?:plugin|theme)[- ]?name[: ]*(\S+)#i', $comment, $matches ) ) {
-			$this->name = $matches[1];
+		if ( $comment && preg_match( '#(?:plugin|theme)[- ]?name[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
+			$this->name = trim( $matches[1] );
 		} else {
 			$this->name = $this->slug;
 		}
 
 		//Read the text domain of the plugin from the comments
-		if ( $comment && preg_match( '#text[- ]?domain[: ]*(\S+)#i', $comment, $matches ) ) {
-			$this->text_domain = $matches[1];
+		if ( $comment && preg_match( '#text[- ]?domain[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
+			$this->text_domain = trim( $matches[1] );
 			define( strtoupper( $this->class->getShortName() ) . '_TD', $this->text_domain );
 		}
 
-		if ( $comment && preg_match( '#download[- ]?url[: ]*(\S+)#i', $comment, $matches ) ) {
-			$this->download_url = $matches[1];
+		if ( $comment && preg_match( '#download[- ]?url[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
+			$this->download_url = trim( $matches[1] );
 			require __DIR__ . '/../../vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
 			\Puc_v4_Factory::buildUpdateChecker(
 				$this->download_url,
@@ -105,34 +102,12 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 		$this->definitions();
 		$this->actionsAndFilters();
 
-		add_action( 'admin_init', [ $this, '_reduxOptions' ] );
-		add_action( 'admin_init', [ $this, 'checkCompat' ] );
-	}
-
-	protected function loadRedux() {
-		$plugins = get_option( 'active_plugins' );
-
-		$loaded = false;
-		foreach ( $plugins as $plugin ) {
-			if ( strpos( $plugin, 'redux-framework' ) !== false ) {
-				//We load redux's plugin
-				if ( file_exists( ABSPATH . '/plugins/' . $plugin ) ) {
-					require_once ABSPATH . '/plugins/' . $plugin;
-					$loaded = true;
-					break;
-				}
-			}
-		}
-		if ( ! $loaded ) {
-			if ( file_exists( __DIR__ . '/../../admin/redux-framework/framework.php' ) ) {
-				require_once __DIR__ . '/../../admin/redux-framework/framework.php';
-			}
-		}
-
-		if ( file_exists( __DIR__ . '/../../admin/redux-extensions/extensions-init.php' ) ) {
-			require_once __DIR__ . '/../../admin/redux-extensions/extensions-init.php';
+		if ( is_admin() && ! isset ( $_POST['action'] ) || $_POST['action'] != 'heartbeat' ) {
+			$this->_reduxOptions();
+			add_action( 'admin_init', [ $this, 'checkCompat' ] );
 		}
 	}
+
 
 	/**
 	 * Add the tables and settings and any plugin variable specifics here
@@ -166,6 +141,17 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 
 	public function pluginName() {
 		return esc_html__( str_replace( array( '-', '_' ), ' ', (string) $this ) );
+	}
+
+	public static function deleteTransients() {
+		global $wpdb;
+
+		$wpdb->query( $wpdb->prepare(
+			"DELETE FROM {$wpdb->options}
+		WHERE option_name LIKE %s OR option_name LIKE %s",
+			$wpdb->esc_like( '_transient_wpp_file_' ) . '%',
+			$wpdb->esc_like( '_transient_timeout_wpp_file_' ) . '%'
+		) );
 	}
 
 	/**
@@ -216,8 +202,8 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 			if ( is_file( $file ) ) {
 				$file = str_replace( ABSPATH, '/', $file );
 				if ( $cache ) {
-					//1 day file cache to minimize I/O
-					set_transient( 'wpp_file_' . $type . '_' . $name, $file, 86400 );
+					//1 month file path cache to minimize I/O
+					set_transient( 'wpp_file_' . $type . '_' . $name, $file, 2592000 );
 				}
 
 				return $file;
@@ -246,12 +232,12 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * @param string $folder
+	 * @param string $file
 	 *
 	 * @return string Path to the plugin's folder
 	 */
-	public function folder( $folder = '' ) {
-		return trailingslashit( dirname( $this->file ) ) . "$folder";
+	public function folder( $file = '' ) {
+		return trailingslashit( dirname( $this->file ) ) . "$file";
 	}
 
 	/**
@@ -427,6 +413,7 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 		//$this->mkdir( 'languages' );
 		//$this->mkdir( 'css' );
 		//$this->mkdir( 'js' );
+		self::deleteTransients();
 		add_action( 'init', 'flush_rewrite_rules' );
 	}
 
@@ -483,12 +470,7 @@ abstract class WP_Plugin implements \Tofandel\Interfaces\WP_Plugin {
 	abstract public function reduxOptions();
 
 	public function _reduxOptions() {
-		if ( ! class_exists( 'Redux' ) ) {
-			$this->loadRedux();
-		}
-		if ( class_exists( 'Redux' ) ) {
-			$this->reduxOptions();
-		}
+		$this->reduxOptions();
 	}
 
 	/**

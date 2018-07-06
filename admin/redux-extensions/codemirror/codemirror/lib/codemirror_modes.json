@@ -1,0 +1,910 @@
+[
+  {
+    "name": "APL",
+    "mime": "text\/apl",
+    "mode": "apl",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Asterisk",
+    "mime": "text\/x-asterisk",
+    "mode": "asterisk",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "C",
+    "mime": "text\/x-csrc",
+    "mode": "clike",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "C++",
+    "mime": "text\/x-c++src",
+    "mode": "clike",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Cobol",
+    "mime": "text\/x-cobol",
+    "mode": "cobol",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Java",
+    "mime": "text\/x-java",
+    "mode": "clike",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "C#",
+    "mime": "text\/x-csharp",
+    "mode": "clike",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Scala",
+    "mime": "text\/x-scala",
+    "mode": "clike",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Clojure",
+    "mime": "text\/x-clojure",
+    "mode": "clojure",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "CoffeeScript",
+    "mime": "text\/x-coffeescript",
+    "mode": "coffeescript",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+      {
+        "lint": [
+          "http://www.coffeelint.org/js/coffeelint.js"
+        ]
+      }
+    ],
+    "lint": "coffeescript"
+  },
+  {
+    "name": "Common Lisp",
+    "mime": "text\/x-common-lisp",
+    "mode": "commonlisp",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "CSS",
+    "mime": "text\/css",
+    "mode": "css",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+      {
+        "lint": [
+          "https://rawgithub.com/stubbornella/csslint/master/release/csslint.js"
+        ]
+      }
+    ],
+    "hint": "css",
+    "lint": "css"
+  },
+  {
+    "name": "D",
+    "mime": "text\/x-d",
+    "mode": "d",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "diff",
+    "mime": "text\/x-diff",
+    "mode": "diff",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "DTD",
+    "mime": "application\/xml-dtd",
+    "mode": "dtd",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "ECL",
+    "mime": "text\/x-ecl",
+    "mode": "ecl",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Eiffel",
+    "mime": "text\/x-eiffel",
+    "mode": "eiffel",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Erlang",
+    "mime": "text\/x-erlang",
+    "mode": "erlang",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Fortran",
+    "mime": "text\/x-fortran",
+    "mode": "fortran",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "F#",
+    "mime": "text\/x-fsharp",
+    "mode": "mllike",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Gas",
+    "mime": "text\/x-gas",
+    "mode": "gas",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Gherkin",
+    "mime": "text\/x-feature",
+    "mode": "gherkin",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "GitHub Flavored Markdown",
+    "mime": "text\/x-gfm",
+    "mode": "gfm",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Go",
+    "mime": "text\/x-go",
+    "mode": "go",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Groovy",
+    "mime": "text\/x-groovy",
+    "mode": "groovy",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "HAML",
+    "mime": "text\/x-haml",
+    "mode": "haml",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Haskell",
+    "mime": "text\/x-haskell",
+    "mode": "haskell",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Haxe",
+    "mime": "text\/x-haxe",
+    "mode": "haxe",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "ASP.NET",
+    "mime": "application\/x-aspx",
+    "mode": "htmlembedded",
+    "dependencies": [
+      "htmlmixed",
+      "xml",
+      "css",
+      "javascript"
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Embedded Javascript",
+    "mime": "application\/x-ejs",
+    "mode": "htmlembedded",
+    "dependencies": [
+      "htmlmixed",
+      "xml",
+      "css",
+      "javascript"
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "JavaServer Pages",
+    "mime": "application\/x-jsp",
+    "mode": "htmlembedded",
+    "dependencies": [
+      "htmlmixed",
+      "xml",
+      "css",
+      "javascript"
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "HTML",
+    "mime": "text\/html",
+    "mode": "htmlmixed",
+    "dependencies": [
+      "xml",
+      "javascript",
+      "css"
+    ],
+    "remote_dependencies": [
+    ],
+    "hint": "html"
+  },
+  {
+    "name": "HTTP",
+    "mime": "message\/http",
+    "mode": "http",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Jade",
+    "mime": "text\/x-jade",
+    "mode": "jade",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "JavaScript",
+    "mime": "text\/javascript",
+    "mode": "javascript",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+      {
+        "lint": [
+          "https://rawgithub.com/jshint/jshint/2.x/dist/jshint.js"
+        ]
+      }
+    ],
+    "hint": "javascript",
+    "lint": "javascript"
+  },
+  {
+    "name": "JSON",
+    "mime": "application\/x-json",
+    "mode": "javascript",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+      {
+        "lint": [
+          "https://rawgithub.com/zaach/jsonlint/master/lib/jsonlint.js",
+          "https://rawgithub.com/jshint/jshint/2.x/dist/jshint.js"
+        ]
+      }
+    ],
+    "hint": "javascript",
+    "lint": "json"
+  },
+  {
+    "name": "JSON",
+    "mime": "application\/json",
+    "mode": "javascript",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+      {
+        "lint": [
+          "https://rawgithub.com/zaach/jsonlint/master/lib/jsonlint.js",
+          "https://rawgithub.com/jshint/jshint/2.x/dist/jshint.js"
+        ]
+      }
+    ],
+    "hint": "javascript",
+    "lint": "json"
+  },
+  {
+    "name": "JSON-LD",
+    "mime": "application\/ld+json",
+    "mode": "javascript",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+      {
+        "lint": [
+          "https://rawgithub.com/jshint/jshint/2.x/dist/jshint.js"
+        ]
+      }
+    ],
+    "hint": "javascript",
+    "lint": "javascript"
+  },
+  {
+    "name": "TypeScript",
+    "mime": "application\/typescript",
+    "mode": "javascript",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+      {
+        "lint": [
+          "https://rawgithub.com/jshint/jshint/2.x/dist/jshint.js"
+        ]
+      }
+    ],
+    "hint": "javascript",
+    "lint": "javascript"
+  },
+  {
+    "name": "Jinja2",
+    "mime": null,
+    "mode": "jinja2",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Julia",
+    "mime": "text\/x-julia",
+    "mode": "julia",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "LESS",
+    "mime": "text\/x-less",
+    "mode": "less",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "LiveScript",
+    "mime": "text\/x-livescript",
+    "mode": "livescript",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Lua",
+    "mime": "text\/x-lua",
+    "mode": "lua",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Markdown (GitHub-flavour)",
+    "mime": "text\/x-markdown",
+    "mode": "markdown",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "mIRC",
+    "mime": "text\/mirc",
+    "mode": "mirc",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Nginx",
+    "mime": "text\/x-nginx-conf",
+    "mode": "nginx",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "NTriples",
+    "mime": "text\/n-triples",
+    "mode": "ntriples",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "OCaml",
+    "mime": "text\/x-ocaml",
+    "mode": "mllike",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Octave",
+    "mime": "text\/x-octave",
+    "mode": "octave",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Pascal",
+    "mime": "text\/x-pascal",
+    "mode": "pascal",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "PEG.js",
+    "mime": null,
+    "mode": "pegjs",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Perl",
+    "mime": "text\/x-perl",
+    "mode": "perl",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "PHP",
+    "mime": "text\/x-php",
+    "mode": "php",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "PHP(HTML)",
+    "mime": "application\/x-httpd-php",
+    "mode": "php",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Pig",
+    "mime": "text\/x-pig",
+    "mode": "pig",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ],
+    "hint": "pig"
+  },
+  {
+    "name": "Plain Text",
+    "mime": "text\/plain",
+    "mode": "null",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Properties files",
+    "mime": "text\/x-properties",
+    "mode": "properties",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Python",
+    "mime": "text\/x-python",
+    "mode": "python",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ],
+    "hint": "python"
+  },
+  {
+    "name": "Puppet",
+    "mime": "text\/x-puppet",
+    "mode": "puppet",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Cython",
+    "mime": "text\/x-cython",
+    "mode": "python",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ],
+    "hint": "python"
+  },
+  {
+    "name": "R",
+    "mime": "text\/x-rsrc",
+    "mode": "r",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "reStructuredText",
+    "mime": "text\/x-rst",
+    "mode": "rst",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Ruby",
+    "mime": "text\/x-ruby",
+    "mode": "ruby",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Rust",
+    "mime": "text\/x-rustsrc",
+    "mode": "rust",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Sass",
+    "mime": "text\/x-sass",
+    "mode": "sass",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Scheme",
+    "mime": "text\/x-scheme",
+    "mode": "scheme",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "SCSS",
+    "mime": "text\/x-scss",
+    "mode": "css",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+      {
+        "lint": [
+          "https://rawgithub.com/stubbornella/csslint/master/release/csslint.js"
+        ]
+      }
+    ],
+    "hint": "css",
+    "lint": "css"
+  },
+  {
+    "name": "Shell",
+    "mime": "text\/x-sh",
+    "mode": "shell",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Sieve",
+    "mime": "application\/sieve",
+    "mode": "sieve",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Smalltalk",
+    "mime": "text\/x-stsrc",
+    "mode": "smalltalk",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Smarty",
+    "mime": "text\/x-smarty",
+    "mode": "smarty",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "SmartyMixed",
+    "mime": "text\/x-smarty",
+    "mode": "smartymixed",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "SPARQL",
+    "mime": "application\/x-sparql-query",
+    "mode": "sparql",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "SQL",
+    "mime": "text\/x-sql",
+    "mode": "sql",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ],
+    "hint": "sql"
+  },
+  {
+    "name": "MariaDB",
+    "mime": "text\/x-mariadb",
+    "mode": "sql",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ],
+    "hint": "sql"
+  },
+  {
+    "name": "sTeX",
+    "mime": "text\/x-stex",
+    "mode": "stex",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "LaTeX",
+    "mime": "text\/x-latex",
+    "mode": "stex",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Tcl",
+    "mime": "text\/x-tcl",
+    "mode": "tcl",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "TiddlyWiki",
+    "mime": "text\/x-tiddlywiki",
+    "mode": "tiddlywiki",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Tiki wiki",
+    "mime": "text\/tiki",
+    "mode": "tiki",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "TOML",
+    "mime": "text\/x-toml",
+    "mode": "toml",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Turtle",
+    "mime": "text\/turtle",
+    "mode": "turtle",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "VB.NET",
+    "mime": "text\/x-vb",
+    "mode": "vb",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "VBScript",
+    "mime": "text\/vbscript",
+    "mode": "vbscript",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Velocity",
+    "mime": "text\/velocity",
+    "mode": "velocity",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Verilog",
+    "mime": "text\/x-verilog",
+    "mode": "verilog",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "XML",
+    "mime": "application\/xml",
+    "mode": "xml",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ],
+    "hint": "xml"
+  },
+  {
+    "name": "HTML",
+    "mime": "text\/html",
+    "mode": "xml",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ],
+    "hint": "xml"
+  },
+  {
+    "name": "XQuery",
+    "mime": "application\/xquery",
+    "mode": "xquery",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "YAML",
+    "mime": "text\/x-yaml",
+    "mode": "yaml",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
+    "name": "Z80",
+    "mime": "text\/x-z80",
+    "mode": "z80",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+Welcome to the Redux Social Profiles extension!  Thank you for your support and purchase.
+
+Online instructions for installing extensions may be found here:  http://docs.reduxframework.com/core/advanced/loading-extensions
+
+Included in the /example directory is a working example for the social profiles extension.
+
+Cut and paste the code from the section_code.txt file in the /example folder into the setSections() function located in your redux options config PHP file and save changes.
+
+Refresh the Redux options panel.
+
+Click the 'Social Profiles' tab in the options panel.
+
+Experiment to your heart's delight.
+
+To see the results of changes made, use one or both of the following scenarios.
+
+1) Widget
+
+In the Appearance -> Widgets section of Wordpress, Add the Redux Social Widget to any available sidebar.  Refresh the front of of your site where the sidebar exists.  Selected social profile icons will appear in the selected order.
+
+2) Code
+For this example, we'll use the Wordpress Twenty-Thirteen theme.
+
+
+In the page_code.txt file in the /example folder, select one of the provided examples and paste it into index.html of the Twenty-Thirteen theme.  Save and refresh the index page of your site.  Selected social profile icons will appear in the selected order.
+
+
+Full documentation for the Social Profiles extension may be found here: http://docs.reduxframework.com/extensions/social-profiles.

@@ -1,10 +1,6 @@
 <?php
 
-namespace Tofandel\Traits;
-
-use function Tofandel\delete_object_transient;
-use function Tofandel\get_object_transient;
-use function Tofandel\set_object_transient;
+namespace Tofandel\Core\Traits;
 
 /**
  * Class WP_Entity

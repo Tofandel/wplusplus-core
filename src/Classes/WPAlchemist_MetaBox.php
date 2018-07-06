@@ -1,6 +1,6 @@
 <?php
 
-namespace Tofandel\Classes;
+namespace Tofandel\Core\Classes;
 
 /**
  * @author      Dimas Begunoff

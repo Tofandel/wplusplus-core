@@ -1,6 +1,6 @@
 <?php
 
-namespace Tofandel\Traits;
+namespace Tofandel\Core\Traits;
 
 global $initializables;
 
@@ -18,9 +18,14 @@ trait Initializable {
 		global $initializables;
 
 		$class = new \ReflectionClass( static::class );
-		if ( ! array_key_exists( $class->getName(), $initializables ) ) {
+		if ( ! isset( $initializables [ $class->getName() ] ) ) {
 			$instance = $class->newInstanceWithoutConstructor();
-			$instance->init();
+			if ( method_exists( $instance, '__init' ) ) {
+				$instance->__init();
+			}
+			if ( method_exists( $instance, 'init' ) ) {
+				$instance->init();
+			}
 			$initializables[ $class->getName() ] = $class;
 		}
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tofandel\Traits;
+namespace Tofandel\Core\Traits;
 
 /**
  * Class WP_Shortcode
@@ -11,8 +11,8 @@ namespace Tofandel\Traits;
 trait WP_Shortcode {
 	use Initializable;
 
-	protected static $atts;
-	private static $_name;
+	protected static $atts = array();
+	protected static $_name;
 
 	/**
 	 * WP_Shortcode constructor.
@@ -20,10 +20,10 @@ trait WP_Shortcode {
 	 * @throws \ReflectionException
 	 */
 	public static function init() {
-		$class       = new \ReflectionClass( static::class );
-		self::$_name = strtolower( $class->getShortName() );
+		$class         = new \ReflectionClass( static::class );
+		static::$_name = strtolower( $class->getShortName() );
 
-		new \Tofandel\Objects\WP_Shortcode( self::$_name, [ self::class, 'shortcode' ], self::$atts );
+		new \Tofandel\Core\Objects\WP_Shortcode( static::$_name, [ static::class, 'shortcode' ], static::$atts );
 		//add_shortcode( self::$_name, [ self::class, 'do_shortcode' ] );
 	}
 

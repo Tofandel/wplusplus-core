@@ -11,10 +11,10 @@
  * Time: 16:18
  */
 
-namespace Tofandel\Objects;
+namespace Tofandel\Core\Objects;
 
 
-use Tofandel\Traits\Singleton;
+use Tofandel\Core\Traits\Singleton;
 use Tofandel\WPlusPlusCore;
 use WP_Query;
 

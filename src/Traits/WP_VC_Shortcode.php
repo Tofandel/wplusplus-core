@@ -1,6 +1,6 @@
 <?php
 
-namespace Tofandel\Traits;
+namespace Tofandel\Core\Traits;
 
 /**
  * Class WP_Shortcode
@@ -9,7 +9,9 @@ namespace Tofandel\Traits;
  * @author Adrien Foulon <tofandel@tukan.hu>
  */
 trait WP_VC_Shortcode {
-	use WP_Shortcode;
+	use WP_Shortcode {
+		init as parentInit;
+	}
 
 	/**
 	 * @see https://kb.wpbakery.com/docs/inner-api/vc_map/
@@ -36,33 +38,35 @@ trait WP_VC_Shortcode {
 	 * Elements marked with * are already defined and thus not required but can be overridden
 	 */
 	static $vc_params = array(
-		'name'              => '',
-		'description'       => '',
-		'weight'            => 1,
-		'category'          => '',
-		'group'             => '',
-		'icon'              => '',
-		'admin_enqueue_js'  => '',
-		'admin_enqueue_css' => '',
-		'front_enqueue_js'  => '',
-		'front_enqueue_css' => '',
-		'custom_markup'     => '',
-		'js_view'           => '',
-		'html_template'     => ''
+		'name'                      => '',
+		'description'               => '',
+		'weight'                    => 1,
+		'category'                  => '',
+		'group'                     => '',
+		'icon'                      => '',
+		'admin_enqueue_js'          => '',
+		'admin_enqueue_css'         => '',
+		'front_enqueue_js'          => '',
+		'front_enqueue_css'         => '',
+		'custom_markup'             => '',
+		'js_view'                   => '',
+		'html_template'             => '',
+		'controls'                  => 'full',
+		'allowed_container_element' => true,
+		'content_element'           => true,
+		'is_container'              => true,
+		'params'                    => array()
 	);
 
-	/**
-	 * @throws \ReflectionException
-	 */
 	public static function init() {
-		WP_Shortcode::init();
-		self::$vc_params = array_merge( array(
-			'base'   => self::$_name,
-			'params' => self::$atts
-		), self::$vc_params );
+		self::parentInit();
+		static::$vc_params = array_merge( array(
+			'base' => static::$_name
+		), static::$vc_params );
 		if ( function_exists( 'vc_map' ) ) {
-			vc_map( self::$vc_params );
+			add_action( 'vc_before_init', function () {
+				vc_map( static::$vc_params );
+			} );
 		}
 	}
-
 }

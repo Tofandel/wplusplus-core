@@ -2,11 +2,10 @@
 
 namespace Tofandel;
 
-use Tofandel\Classes\WP_Metabox;
-use Tofandel\Classes\WP_Plugin;
+use Tofandel\Core\Classes\WP_Plugin;
 
 /**
- * Class wplusplus
+ * Class WPlusPlusCore
  * @package Tofandel
  *
  * Plugin Name: WPlusPlus Core
@@ -25,17 +24,16 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once 'functions.php';
 
 class WPlusPlusCore extends WP_Plugin {
-	const MULOADER_DIR = ABSPATH . 'mu-plugins/wplusplus-muloader';
+	const MULOADER_DIR = WPMU_PLUGIN_DIR;
 
 	public function actionsAndFilters() {
 		//Silence is golden
 	}
 
-	/**
-	 * @throws \ReflectionException
-	 */
 	public function definitions() {
-		WP_Metabox::__init__();
+		global $WPlusPlusCore;
+
+		$WPlusPlusCore = $this;
 	}
 
 	public function menusAndSettings() {
@@ -49,13 +47,18 @@ class WPlusPlusCore extends WP_Plugin {
 	public function activate() {
 		parent::activate();
 		//Create the muloader so the core get's loaded before any plugin, thus removing the need to require it in every child plugin
-		mkdir( self::MULOADER_DIR );
-		copy( __DIR__ . '/wplusplus-muloader.php.bak', self::MULOADER_DIR . '/wplusplus-muloader.php' );
+		$perms_dir  = (int) decoct( fileperms( WP_CONTENT_DIR . '/plugins' ) & 0777 ) ?: 0775;
+		$perms_file = (int) decoct( fileperms( __FILE__ ) & 0777 ) ?: 0664;
+
+		if ( mkdir( self::MULOADER_DIR, octdec( $perms_dir ), true ) ) {
+			chmod( self::MULOADER_DIR, octdec( $perms_dir ) );
+			copy( __DIR__ . '/wplusplus-muloader.php.bak', self::MULOADER_DIR . '/wplusplus-muloader.php' );
+			chmod( self::MULOADER_DIR . '/wplusplus-muloader.php', octdec( $perms_file ) );
+		}
 	}
 
 	public function deactivate() {
 		//Clean the muloader
-		rmdir( self::MULOADER_DIR );
 		unlink( self::MULOADER_DIR . '/wplusplus-muloader.php' );
 	}
 
@@ -63,9 +66,9 @@ class WPlusPlusCore extends WP_Plugin {
 	 * Add redux framework menus, sub-menus and settings page in this function
 	 */
 	public function reduxOptions() {
-		// TODO: Implement reduxOptions() method.
 	}
 }
+
 
 global $WPlusPlusCore;
 

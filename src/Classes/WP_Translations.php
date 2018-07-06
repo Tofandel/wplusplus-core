@@ -6,7 +6,9 @@
  * Time: 14:33
  */
 
-namespace Tofandel\Classes;
+//TODO
+
+namespace Tofandel\Core\Classes;
 
 
 class WP_Translations {

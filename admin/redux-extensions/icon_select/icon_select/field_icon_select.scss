@@ -1,0 +1,52 @@
+.redux-container-icon_select {
+  .redux-icon-container {
+    position: relative;
+    overflow-y: auto;
+    border: 2px solid #eee;
+    padding: 5px;
+    text-align: center;
+  }
+
+  .redux-icon-select {
+    margin: 0 !important;
+
+    input[type='radio'] {
+      display: none;
+    }
+
+    i {
+      border-color: transparent;
+      color: #555;
+
+      &:hover {
+        border-color: #ddd;
+        color: #111;
+      }
+    }
+  }
+
+  ul {
+    &.redux-icon-select li {
+      margin: 10px;
+      display: block;
+      float: left;
+      padding: 5px;
+    }
+  }
+
+  .redux-icon-select i,
+  .redux-icon-select-selected i {
+    border-width: 4px;
+    border-style: solid;
+    font-size: 30px;
+    padding: 5px;
+  }
+
+  .redux-icon-select-selected {
+    i,
+    i:hover {
+      border-color: #7a7a7a;
+      color: #269ad6;
+    }
+  }
+}

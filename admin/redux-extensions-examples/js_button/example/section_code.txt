@@ -1,0 +1,41 @@
+$section = array(
+    'title'     => __('JS Button', 'redux-framework-demo'),
+    'desc'      => __('Trigger javascript functions from this field.', 'redux-framework-demo'),
+    'icon'      => 'el-icon-home',
+
+    'fields'    => array(
+        array(
+            'id'            => 'opt-js-button',
+            'type'          => 'js_button',
+            'title'         => 'JS Button',
+            'subtitle'      => 'Run javascript manually from the options panel.',
+            'desc'          => 'Click the \'Add Date\' button to insert the current date into the field below.',
+            'script'        => array(
+                'url'       => get_stylesheet_directory_uri() .  '/sample.js',
+                'dep'       => array('jquery'),
+                'ver'       => time(),
+                'in_footer' => true
+            ),
+
+            'buttons'       => array(
+                array(
+                    'text'  => 'Add Date',
+                    'class' => 'button-primary',
+                    'function'  => 'redux_add_date'
+                ),
+                array(
+                    'text'  => 'Alert',
+                    'class' => 'button-secondary',
+                    'function'  => 'redux_show_alert'
+                ),
+
+            ),
+        ),
+    ),
+);
+
+// Legacy method
+$this->sections[] = $section;
+
+// API Method
+Redux::setSection($opt_name, $section);

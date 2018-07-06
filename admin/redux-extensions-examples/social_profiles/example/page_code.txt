@@ -1,0 +1,15 @@
+Example 1: Foreach loop
+
+foreach ($redux_demo['opt-social-profiles'] as $idx => $arr) {
+    if ($arr['enabled']) {
+        $id     = $arr['id'];
+        $url    = $arr['url'];
+ 
+        $icons .= '';
+        $icons .= '</pre><ul><li class="' . $id . '"><a href="' . $url . '" target="_blank"><i class="' . $arr['icon'] . '"></i></a></li></ul><pre>';
+    }
+ 
+    $output = '</pre><ul class="icons">';
+    $output .= $icons;
+    $output .= '</ul><pre>';
+}

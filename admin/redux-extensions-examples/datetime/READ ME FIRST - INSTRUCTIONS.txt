@@ -1,0 +1,15 @@
+Welcome to the Redux Date / Time extension!  Thank you for your support and purchase.
+
+Online instructions for installing extensions may be found here:  http://docs.reduxframework.com/core/advanced/loading-extensions
+
+Included in the /example directory is a working example for the date_time extension.
+
+Cut and paste the code from the section_code.txt file in the /example folder into the setSections() function located in your redux options config PHP file and save changes.
+
+Refresh the Redux options panel.
+
+Click the 'Date / Time' tab in the options panel.
+
+Experiment to your heart's delight.
+
+Full documentation for the Social Profiles extension may be found here: http://docs.reduxframework.com/extensions/date-time.
