@@ -41,6 +41,9 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 		public $post_type;
 		public $sections = array();
 		public $output = array();
+		/**
+		 * @var ReduxFramework
+		 */
 		private $parent;
 		public $options = array();
 		public $parent_options = array();
@@ -55,6 +58,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 		public $meta = array();
 		public $post_id = 0;
 		public $base_url;
+		private $notices;
 
 		public function __construct( $parent ) {
 			global $pagenow;
@@ -960,9 +964,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 		}
 
 		function generate_boxes( $post, $metabox ) {
-			global $wpdb;
-
-			if ( isset( $metabox['args']['permissions'] ) && ! empty( $metabox['args']['permissions'] ) && ! $this->parent->current_user_can( $metabox['args']['permissions'] ) ) {
+			if ( isset( $metabox['args']['permissions'] ) && ! empty( $metabox['args']['permissions'] ) && ! ReduxFramework::current_user_can( $metabox['args']['permissions'] ) ) {
 				return;
 			}
 
@@ -1010,11 +1012,11 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 						<ul class="redux-group-menu">
 							<?php
 							foreach ( $sections as $sKey => $section ) {
-								if ( isset( $section['permissions'] ) && ! empty( $section['permissions'] ) && ! $this->parent->current_user_can( $section['permissions'] ) ) {
+								if ( isset( $section['permissions'] ) && ! empty( $section['permissions'] ) && ! ReduxFramework::current_user_can( $section['permissions'] ) ) {
 									continue;
 								}
 
-								echo $this->parent->section_menu( $sKey, $section, '_box_' . $metabox['id'], $sections );
+								$this->parent->section_menu( $sKey, $section, '_box_' . $metabox['id'], $sections );
 							}
 							?>
 						</ul>
@@ -1026,7 +1028,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 					$updateLocalize = false;
 
 					foreach ( $sections as $sKey => $section ) {
-						if ( isset( $section['permissions'] ) && ! empty( $section['permissions'] ) && ! $this->parent->current_user_can( $section['permissions'] ) ) {
+						if ( isset( $section['permissions'] ) && ! empty( $section['permissions'] ) && ! ReduxFramework::current_user_can( $section['permissions'] ) ) {
 							continue;
 						}
 						if ( isset( $section['fields'] ) && ! empty( $section['fields'] ) ) {
@@ -1050,7 +1052,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 
 							echo '<table class="form-table"><tbody>';
 							foreach ( $section['fields'] as $fKey => $field ) {
-								if ( isset( $field['permissions'] ) && ! empty( $field['permissions'] ) && ! $this->parent->current_user_can( $field['permissions'] ) ) {
+								if ( isset( $field['permissions'] ) && ! empty( $field['permissions'] ) && ! ReduxFramework::current_user_can( $field['permissions'] ) ) {
 									continue;
 								}
 								$field['name'] = $this->parent->args['opt_name'] . '[' . $field['id'] . ']';
@@ -1119,7 +1121,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 		 * @param mixed $post_id
 		 * @param mixed $post
 		 *
-		 * @return void
+		 * @return int
 		 */
 		function meta_boxes_save( $post_id, $post ) {
 			if ( isset( $_POST['vc_inline'] ) && $_POST['vc_inline'] ) {
@@ -1135,7 +1137,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 				return $post_id;
 			}
 
-			$meta = $this->get_meta( $post_id );
+			//$meta = $this->get_meta( $post_id );
 
 			$nonce = $_POST['redux_metaboxes_meta_nonce'];
 			// Verify that the nonce is valid.
@@ -1198,9 +1200,9 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 					$save = false;
 				}
 
-				if ( $save && ! isset( $this->parent_options[ $key ] ) && isset( $this->parent_defaults[ $key ] ) && $this->parent_defaults[ $key ] == $value ) {
+				//if ( $save && ! isset( $this->parent_options[ $key ] ) && isset( $this->parent_defaults[ $key ] ) && $this->parent_defaults[ $key ] == $value ) {
 					//$save = false;
-				}
+				//}
 
 				if ( $save ) {
 					$toSave[ $key ]    = $value;
