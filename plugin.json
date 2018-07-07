@@ -1,7 +1,7 @@
 {
-  "name": "WPlusPlus Core",
-  "version": "1.1",
-  "download_url": "",
+  "name": "W++ Core",
+  "version": "1.2",
+  "download_url": "https://github.com/Tofandel/wplusplus-core",
   "homepage": "",
   "requires": "4.8",
   "tested": "4.9.6",
@@ -10,26 +10,18 @@
   "author": "Tofandel",
   "author_homepage": "https://tukan.fr/a-propos/#adrien-foulon",
   "sections": {
-    "description": "Wordpress Plugin acting as core for other plugins",
+    "description": "A Wordpress Plugin acting as core for other of my plugins and including the Ultimate Redux Framework Bundle and APIs to use it",
     "installation": "",
     "changelog": ""
   },
   "icons": {
-    "1x": "http://w-shadow.com/files/external-update-example/assets/icon-128x128.png",
-    "2x": "http://w-shadow.com/files/external-update-example/assets/icon-256x256.png"
+    "1x": "",
+    "2x": ""
   },
   "banners": {
-    "low": "http://w-shadow.com/files/external-update-example/assets/banner-772x250.png",
-    "high": "http://w-shadow.com/files/external-update-example/assets/banner-1544x500.png"
+    "low": "",
+    "high": ""
   },
-  "translations": [
-    {
-      "language": "fr_FR",
-      "version": "4.0",
-      "updated": "2016-04-22 23:22:42",
-      "package": "http://example.com/updates/translations/french-language-pack.zip"
-    }
-  ],
   "rating": 100,
   "num_ratings": 600,
   "downloaded": 100000,

@@ -8,15 +8,15 @@ use Tofandel\Core\Classes\WP_Plugin;
  * Class WPlusPlusCore
  * @package Tofandel
  *
- * Plugin Name: WPlusPlus Core
+ * Plugin Name: W++ Core
  * Plugin URI: https://github.com/tofandel/wplusplus-core/
  * Description: A powerful wordpress plugin for developers to create forms and so much more!
- * Version: 1.1
+ * Version: 1.2
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
  * Text Domain: wpluspluscore
  * Domain Path: /languages/
- * WC tested up to: 4.8
+ * WC tested up to: 4.9
  * Download Url: https://github.com/tofandel/wplusplus-core/
  */
 
