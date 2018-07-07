@@ -35,7 +35,7 @@ if ( ! class_exists( 'Redux_Metaboxes' ) ) {
 		public static $args = array();
 
 		public static function load() {
-			add_action( 'init', array( 'Redux_Metaboxes', '_enqueue' ), 99 );
+			add_action( 'init', 'Redux_Metaboxes::_enqueue' );
 		}
 
 		public static function _enqueue() {
@@ -54,11 +54,15 @@ if ( ! class_exists( 'Redux_Metaboxes' ) ) {
 								'title'  => 'N/A'
 							)
 						) );
+						Redux::setExtensions( $opt_name, dirname( __DIR__ ) );
 						Redux::init( $opt_name );
 					}
 				}
 				$instances = ReduxFrameworkInstances::get_all_instances();
-				add_action( 'admin_enqueue_scripts', array( $instances[ $opt_name ], '_enqueue' ), 1 );
+				foreach ( $instances as $opt_name => $instance ) {
+					add_action( 'admin_enqueue_scripts', array( $instance, '_enqueue' ), 1 );
+				}
+				//self::filterMetaboxes();
 			}
 		}
 
@@ -73,9 +77,7 @@ if ( ! class_exists( 'Redux_Metaboxes' ) ) {
 				return;
 			}
 			foreach ( self::$boxes as $opt_name => $theBoxes ) {
-
 				if ( ! self::$init[ $opt_name ] ) {
-					echo $opt_name;
 					add_filter( 'redux/metaboxes/' . $opt_name . '/boxes', [ self::class, 'f' ] );
 				}
 			}
@@ -125,7 +127,7 @@ if ( ! class_exists( 'Redux_Metaboxes' ) ) {
 				if ( $section['box_id'] == $box_id ) {
 					$p = $section['priority'];
 					while ( isset( $sections[ $p ] ) ) {
-						echo $p ++;
+						$p ++;
 					}
 					$section['fields'] = self::constructFields( $opt_name, $section_id );
 					$sections[ $p ]    = $section;
@@ -148,7 +150,7 @@ if ( ! class_exists( 'Redux_Metaboxes' ) ) {
 				if ( $field['section_id'] == $section_id ) {
 					$p = $field['priority'];
 					while ( isset( $fields[ $p ] ) ) {
-						echo $p ++;
+						$p ++;
 					}
 					$fields[ $p ] = $field;
 				}

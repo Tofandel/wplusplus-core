@@ -82,7 +82,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 		if ( $comment && preg_match( '#download[- ]?url[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
 			$this->download_url = trim( $matches[1] );
-			require __DIR__ . '/../../vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
+			//require __DIR__ . '/../../vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
 			\Puc_v4_Factory::buildUpdateChecker(
 				$this->download_url,
 				$this->file, //Full path to the main plugin file or functions.php.

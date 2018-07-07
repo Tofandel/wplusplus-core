@@ -34,7 +34,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 	 */
 	class ReduxFramework_extension_metaboxes {
 
-		static $version = "1.4.4";
+		static $version = "1.4.5";
 
 		public $boxes = array();
 		public $post_types = array();
