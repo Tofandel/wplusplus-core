@@ -53,4 +53,4 @@ fabric.properties
 
 .idea/
 composer.phar
-/admin/redux-framework/
+vendor/**/.git

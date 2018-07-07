@@ -54,7 +54,7 @@ if ( ! class_exists( 'ReduxFramework_extension_spectrum' ) ) {
 		 * @since       1.0.0
 		 * @access      public
 		 *
-		 * @param       array $parent Parent settings.
+		 * @param       ReduxFramework $parent Parent settings.
 		 *
 		 * @return      void
 		 */
