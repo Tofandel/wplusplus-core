@@ -2,7 +2,7 @@
 
 namespace Tofandel;
 
-use Tofandel\Core\Classes\WP_Plugin;
+use Tofandel\Core\Objects\WP_Plugin;
 
 /**
  * Class WPlusPlusCore

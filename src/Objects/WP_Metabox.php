@@ -1,11 +1,11 @@
 <?php
 
-namespace Tofandel\Core\Classes;
+namespace Tofandel\Core\Objects;
 
 
 /**
  * Class WP_Metabox
- * @package Tofandel\Core\Classes
+ * @package Tofandel\Core\Objects
  * @doc https://docs.reduxframework.com/extensions/metaboxes/
  */
 class WP_Metabox {

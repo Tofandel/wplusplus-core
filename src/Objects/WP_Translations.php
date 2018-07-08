@@ -8,7 +8,7 @@
 
 //TODO
 
-namespace Tofandel\Core\Classes;
+namespace Tofandel\Core\Objects;
 
 
 class WP_Translations {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tofandel\Core\Classes;
+namespace Tofandel\Core\Objects;
 
 use Exception;
 use ReflectionClass;
@@ -368,7 +368,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function disabled_notice() {
-		echo '<strong>' . sprintf( esc_html__( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', self::textDomain() ), $this->name, '5.6', PHP_VERSION ) . '</strong>';
+		echo '<strong>' . sprintf( esc_html__( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, '5.6', PHP_VERSION ) . '</strong>';
 	}
 
 	/**
@@ -377,19 +377,14 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	public function activate() {
 		if ( ! self::checkCompatibility() ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( sprintf( __( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', self::textDomain() ), $this->name, '5.6', PHP_VERSION ) );
+			wp_die( sprintf( __( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, '5.6', PHP_VERSION ) );
 		}
 
 		if ( ! add_option( $this->slug . '_version', $this->version ) ) {
 			//An old version existed before
 			$last_version = get_option( $this->slug . '_version' );
 			//Fresh install
-			//foreach ( $this->db_tables as $table ) {
-			/**
-			 * @var WP_DB_Table $table
-			 */
-			//	$table->upgrade();
-			//}
+
 			//Check the version number
 			if ( version_compare( $last_version, $this->version, '>' ) ) {
 				$this->multisiteUpgrade( $last_version );
@@ -399,14 +394,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			if ( $last_version != $this->version ) {
 				update_option( $this->slug . '_version', $this->version );
 			}
-			//} else {
-			//Fresh install
-			//foreach ( $this->db_tables as $table ) {
-			/**
-			 * @var WP_DB_Table $table
-			 */
-			//	$table->register();
-			//}
+
 		}
 
 		//Setup default plugin folders

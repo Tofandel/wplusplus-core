@@ -4,7 +4,7 @@
  * Copyright © 2018 - All Rights Reserved
  */
 
-namespace Tofandel\Core\Classes;
+namespace Tofandel\Core\Objects;
 
 use Exception;
 use ReflectionClass;
