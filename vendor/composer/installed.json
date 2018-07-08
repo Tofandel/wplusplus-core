@@ -229,18 +229,18 @@
         "source": {
             "type": "git",
             "url": "https://github.com/YahnisElsts/plugin-update-checker.git",
-            "reference": "f26378d0c2224f8132582966fb1978c8142d6593"
+            "reference": "01863da0e8445e563abe4fcd5a440d576470eb6a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/YahnisElsts/plugin-update-checker/zipball/f26378d0c2224f8132582966fb1978c8142d6593",
-            "reference": "f26378d0c2224f8132582966fb1978c8142d6593",
+            "url": "https://api.github.com/repos/YahnisElsts/plugin-update-checker/zipball/01863da0e8445e563abe4fcd5a440d576470eb6a",
+            "reference": "01863da0e8445e563abe4fcd5a440d576470eb6a",
             "shasum": ""
         },
         "require": {
             "php": ">=5.2.0"
         },
-        "time": "2018-05-03T14:08:22+00:00",
+        "time": "2018-06-27T12:28:34+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {
