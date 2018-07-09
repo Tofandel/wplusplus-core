@@ -54,3 +54,4 @@ fabric.properties
 .idea/
 composer.phar
 vendor/**/.git
+vendor/**/.editorconfig
