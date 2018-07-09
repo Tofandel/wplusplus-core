@@ -63,6 +63,11 @@ trait WP_VC_Shortcode {
 		static::$vc_params = array_merge( array(
 			'base' => static::$_name
 		), static::$vc_params );
+		if ( empty( static::$atts ) ) {
+			foreach ( static::$vc_params['params'] as $param ) {
+				static::$atts[ $param['param_name'] ] = isset( $param['std'] ) ? $param['std'] : '';
+			}
+		}
 		if ( function_exists( 'vc_map' ) ) {
 			add_action( 'vc_before_init', function () {
 				vc_map( static::$vc_params );

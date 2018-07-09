@@ -5,7 +5,7 @@ Loaded with an autocreated mu-plugin it will load before other plugins so that t
 
 It also includes the latest version of Redux Framework https://reduxframework.com
 
-And all of it's paid extensions!
+And all of it's premium extensions!
 
 ## Features
 The plugin offers interfaces, traits and classes to work in an OOP way

@@ -88,7 +88,7 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 			'allow_sub_menu'     => false,
 			'page_priority'      => '39',
 			'customizer'         => true,
-			//'default_mark'       => ' (default)',
+			'default_mark'       => ' ¤',
 			'hints'              => array(
 				'icon'          => 'el el-question-sign',
 				'icon_position' => 'right',
@@ -130,6 +130,8 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 			'transient_time'     => '3600',
 			'network_sites'      => true,
 		);
+
+		$args = array_merge( $def_args, $args );
 
 		global $WPlusPlusCore;
 		$args['share_icons']['tofandel_github']   = array(

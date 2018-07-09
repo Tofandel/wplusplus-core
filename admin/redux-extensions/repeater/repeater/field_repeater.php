@@ -130,12 +130,11 @@ if ( ! class_exists( 'ReduxFramework_repeater' ) ) {
 					echo '<table style="margin-top: 0;" class="redux-repeater-accordion redux-repeater form-table no-border">';
 					echo '<fieldset class="redux-field " data-id="' . $this->field['id'] . '">';
 
-					echo '<input type="hidden" name="' . $this->parent->args['opt_name'] . '[' . $this->field['id'] . '][redux_repeater_data][' . $x . '][title]" value="' . esc_attr( $repeater['title'] ) . '" class="regular-text slide-title" data-key="' . $x . '" />';
-
 					if ( isset( $this->field['bind_title'] ) ) {
 
 						foreach ( $this->field['fields'] as $field ) {
 							if ( $field['id'] == $this->field['bind_title'] ) {
+								$default = '';
 								if ( isset( $field['default'] ) ) {
 									$default = $field['default'];
 								} elseif ( isset( $field['options'] ) && ( $field['type'] != "ace_editor" ) ) {
@@ -154,7 +153,6 @@ if ( ! class_exists( 'ReduxFramework_repeater' ) ) {
 									$default = $field['options'];
 								}
 
-								$default = isset( $field['default'] ) ? $field['default'] : '';
 								if ( ! empty( $this->repeater_values ) ) {
 									$repeater['title'] = ! isset( $this->parent->options[ $this->field['id'] ][ $field['id'] ][ $x ] ) ? $default : $this->parent->options[ $this->field['id'] ][ $field['id'] ][ $x ];
 								} else {
@@ -172,6 +170,8 @@ if ( ! class_exists( 'ReduxFramework_repeater' ) ) {
 					if ( is_array( $repeater['title'] ) ) {
 						$repeater['title'] = "Title";
 					}
+					echo '<input type="hidden" name="' . $this->parent->args['opt_name'] . '[' . $this->field['id'] . '][redux_repeater_data][' . $x . '][title]" value="' . esc_attr( $repeater['title'] ) . '" class="regular-text slide-title" data-key="' . $x . '" />';
+
 
 					echo '<h3><span class="redux-repeater-header">' . $repeater['title'] . ' </span></h3>';
 

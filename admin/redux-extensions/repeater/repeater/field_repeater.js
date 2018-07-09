@@ -98,7 +98,7 @@
 				}
 
 				var gid = parent.attr('data-id');
-				var blank = el.find('.redux-repeater-accordion-repeater:last-child');
+				var blank = el.find('.redux-repeater-accordion-repeater:first-child');
 
 				reduxObject.repeater[gid].blank = blank.clone().wrap('<p>').parent().html();
 
@@ -249,16 +249,25 @@
 
 						var id = parent.find('.redux-repeater-accordion-repeater').size(); // Index number
 
-
 						if (parent.find('.redux-repeater-accordion-repeater:last').find('.ui-accordion-header').hasClass('ui-state-active')) {
 							parent.find('.redux-repeater-accordion-repeater:last').find('.ui-accordion-header').click();
 						}
 
-						var newSlide = parent.find('.redux-repeater-accordion-repeater:last').clone(true, true);
+						var newSlide = parent.find('.redux-repeater-accordion-repeater:first').clone(true, true);
+
+						var last_id = id - 1;
 
 						if (newSlide.length == 0) {
 							newSlide = reduxObject.repeater[gid].blank;
 						}
+						if (newSlide.attr('data-sortid').length) {
+							newSlide.attr('data-sortid', id);
+						}
+						var title = newSlide.find('input.slide-title');
+						title.attr('name', title.attr('name').replace('[0]', '[' + id + ']'));
+						title.attr('data-key', id);
+						title.val('');
+
 
 						if (reduxObject.repeater[gid]) {
 							reduxObject.repeater[gid].count = el.find('.redux-repeater-header').length;
