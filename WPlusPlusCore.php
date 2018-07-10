@@ -27,13 +27,73 @@ class WPlusPlusCore extends WP_Plugin {
 	const MULOADER_DIR = WPMU_PLUGIN_DIR;
 
 	public function actionsAndFilters() {
-		//Silence is golden
+		add_action( 'vc_mapper_init_after', array( $this, 'integratetoVC' ), 11 );
 	}
 
 	public function definitions() {
-		global $WPlusPlusCore;
+	}
 
-		$WPlusPlusCore = $this;
+	public function integrateToVC() {
+		vc_add_shortcode_params( 'number', array( $this, 'createVCNumber' ) );
+		vc_add_shortcode_param( 'multidropdown', array( $this, 'createVCMultiDropdown' ) );
+	}
+
+	public function createVCMultiDropdown( $param, $value ) {
+		$param_line = '';
+		$param_line .= '<select multiple name="' . esc_attr( $param['param_name'] ) . '" class="wpb_vc_param_value wpb-input wpb-select ' . esc_attr( $param['param_name'] ) . ' ' . esc_attr( $param['type'] ) . '">';
+		foreach ( $param['value'] as $text_val => $val ) {
+			if ( is_numeric( $text_val ) && ( is_string( $val ) || is_numeric( $val ) ) ) {
+				$text_val = $val;
+			}
+			$text_val = __( $text_val, "js_composer" );
+			$selected = '';
+
+			if ( ! is_array( $value ) ) {
+				$param_value_arr = explode( ',', $value );
+			} else {
+				$param_value_arr = $value;
+			}
+
+			if ( $value !== '' && in_array( $val, $param_value_arr ) ) {
+				$selected = ' selected="selected"';
+			}
+			$param_line .= '<option class="' . $val . '" value="' . $val . '"' . $selected . '>' . $text_val . '</option>';
+		}
+		$param_line .= '</select>';
+
+		return $param_line;
+	}
+
+	/**
+	 * Create number field for VC
+	 *
+	 * @param array $settings
+	 * @param string $value
+	 *
+	 * @return string
+	 */
+	public function createVCNumber( $settings, $value ) {
+		$value = isset( $settings['value'] ) && is_null( $value ) ? $settings['value'] : $value;
+
+		if ( isset( $settings['extra']['responsive'] ) && $settings['extra']['responsive'] === true ) {
+			$responsive_values = json_decode( str_replace( "'", '"', $value ), true );
+			$html              = '<div class="responsive-number-set">' .
+			                     '<input name="' . esc_attr( $settings['param_name'] ) . '" class="wpb_vc_param_value wpb-textinput responsive-number ' .
+			                     esc_attr( $settings['param_name'] ) . ' ' .
+			                     esc_attr( $settings['type'] ) . '_field" type="hidden" value="' . esc_attr( $value ) . '" ' . ( isset( $settings['extra']['min'] ) ? ' min="' . $settings['extra']['min'] . '"' : '' ) . ( isset( $settings['extra']['max'] ) ? ' max="' . $settings['extra']['max'] . '"' : '' ) . '/>' .
+			                     '<div class="responsive-field-icon"><i class="fa fa-desktop"></i></div><input type="number" value="' . esc_attr( $responsive_values['desktop'] ) . '" ' . ( isset( $settings['extra']['min'] ) ? 'min="' . $settings['extra']['min'] . '"' : '' ) . ( isset( $settings['extra']['max'] ) ? ' max="' . $settings['extra']['max'] . '"' : '' ) . ' data-responsive="desktop">' .
+			                     ( ! isset( $settings['extra']['bootstrap'] ) || $settings['extra']['bootstrap'] != true ? '<div class="responsive-field-icon"><i class="fa fa-laptop"></i></div><input type="number" value="' . esc_attr( $responsive_values['laptop'] ) . '" ' . ( isset( $settings['extra']['min'] ) ? 'min="' . $settings['extra']['min'] . '"' : '' ) . ( isset( $settings['extra']['max'] ) ? ' max="' . $settings['extra']['max'] . '"' : '' ) . ' data-responsive="laptop">' : '' ) .
+			                     '<div class="responsive-field-icon"><i class="fa fa-tablet fa-rotate-90"></i></div><input type="number" value="' . esc_attr( $responsive_values['tablet-landscape'] ) . '" ' . ( isset( $settings['extra']['min'] ) ? ' min="' . $settings['extra']['min'] . '"' : '' ) . ( isset( $settings['extra']['max'] ) ? ' max="' . $settings['extra']['max'] . '"' : '' ) . ' data-responsive="tablet-landscape">' .
+			                     '<div class="responsive-field-icon"><i class="fa fa-tablet"></i></div><input type="number" value="' . esc_attr( $responsive_values['tablet-portrait'] ) . '" ' . ( isset( $settings['extra']['min'] ) ? ' min="' . $settings['extra']['min'] . '"' : '' ) . ( isset( $settings['extra']['max'] ) ? ' max="' . $settings['extra']['max'] . '"' : '' ) . ' data-responsive="tablet-portrait">' .
+			                     '<div class="responsive-field-icon"><i class="fa fa-mobile"></i></div><input type="number" value="' . esc_attr( $responsive_values['mobile'] ) . '" ' . ( isset( $settings['extra']['min'] ) ? ' min="' . $settings['extra']['min'] . '"' : '' ) . ( isset( $settings['extra']['max'] ) ? ' max="' . $settings['extra']['max'] . '"' : '' ) . ' data-responsive="mobile">' .
+			                     '</div>';
+		} else {
+			$html = '<input name="' . esc_attr( $settings['param_name'] ) . '" class="wpb_vc_param_value wpb-textinput ' .
+			        esc_attr( $settings['param_name'] ) . ' ' .
+			        esc_attr( $settings['type'] ) . '_field" type="number" value="' . esc_attr( $value ) . '"' . ( isset( $settings['extra']['min'] ) ? ' min="' . $settings['extra']['min'] . '"' : '' ) . ( isset( $settings['extra']['max'] ) ? ' max="' . $settings['extra']['max'] . '"' : '' ) . '/>';
+		}
+
+		return $html;
 	}
 
 	public function menusAndSettings() {

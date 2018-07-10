@@ -53,7 +53,10 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			add_action( 'init', [ $this, 'activate' ], 1 );
 		}
 
-		$GLOBALS[ $this->class->getShortName() ] = $this;
+		//We define a global with the name of the class
+		if ( ! isset( $GLOBALS[ $this->class->getShortName() ] ) ) {
+			$GLOBALS[ $this->class->getShortName() ] = $this;
+		}
 
 		$this->setup();
 	}
