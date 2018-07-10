@@ -136,13 +136,13 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 		global $WPlusPlusCore;
 		$args['share_icons']['tofandel_github']   = array(
 			'url'   => 'https://github.com/Tofandel/',
-			'title' => __( 'Check me out on GitHub', $WPlusPlusCore->text_domain ),
+			'title' => __( 'Check me out on GitHub', $WPlusPlusCore->getTextDomain() ),
 			'icon'  => 'el el-github'
 			//'img'   => '', // You can use icon OR img. IMG needs to be a full URL.
 		);
 		$args['share_icons']['tofandel_linkedin'] = array(
 			'url'   => 'https://www.linkedin.com/in/adrien-foulon/',
-			'title' => __( 'Find me on LinkedIn', $WPlusPlusCore->text_domain ),
+			'title' => __( 'Find me on LinkedIn', $WPlusPlusCore->getTextDomain() ),
 			'icon'  => 'el el-linkedin'
 		);
 		Redux::setArgs( $this->opt_name, $args );

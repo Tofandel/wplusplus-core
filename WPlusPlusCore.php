@@ -34,34 +34,116 @@ class WPlusPlusCore extends WP_Plugin {
 	}
 
 	public function integrateToVC() {
-		vc_add_shortcode_params( 'number', array( $this, 'createVCNumber' ) );
+		//global $vc_params_list;
+		// Remove default dropdown to be able to override it
+		//unset( $vc_params_list[ array_search( 'dropdown', $vc_params_list ) ] );
+
+		vc_add_shortcode_param( 'number', array( $this, 'createVCNumber' ) );
 		vc_add_shortcode_param( 'multidropdown', array( $this, 'createVCMultiDropdown' ) );
+		vc_add_shortcode_param( 'wpp_dropdown', array( $this, 'createVCDropdown' ) );
+		vc_add_shortcode_param( 'dimensions', array( $this, 'createVCDimensions' ) );
+		vc_add_shortcode_param( 'warning', array( $this, 'createVCWarning' ) );
+		vc_add_shortcode_param( 'hidden', '__return_false' );
 	}
 
-	public function createVCMultiDropdown( $param, $value ) {
-		$param_line = '';
-		$param_line .= '<select multiple name="' . esc_attr( $param['param_name'] ) . '" class="wpb_vc_param_value wpb-input wpb-select ' . esc_attr( $param['param_name'] ) . ' ' . esc_attr( $param['type'] ) . '">';
-		foreach ( $param['value'] as $text_val => $val ) {
-			if ( is_numeric( $text_val ) && ( is_string( $val ) || is_numeric( $val ) ) ) {
-				$text_val = $val;
-			}
-			$text_val = __( $text_val, "js_composer" );
-			$selected = '';
+	/**
+	 * Create info box for VC editor
+	 */
+	public function createVCWarning( $settings, $value ) {
+		return '<strong>' . $settings['message'] . '</strong>';
+	}
 
+
+	/**
+	 * Create custom select field for VC
+	 *
+	 * @param array $settings
+	 * @param string $value
+	 *
+	 * @return string
+	 */
+	public function createVCDropdown( $settings, $value ) {
+		$output     = '';
+		$css_option = str_replace( '#', 'hash-', vc_get_dropdown_option( $settings, $value ) );
+		$output     .= '<div class="wpp-custom-select"><select name="'
+		               . $settings['param_name']
+		               . '" class="wpb_vc_param_value wpb-input wpb-select '
+		               . $settings['param_name']
+		               . ' ' . $settings['type']
+		               . ' ' . $css_option
+		               . '" data-option="' . $css_option . '">';
+		if ( is_array( $value ) ) {
+			$value = isset( $value['value'] ) ? $value['value'] : array_shift( $value );
+		}
+		if ( ! empty( $settings['value'] ) ) {
+			foreach ( $settings['value'] as $index => $data ) {
+				if ( is_numeric( $index ) && ( is_string( $data ) || is_numeric( $data ) ) ) {
+					$option_label = $data;
+					$option_value = $data;
+				} elseif ( is_numeric( $index ) && is_array( $data ) ) {
+					$option_label = isset( $data['label'] ) ? $data['label'] : array_pop( $data );
+					$option_value = isset( $data['value'] ) ? $data['value'] : array_pop( $data );
+				} else {
+					$option_value = $index;
+					$option_label = $data;
+				}
+				$selected            = '';
+				$option_value_string = (string) $option_value;
+				$value_string        = (string) $value;
+				if ( '' !== $value && $option_value_string === $value_string ) {
+					$selected = ' selected="selected"';
+				}
+				$option_class = str_replace( '#', 'hash-', $option_value );
+				$output       .= '<option class="' . esc_attr( $option_class ) . '" value="' . esc_attr( $option_value ) . '" ' . $selected . '>'
+				                 . htmlspecialchars( $option_label ) . '</option>';
+			}
+		}
+		$output .= '</select></div>';
+
+		return $output;
+	}
+
+	public function createVCMultiDropdown( $settings, $value ) {
+		$output     = '';
+		$css_option = str_replace( '#', 'hash-', vc_get_dropdown_option( $settings, $value ) );
+		$output     .= '<div class="wpp-custom-select"><select multiple name="'
+		               . $settings['param_name']
+		               . '" class="wpb_vc_param_value wpb-input wpb-select '
+		               . $settings['param_name']
+		               . ' ' . $settings['type']
+		               . ' ' . $css_option
+		               . '" data-option="' . $css_option . '">';
+		if ( ! empty( $settings['value'] ) ) {
 			if ( ! is_array( $value ) ) {
 				$param_value_arr = explode( ',', $value );
 			} else {
 				$param_value_arr = $value;
 			}
+			foreach ( $settings['value'] as $index => $data ) {
+				if ( is_numeric( $index ) && ( is_string( $data ) || is_numeric( $data ) ) ) {
+					$option_label = $data;
+					$option_value = $data;
+				} elseif ( is_numeric( $index ) && is_array( $data ) ) {
+					$option_label = isset( $data['label'] ) ? $data['label'] : array_pop( $data );
+					$option_value = isset( $data['value'] ) ? $data['value'] : array_pop( $data );
+				} else {
+					$option_value = $index;
+					$option_label = $data;
+				}
+				$selected = '';
 
-			if ( $value !== '' && in_array( $val, $param_value_arr ) ) {
-				$selected = ' selected="selected"';
+				$option_value_string = (string) $option_value;
+				if ( $value !== '' && in_array( $option_value_string, $param_value_arr ) ) {
+					$selected = ' selected="selected"';
+				}
+				$option_class = str_replace( '#', 'hash-', $option_value );
+				$output       .= '<option class="' . esc_attr( $option_class ) . '" value="' . esc_attr( $option_value ) . '" ' . $selected . '>'
+				                 . htmlspecialchars( $option_label ) . '</option>';
 			}
-			$param_line .= '<option class="' . $val . '" value="' . $val . '"' . $selected . '>' . $text_val . '</option>';
 		}
-		$param_line .= '</select>';
+		$output .= '</select></div>';
 
-		return $param_line;
+		return $output;
 	}
 
 	/**
@@ -96,8 +178,31 @@ class WPlusPlusCore extends WP_Plugin {
 		return $html;
 	}
 
+
+	/**
+	 * Create dimmensions field for VC
+	 *
+	 * @param array $settings
+	 * @param string $value
+	 *
+	 * @return string
+	 */
+	public function createVCDimensions( $settings, $value ) {
+		$value = isset( $settings['value'] ) && is_null( $value ) ? $settings['value'] : $value;
+
+		$html = '<input style="width:100px" name="' . esc_attr( $settings['param_name'] ) . '[width]" class="wpb_vc_param_value wpb-textinput ' .
+		        esc_attr( $settings['param_name'] ) . '-width ' .
+		        esc_attr( $settings['type'] ) . '_field" type="number" value="' . esc_attr( $value['width'] ) . '" min="0"' . ( isset( $settings['extra']['max'] ) ? ' max="' . $settings['extra']['max'] . '"' : '' ) . '/>';
+		$html .= '<span>' . ( isset( $settings['extra']['w_unit'] ) ? ' ' . $settings['extra']['w_unit'] : '' ) . ' x </span>';
+		$html .= '<input style="width:100px" name="' . esc_attr( $settings['param_name'] ) . '[width]" class="wpb_vc_param_value wpb-textinput ' .
+		         esc_attr( $settings['param_name'] ) . '-height ' .
+		         esc_attr( $settings['type'] ) . '_field" type="number" value="' . esc_attr( $value['height'] ) . '" min="0"' . ( isset( $settings['extra']['max'] ) ? ' max="' . $settings['extra']['max'] . '"' : '' ) . '/>';
+		$html .= '<span>' . ( isset( $settings['extra']['h_unit'] ) ? ' ' . $settings['extra']['h_unit'] : '' ) . '</span>';
+
+		return $html;
+	}
+
 	public function menusAndSettings() {
-		// TODO Redux
 	}
 
 	public function upgrade( $last_version ) {

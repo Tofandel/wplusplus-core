@@ -24,7 +24,7 @@
 		else if (jQuery && !jQuery.fn.qtip) {
 			factory(jQuery);
 		}
-	};
+	});
 	(function ($) {
 		"use strict"; // Enable ECMAScript "strict" operation for this function. See more: http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/
 		// Munge the primitives - Paul Irish tip
@@ -3750,7 +3750,5 @@
 				this.redraw();
 			}
 		};
-	})
-)
-	;
+	});
 }(window, document));

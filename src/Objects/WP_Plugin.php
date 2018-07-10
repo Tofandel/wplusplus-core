@@ -18,7 +18,7 @@ require_once __DIR__ . '/../../admin/tgmpa-config.php';
 abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	use Singleton;
 
-	public $text_domain;
+	protected $text_domain;
 	protected $slug;
 	protected $name;
 	protected $file;
@@ -28,6 +28,19 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	protected $is_muplugin = false;
 
 	protected $download_url;
+
+	public function getFile() {
+		return $this->file;
+	}
+
+	public function getTextDomain() {
+		return $this->text_domain;
+	}
+
+	public function getVersion() {
+		return $this->version;
+	}
+
 
 	/**
 	 * Plugin constructor.
@@ -335,13 +348,6 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	public function loadTextdomain() {
 		call_user_func( 'load_' . ( $this->is_muplugin ? 'mu' : '' ) . 'plugin_textdomain', $this->text_domain, false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
-	}
-
-	/**
-	 * Returns the list of version information for the plugin
-	 */
-	public function getVersion() {
-		return $this->version;
 	}
 
 	public function checkCompat() {
