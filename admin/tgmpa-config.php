@@ -76,8 +76,6 @@ add_action( 'tgmpa_register',
 				// If true, plugin is deactivated upon theme switch, useful for theme-specific plugins.
 				//'external_url'       => '',
 				// If set, overrides default API URL and points to an external URL.
-				//'is_callable'        => '',
-				// If set, this callable will be be checked for availability to determine if a plugin is active.
 			),
 			array(
 				'name'               => 'WPBakery Page Builder',
