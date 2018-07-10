@@ -446,9 +446,45 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	protected function downgrade( $last_version ) {
 	}
 
+	static $reduxInstance;
+
+	public static function getReduxInstance() {
+		if ( empty( static::$reduxInstance ) ) {
+			$reduxInstances = \ReduxFrameworkInstances::get_all_instances();
+			if ( empty( $reduxInstances ) ) {
+				return false;
+			}
+			static::$reduxInstance = array_pop( $reduxInstances );
+		}
+
+		return true;
+	}
+
 	public function mkdir( $folder ) {
-		if ( ! is_dir( $this->folder( $folder ) ) ) {
-			mkdir( $this->folder( $folder ), 0755 );
+		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+			if ( ! is_dir( $this->folder( $folder ) ) ) {
+				static::$reduxInstance->filesystem->execute( 'mkdir', $this->folder( $folder ) );
+			}
+		}
+	}
+
+	public function put_contents( $file, $content ) {
+		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+			static::$reduxInstance->filesystem->execute( 'put_contents', $this->folder( $file ), array( 'content' => $content ) );
+		}
+	}
+
+	public function get_contents( $file, $content ) {
+		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+			return static::$reduxInstance->filesystem->execute( 'get_contents', $this->folder( $file ), array( 'content' => $content ) );
+		}
+
+		return false;
+	}
+
+	public function delete( $file ) {
+		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+			static::$reduxInstance->filesystem->execute( 'delete', $this->folder( $file ), array( 'recursive' => true ) );
 		}
 	}
 

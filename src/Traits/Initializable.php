@@ -9,7 +9,7 @@ $initializables = array();
 trait Initializable {
 
 	/**
-	 * Returns the singleton instanced plugin.
+	 * Returns the initialized plugin.
 	 *
 	 * @return object
 	 * @throws \ReflectionException
