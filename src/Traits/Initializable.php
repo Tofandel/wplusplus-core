@@ -7,6 +7,10 @@ global $initializables;
 $initializables = array();
 
 trait Initializable {
+	/**
+	 * @var \ReflectionClass
+	 */
+	protected static $reflectionClass;
 
 	/**
 	 * Returns the initialized plugin.
@@ -17,7 +21,8 @@ trait Initializable {
 	public static function __init__() {
 		global $initializables;
 
-		$class = new \ReflectionClass( static::class );
+		$class                   = new \ReflectionClass( static::class );
+		static::$reflectionClass = $class;
 		if ( ! isset( $initializables [ $class->getName() ] ) ) {
 			$instance = $class->newInstanceWithoutConstructor();
 			if ( method_exists( $instance, '__init' ) ) {

@@ -40,7 +40,7 @@ class WPlusPlusCore extends WP_Plugin {
 
 		vc_add_shortcode_param( 'number', array( $this, 'createVCNumber' ) );
 		vc_add_shortcode_param( 'multidropdown', array( $this, 'createVCMultiDropdown' ) );
-		vc_add_shortcode_param( 'wpp_dropdown', array( $this, 'createVCDropdown' ) );
+		//vc_add_shortcode_param( 'wpp_dropdown', array( $this, 'createVCDropdown' ) );
 		vc_add_shortcode_param( 'dimensions', array( $this, 'createVCDimensions' ) );
 		vc_add_shortcode_param( 'warning', array( $this, 'createVCWarning' ) );
 		vc_add_shortcode_param( 'hidden', '__return_false' );
@@ -127,8 +127,8 @@ class WPlusPlusCore extends WP_Plugin {
 					$option_label = isset( $data['label'] ) ? $data['label'] : array_pop( $data );
 					$option_value = isset( $data['value'] ) ? $data['value'] : array_pop( $data );
 				} else {
-					$option_value = $index;
-					$option_label = $data;
+					$option_value = $data;
+					$option_label = $index;
 				}
 				$selected = '';
 

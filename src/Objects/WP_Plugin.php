@@ -118,7 +118,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		$this->definitions();
 		$this->actionsAndFilters();
 
-		if ( is_admin() && ! isset ( $_POST['action'] ) || $_POST['action'] != 'heartbeat' ) {
+		if ( is_admin() && ! ( isset ( $_POST['action'] ) && $_POST['action'] == 'heartbeat' ) ) {
 			$this->_reduxOptions();
 			add_action( 'admin_init', [ $this, 'checkCompat' ] );
 		}
@@ -248,11 +248,20 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * @param string $file
+	 * @param string $folder
 	 *
 	 * @return string Path to the plugin's folder
 	 */
-	public function folder( $file = '' ) {
+	public function folder( $folder = '' ) {
+		return trailingslashit( trailingslashit( dirname( $this->file ) ) . "$folder" );
+	}
+
+	/**
+	 * @param string $file
+	 *
+	 * @return string Path to the plugin's file
+	 */
+	public function file( $file = '' ) {
 		return trailingslashit( dirname( $this->file ) ) . "$file";
 	}
 
@@ -479,13 +488,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	public function put_contents( $file, $content ) {
 		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
-			static::$reduxInstance->filesystem->execute( 'put_contents', $this->folder( $file ), array( 'content' => $content ) );
+			static::$reduxInstance->filesystem->execute( 'put_contents', $this->file( $file ), array( 'content' => $content ) );
 		}
 	}
 
 	public function get_contents( $file, $content ) {
 		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
-			return static::$reduxInstance->filesystem->execute( 'get_contents', $this->folder( $file ), array( 'content' => $content ) );
+			return static::$reduxInstance->filesystem->execute( 'get_contents', $this->file( $file ), array( 'content' => $content ) );
 		}
 
 		return false;
@@ -493,7 +502,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	public function delete( $file ) {
 		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
-			static::$reduxInstance->filesystem->execute( 'delete', $this->folder( $file ), array( 'recursive' => true ) );
+			static::$reduxInstance->filesystem->execute( 'delete', $this->file( $file ), array( 'recursive' => false ) );
+		}
+	}
+
+	public function deleteFolder( $folder ) {
+		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+			static::$reduxInstance->filesystem->execute( 'delete', $this->folder( $folder ), array( 'recursive' => true ) );
 		}
 	}
 

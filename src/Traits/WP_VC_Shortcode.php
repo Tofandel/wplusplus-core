@@ -9,9 +9,7 @@ namespace Tofandel\Core\Traits;
  * @author Adrien Foulon <tofandel@tukan.hu>
  */
 trait WP_VC_Shortcode {
-	use WP_Shortcode {
-		init as parentInit;
-	}
+	use WP_Shortcode;
 
 	/**
 	 * @see https://kb.wpbakery.com/docs/inner-api/vc_map/
@@ -58,8 +56,11 @@ trait WP_VC_Shortcode {
 		'params'                    => array()
 	);
 
-	public static function init() {
-		self::parentInit();
+	public static function __init__() {
+		self::__baseInit__();
+
+		static::$_name = strtolower( static::$reflectionClass->getShortName() );
+
 		static::$vc_params = array_merge( array(
 			'base' => static::$_name
 		), static::$vc_params );
@@ -73,5 +74,7 @@ trait WP_VC_Shortcode {
 				vc_map( static::$vc_params );
 			} );
 		}
+
+		new \Tofandel\Core\Objects\WP_Shortcode( static::$_name, [ static::class, 'shortcode' ], static::$atts );
 	}
 }

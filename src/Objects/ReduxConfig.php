@@ -60,7 +60,7 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 		}
 		if ( ! class_exists( Redux::class ) ) {
 			global $WPlusPlusCore;
-			if ( file_exists( $f = $WPlusPlusCore->folder( 'admin/redux-framework/framework.php' ) ) ) {
+			if ( file_exists( $f = $WPlusPlusCore->file( 'admin/redux-framework/framework.php' ) ) ) {
 				require_once $f;
 			}
 		}

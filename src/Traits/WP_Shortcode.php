@@ -9,19 +9,20 @@ namespace Tofandel\Core\Traits;
  * @author Adrien Foulon <tofandel@tukan.hu>
  */
 trait WP_Shortcode {
-	use Initializable;
+	use Initializable {
+		__init__ as __baseInit__;
+	}
 
 	protected static $atts = array();
 	protected static $_name;
 
 	/**
 	 * WP_Shortcode constructor.
-	 *
-	 * @throws \ReflectionException
 	 */
-	public static function init() {
-		$class         = new \ReflectionClass( static::class );
-		static::$_name = strtolower( $class->getShortName() );
+	public static function __init__() {
+		self::__baseInit__();
+
+		static::$_name = strtolower( static::$reflectionClass->getShortName() );
 
 		new \Tofandel\Core\Objects\WP_Shortcode( static::$_name, [ static::class, 'shortcode' ], static::$atts );
 		//add_shortcode( self::$_name, [ self::class, 'do_shortcode' ] );
@@ -40,7 +41,7 @@ trait WP_Shortcode {
 	 * @return mixed
 	 */
 	public function getName() {
-		return self::$_name;
+		return static::$_name;
 	}
 
 }
