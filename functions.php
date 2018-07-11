@@ -698,7 +698,7 @@ function wpp_is_integer( $val ) {
 	return is_float( $val ) ? false : preg_match( '~^((?:\+|-)?[0-9]+)$~', $val );
 }
 
-function wpp_slugify( $string ) {
+function wpp_slugify( $string, $slashes = true ) {
 	//Lower case everything
 	$string         = mb_strtolower( $string );
 	$normalizeChars = array(
@@ -742,12 +742,14 @@ function wpp_slugify( $string ) {
 		'ț' => 't',
 		'œ' => 'oe',
 		'+' => 'plus',
-		'/' => '-',
 		' ' => '-'
 	);
+	if ( $slashes ) {
+		$normalizeChars['/'] = '-';
+	}
 	$string         = strtr( $string, $normalizeChars );
 	//Make alphanumeric (removes all other characters)
-	$string = preg_replace( "/[^a-z0-9_\s-]/", "", $string );
+	$string = preg_replace( "/[^a-z0-9_" . ( $slashes ? '' : '\/' ) . "-]/", "", $string );
 	//Clean up multiple dashes or whitespaces
 	$string = preg_replace( "/[\s-]+/", "-", $string );
 	//Convert whitespaces and underscore to dash
