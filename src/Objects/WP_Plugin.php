@@ -121,6 +121,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		if ( is_admin() && ! ( isset ( $_POST['action'] ) && $_POST['action'] == 'heartbeat' ) ) {
 			$this->_reduxOptions();
 			add_action( 'admin_init', [ $this, 'checkCompat' ] );
+		} else {
+			do_action( 'redux_not_loaded' );
 		}
 	}
 
@@ -168,6 +170,42 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			$wpdb->esc_like( '_transient_wpp_file_' ) . '%',
 			$wpdb->esc_like( '_transient_timeout_wpp_file_' ) . '%'
 		) );
+	}
+
+	/**
+	 * @param string $opt_name
+	 * @param string|array|null $option
+	 * @param mixed $default
+	 *
+	 * @return array|string
+	 */
+	public static function getReduxOption( $opt_name, $option = null, $default = false ) {
+		static $options = array();
+
+		if ( ! isset( $options[ $opt_name ] ) ) {
+			$options[ $opt_name ] = get_option( $opt_name, array() );
+			if ( ! isset( $GLOBALS[ $opt_name ] ) ) {
+				$GLOBALS[ $opt_name ] = $options[ $opt_name ];
+			}
+		}
+
+		if ( is_array( $option ) ) {
+			$option = array_reverse( $option );
+			$v      = $options[ $opt_name ];
+			while ( $k = array_pop( $option ) ) {
+				if ( isset( $v[ $k ] ) ) {
+					$v = $v[ $k ];
+				} else {
+					return $default;
+				}
+			}
+
+			return $v;
+		} elseif ( is_string( $option ) ) {
+			return $options[ $opt_name ][ $opt_name ];
+		} else {
+			return $options[ $opt_name ];
+		}
 	}
 
 	/**

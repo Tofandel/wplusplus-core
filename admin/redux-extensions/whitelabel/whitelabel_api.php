@@ -22,7 +22,7 @@ if ( ! class_exists( 'Redux_Whitelabel' ) ) {
 		 */
 		private static $instance;
 
-		private static $whitelables = array();
+		private static $whitelabels = array();
 
 		/**
 		 * Get active instance
@@ -85,7 +85,7 @@ if ( ! class_exists( 'Redux_Whitelabel' ) ) {
 				remove_filter( 'plugin_row_meta', array(
 					ReduxFrameworkPlugin::instance(),
 					'plugin_metalinks'
-				), null, 2 );
+				), null );
 
 				// Used to hide the activation notice informing users of the demo panel. Only used when Redux is a plugin.
 				remove_action( 'admin_notices', array( ReduxFrameworkPlugin::instance(), 'admin_notices' ) );
@@ -101,7 +101,7 @@ if ( ! class_exists( 'Redux_Whitelabel' ) ) {
 
 		public function rename( $plugins ) {
 			if ( isset( $plugins['redux-framework/redux-framework.php'] ) ) {
-				$whitelabels = self::$whitelables;
+				$whitelabels = self::$whitelabels;
 				if ( count( $whitelabels ) == 1 ) {
 					$plugins['redux-framework/redux-framework.php'] = wp_parse_args( $whitelabels[0], $plugins['redux-framework/redux-framework.php'] );
 				} else if ( count( $whitelabels ) > 1 ) {
@@ -154,21 +154,17 @@ if ( ! class_exists( 'Redux_Whitelabel' ) ) {
 		}
 
 		public function details_popup( $plugin_meta, $plugin_file, $plugin_data, $status ) {
-			$whitelabels = self::$whitelables;
 
 			if ( strpos( $plugin_file, 'redux-framework/redux-framework' ) !== false ) {
 				$id = str_replace( array( 'redux-framework/redux-framework', '.php' ), '', $plugin_file );
 				if ( empty( $id ) ) {
 					$id = 0;
-					//echo "empty";
-				} else {
-					//echo "not empty";
 				}
 				foreach ( $plugin_meta as $key => $meta ) {
 					if ( strpos( $meta, 'tab=plugin-information' ) !== false ) {
 						$url = network_admin_url( 'plugin-install.php?tab=plugin-information&plugin=' . $plugin_data['slug'] );
 
-						$new = $whitelabels[ $id ];
+						$new = isset( self::$whitelabels[ $id ] ) ? self::$whitelabels : array();
 
 						if ( isset( $new['DetailsURI'] ) ) {
 							if ( $new['DetailsURI'] == "remove" ) {
@@ -200,7 +196,7 @@ if ( ! class_exists( 'Redux_Whitelabel' ) ) {
 		}
 
 		public static function set( $args ) {
-			self::$whitelables[] = $args;
+			self::$whitelabels[] = $args;
 		}
 
 	}
