@@ -124,7 +124,7 @@ if ( ! class_exists( 'ReduxFramework_extension_custom_fonts' ) ) {
 
 			$this->is_field = Redux_Helpers::isFieldInUse( $parent, 'custom_fonts' );
 
-			if ( ! $this->is_field && $this->parent->args['dev_mode'] && $this->parent->args['show_custom_fonts'] ) {
+			if ( ! $this->is_field && $this->parent->args['dev_mode'] && isset( $this->parent->args['show_custom_fonts'] ) && $this->parent->args['show_custom_fonts'] ) {
 				$this->add_section();
 			}
 

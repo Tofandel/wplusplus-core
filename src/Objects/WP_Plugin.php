@@ -149,11 +149,11 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * Magic method that returns the plugin name if trying to convert the plugin object to a string
+	 * Magic method that returns the plugin text domain if trying to convert the plugin object to a string
 	 * @return string
 	 */
 	public function __toString() {
-		return $this->slug;
+		return $this->getTextDomain();
 	}
 
 
