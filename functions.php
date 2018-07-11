@@ -742,7 +742,7 @@ function wpp_slugify( $string, $slashes = true ) {
 		'ț' => 't',
 		'œ' => 'oe',
 		'+' => 'plus',
-		' ' => '-'
+		' ' => '-',
 	);
 	if ( $slashes ) {
 		$normalizeChars['/'] = '-';
