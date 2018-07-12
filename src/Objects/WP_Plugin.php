@@ -291,6 +291,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @return string Path to the plugin's folder
 	 */
 	public function folder( $folder = '' ) {
+		if ( strpos( $folder, ABSPATH ) === 0 ) {
+			return trailingslashit( $folder );
+		}
 		return trailingslashit( trailingslashit( dirname( $this->file ) ) . "$folder" );
 	}
 
@@ -300,6 +303,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @return string Path to the plugin's file
 	 */
 	public function file( $file = '' ) {
+		if ( strpos( $file, ABSPATH ) === 0 ) {
+			return $file;
+		}
 		return trailingslashit( dirname( $this->file ) ) . "$file";
 	}
 
