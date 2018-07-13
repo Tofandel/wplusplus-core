@@ -524,8 +524,20 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	public function mkdir( $folder ) {
 		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
-			if ( ! is_dir( $this->folder( $folder ) ) ) {
-				static::$reduxInstance->filesystem->execute( 'mkdir', $this->folder( $folder ) );
+			if ( ! is_dir( $f = $this->folder( $folder ) ) ) {
+				return static::$reduxInstance->filesystem->execute( 'mkdir', $f, array( 'recursive' => true ) );
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public function copy( $file, $dest ) {
+		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+			if ( $f = file_exists( $this->file( $file ) ) ) {
+				static::$reduxInstance->filesystem->execute( 'copy', $f, array( 'destination' => $this->file( $dest ) ) );
 			}
 		}
 	}
