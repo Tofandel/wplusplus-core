@@ -512,6 +512,10 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	public static function getReduxInstance() {
 		if ( empty( static::$reduxInstance ) ) {
+			ReduxConfig::loadRedux();
+			if ( ! class_exists( \ReduxFrameworkInstances::class, true ) ) {
+				return false;
+			}
 			$reduxInstances = \ReduxFrameworkInstances::get_all_instances();
 			if ( empty( $reduxInstances ) ) {
 				return false;
@@ -523,7 +527,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function mkdir( $folder ) {
-		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+		if ( static::getReduxInstance() ) {
 			if ( ! is_dir( $f = $this->folder( $folder ) ) ) {
 				return static::$reduxInstance->filesystem->execute( 'mkdir', $f, array( 'recursive' => true ) );
 			}
@@ -535,7 +539,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function copy( $file, $dest ) {
-		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+		if ( static::getReduxInstance() ) {
 			if ( $f = file_exists( $this->file( $file ) ) ) {
 				static::$reduxInstance->filesystem->execute( 'copy', $f, array( 'destination' => $this->file( $dest ) ) );
 			}
@@ -543,13 +547,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function put_contents( $file, $content ) {
-		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+		if ( static::getReduxInstance() ) {
 			static::$reduxInstance->filesystem->execute( 'put_contents', $this->file( $file ), array( 'content' => $content ) );
 		}
 	}
 
 	public function get_contents( $file, $content ) {
-		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+		if ( static::getReduxInstance() ) {
 			return static::$reduxInstance->filesystem->execute( 'get_contents', $this->file( $file ), array( 'content' => $content ) );
 		}
 
@@ -557,13 +561,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function delete( $file ) {
-		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+		if ( static::getReduxInstance() ) {
 			static::$reduxInstance->filesystem->execute( 'delete', $this->file( $file ), array( 'recursive' => false ) );
 		}
 	}
 
 	public function deleteFolder( $folder ) {
-		if ( class_exists( \ReduxFrameworkInstances::class, true ) && static::getReduxInstance() ) {
+		if ( static::getReduxInstance() ) {
 			static::$reduxInstance->filesystem->execute( 'delete', $this->folder( $folder ), array( 'recursive' => true ) );
 		}
 	}
