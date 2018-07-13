@@ -37,11 +37,14 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 	public static function loadRedux() {
 		$plugins = get_option( 'active_plugins' );
 
-		if ( ! class_exists( Redux::class ) ) {
+		if ( ! class_exists( Redux::class, false ) ) {
 			$file = get_transient( 'wpp_redux_install' );
 			if ( $file && file_exists( $file ) ) {
 				require_once $file;
 			} else {
+				if ( $file ) {
+					delete_transient( 'wpp_redux_install' );
+				}
 				foreach ( $plugins as $plugin ) {
 					if ( strpos( $plugin, 'redux-framework' ) !== false ) {
 						//We load redux's plugin
@@ -58,7 +61,7 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 				}
 			}
 		}
-		if ( ! class_exists( Redux::class ) ) {
+		if ( ! class_exists( Redux::class, false ) ) {
 			global $WPlusPlusCore;
 			if ( file_exists( $f = $WPlusPlusCore->file( 'admin/redux-framework/framework.php' ) ) ) {
 				require_once $f;

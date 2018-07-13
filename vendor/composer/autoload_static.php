@@ -16,10 +16,6 @@ class ComposerStaticInit6f2bc6f7d1e40cfc1bcfe97950baa93a
         array (
             'Tofandel\\Core\\' => 14,
         ),
-        'O' => 
-        array (
-            'OomphInc\\ComposerInstallersExtender\\' => 36,
-        ),
         'C' => 
         array (
             'Composer\\Installers\\' => 20,
@@ -30,10 +26,6 @@ class ComposerStaticInit6f2bc6f7d1e40cfc1bcfe97950baa93a
         'Tofandel\\Core\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
-        ),
-        'OomphInc\\ComposerInstallersExtender\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/oomphinc/composer-installers-extender/src',
         ),
         'Composer\\Installers\\' => 
         array (
