@@ -760,6 +760,46 @@ function wpp_slugify( $string, $slashes = true ) {
 
 
 /**
+ * @param $array
+ * @param $path
+ *
+ * @return array
+ * @throws Exception
+ */
+function wpp_group_by( $array, $path ) {
+	if ( empty( $array ) ) {
+		return array();
+	}
+	if ( ! is_array( $array ) ) {
+		throw new \Exception( 'The "groupBy" filter can only be used on array (' . gettype( $array ) . ' given)' );
+	}
+	$new_array = array();
+	$path      = explode( '.', $path );
+	$c         = count( $path );
+	foreach ( $array as $a ) {
+		$v = $a;
+		for ( $i = 0; $i < $c; $i ++ ) {
+			$k = $path[ $i ];
+			if ( isset( $v[ $k ] ) ) {
+				$v = $v[ $k ];
+			} else {
+				$v = '0';
+			}
+		}
+		if ( ! is_scalar( $v ) ) {
+			throw new \Exception( 'The path for "groupBy" must be final and so return a scalar (eg: string, int..)' );
+		}
+		if ( ! empty( $new_array[ $v ] ) ) {
+			$new_array[ $v ] = array_merge_recursive( $new_array[ $v ], $a );
+		} else {
+			$new_array[ $v ] = $a;
+		}
+	}
+
+	return $new_array;
+}
+
+/**
  * Recursive remove empty elements from array
  * @param array
  * @return array
