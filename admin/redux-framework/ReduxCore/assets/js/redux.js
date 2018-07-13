@@ -659,7 +659,7 @@
 
 				var type = $(this).attr('data-type');
 				//console.log(type);
-				if (redux.field_objects[type].init == 'function') {
+				if (type in redux.field_objects && typeof redux.field_objects[type].init == 'function') {
 					redux.field_objects[type].init();
 				}
 				if (!redux.customizer && $(this).hasClass('redux_remove_th')) {
