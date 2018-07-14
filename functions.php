@@ -760,6 +760,55 @@ function wpp_slugify( $string, $slashes = true ) {
 
 
 /**
+ * Order a multidimensional array from a subelement set specified as a path "foo.bar.orderValue"
+ *
+ * @param $array
+ * @param $path
+ *
+ * @return array
+ * @throws Exception
+ */
+function wpp_order_by( $array, $path ) {
+	if ( empty( $array ) ) {
+		return array();
+	}
+	if ( ! is_array( $array ) ) {
+		throw new \Exception( 'The "orderBy" filter can only be used on array (' . gettype( $array ) . ' given)' );
+	}
+	$path = explode( '.', $path );
+	$c    = count( $path );
+	// Sort the multidimensional array
+	usort( $array, function ( $a, $b ) use ( $path, $c ) {
+		$v1 = $a;
+		for ( $i = 0; $i < $c; $i ++ ) {
+			$k = $path[ $i ];
+			if ( isset( $v1[ $k ] ) ) {
+				$v1 = $v1[ $k ];
+			} else {
+				$v1 = '0';
+			}
+		}
+		$v2 = $b;
+		for ( $i = 0; $i < $c; $i ++ ) {
+			$k = $path[ $i ];
+			if ( isset( $v2[ $k ] ) ) {
+				$v2 = $v2[ $k ];
+			} else {
+				$v2 = '0';
+			}
+		}
+
+		return $v1 > $v2;
+	} );
+
+	return $array;
+}
+
+/**
+ * Groups a multidimensional array from a subelement set specified as a path "foo.bar.groupValue"
+ *
+ * If multiple elements exist with the same value they will be grouped and merged recursively (the scalar elements will become indexed array)
+ *
  * @param $array
  * @param $path
  *
