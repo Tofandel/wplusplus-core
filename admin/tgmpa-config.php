@@ -66,7 +66,7 @@ add_action( 'tgmpa_register',
 				// The plugin slug (typically the folder name).
 				'source'             => __DIR__ . '/plugins/redux-framework.zip',
 				// The plugin source.
-				'required'           => true,
+				'required'           => false,
 				// If false, the plugin is only 'recommended' instead of required.
 				'version'            => '3.6.9',
 				// E.g. 1.0.0. If set, the active plugin must be this version or higher. If the plugin version is higher than the plugin version installed, the user will be notified to update the plugin.
