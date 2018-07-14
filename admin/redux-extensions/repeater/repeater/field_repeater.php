@@ -284,7 +284,14 @@ if ( ! class_exists( 'ReduxFramework_repeater' ) ) {
 			wp_enqueue_script(
 				'redux-field-repeater-js',
 				apply_filters( "redux/repeater/{$this->parent->args['opt_name']}/enqueue/redux-field-repeater-js", $this->extension_url . 'field_repeater' . $min . '.js' ),
-				array( 'jquery', 'jquery-ui-core', 'jquery-ui-accordion', 'jquery-ui-sortable', 'wp-color-picker' ),
+				array(
+					'jquery',
+					'jquery-ui-core',
+					'jquery-ui-accordion',
+					'jquery-ui-sortable',
+					'wp-color-picker',
+					'redux-js'
+				),
 				time(),
 				true
 			);
