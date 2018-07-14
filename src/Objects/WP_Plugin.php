@@ -540,7 +540,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	public function copy( $file, $dest ) {
 		if ( static::getReduxInstance() ) {
-			if ( $f = file_exists( $this->file( $file ) ) ) {
+			if ( file_exists( $f = $this->file( $file ) ) ) {
 				static::$reduxInstance->filesystem->execute( 'copy', $f, array(
 					'destination' => $this->file( $dest ),
 					'overwrite'   => true
