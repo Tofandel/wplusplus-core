@@ -26,6 +26,10 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 		$this->opt_name = $opt_name;
 
 		self::loadRedux();
+
+		if ( ! class_exists( Redux::class, false ) ) {
+			return;
+		}
 		self::loadExtensions( $opt_name );
 
 		if ( isset( $args ) ) {
@@ -63,7 +67,7 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 		}
 		if ( ! class_exists( Redux::class, false ) ) {
 			global $WPlusPlusCore;
-			if ( file_exists( $f = $WPlusPlusCore->file( 'admin/redux-framework/framework.php' ) ) ) {
+			if ( file_exists( $f = $WPlusPlusCore->file( 'admin/redux-framework/redux-framework.php' ) ) ) {
 				require_once $f;
 			}
 		}
