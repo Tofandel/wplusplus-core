@@ -218,7 +218,7 @@ class WPlusPlusCore extends WP_Plugin {
 
 	public function deactivate() {
 		//Clean the muloader
-		$this->delete( self::MULOADER_DIR . '/wplusplus-muloader.php' );
+		$this->delete_file( self::MULOADER_DIR . '/wplusplus-muloader.php' );
 	}
 
 	/**

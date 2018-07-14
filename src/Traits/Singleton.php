@@ -25,7 +25,14 @@ trait Singleton {
 		$class = new \ReflectionClass( static::class );
 		if ( ! isset( $singletons[ $class->getName() ] ) ) {
 			//$singletons[ $class->getName() ] = $class->newInstanceWithoutConstructor();
-			$singletons[ $class->getName() ] = $class->newInstance();
+			$instance = $class->newInstance();
+			if ( method_exists( $instance, '__init' ) ) {
+				$instance->__init();
+			}
+			if ( method_exists( $instance, 'init' ) ) {
+				$instance->init();
+			}
+			$singletons[ $class->getName() ] = $instance;
 		}
 
 		return $singletons[ $class->getName() ];

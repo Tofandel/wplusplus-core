@@ -294,6 +294,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		if ( strpos( $folder, ABSPATH ) === 0 ) {
 			return trailingslashit( $folder );
 		}
+
 		return trailingslashit( trailingslashit( dirname( $this->file ) ) . "$folder" );
 	}
 
@@ -306,6 +307,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		if ( strpos( $file, ABSPATH ) === 0 ) {
 			return $file;
 		}
+
 		return trailingslashit( dirname( $this->file ) ) . "$file";
 	}
 
@@ -526,52 +528,86 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		return true;
 	}
 
+	/**
+	 * @param $folder
+	 *
+	 * @return bool
+	 */
 	public function mkdir( $folder ) {
-		if ( static::getReduxInstance() ) {
-			if ( ! is_dir( $f = $this->folder( $folder ) ) ) {
-				return static::$reduxInstance->filesystem->execute( 'mkdir', $f, array( 'recursive' => true ) );
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	public function copy( $file, $dest ) {
-		if ( static::getReduxInstance() ) {
-			if ( file_exists( $f = $this->file( $file ) ) ) {
-				static::$reduxInstance->filesystem->execute( 'copy', $f, array(
-					'destination' => $this->file( $dest ),
-					'overwrite'   => true
-				) );
-			}
+		try {
+			return WP_Filesystem::__init__()->mkdir( $this->folder( $folder ) );
+		} catch ( \ReflectionException $e ) {
+			return false;
 		}
 	}
 
+	/**
+	 * @param $file
+	 * @param $dest
+	 *
+	 * @param bool $overwrite
+	 *
+	 * @return bool
+	 */
+	public function copy( $file, $dest, $overwrite = true ) {
+		try {
+			return WP_Filesystem::__init__()->copy( $this->file( $file ), $this->file( $dest ), $overwrite );
+		} catch ( \ReflectionException $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * @param $file
+	 * @param $content
+	 *
+	 * @return bool
+	 */
 	public function put_contents( $file, $content ) {
-		if ( static::getReduxInstance() ) {
-			static::$reduxInstance->filesystem->execute( 'put_contents', $this->file( $file ), array( 'content' => $content ) );
+		try {
+			return WP_Filesystem::__init__()->putContents( $this->file( $file ), $content );
+		} catch ( \ReflectionException $e ) {
+			return false;
 		}
 	}
 
-	public function get_contents( $file, $content ) {
-		if ( static::getReduxInstance() ) {
-			return static::$reduxInstance->filesystem->execute( 'get_contents', $this->file( $file ), array( 'content' => $content ) );
+	/**
+	 * @param $file
+	 *
+	 * @return bool|mixed|string
+	 */
+	public function get_contents( $file ) {
+		try {
+			return WP_Filesystem::__init__()->getContents( $this->file( $file ) );
+		} catch ( \ReflectionException $e ) {
+			return false;
 		}
-
-		return false;
 	}
 
-	public function delete( $file ) {
-		if ( static::getReduxInstance() ) {
-			static::$reduxInstance->filesystem->execute( 'delete', $this->file( $file ), array( 'recursive' => false ) );
+	/**
+	 * @param $file
+	 *
+	 * @return bool
+	 */
+	public function delete_file( $file ) {
+		try {
+			return WP_Filesystem::__init__()->deleteFile( $this->file( $file ) );
+		} catch ( \ReflectionException $e ) {
+			return false;
 		}
 	}
 
-	public function deleteFolder( $folder ) {
-		if ( static::getReduxInstance() ) {
-			static::$reduxInstance->filesystem->execute( 'delete', $this->folder( $folder ), array( 'recursive' => true ) );
+	/**
+	 * @param $folder
+	 * @param bool $recursive
+	 *
+	 * @return bool
+	 */
+	public function delete_dir( $folder, $recursive = true ) {
+		try {
+			return WP_Filesystem::__init__()->deleteDir( $this->folder( $folder ), $recursive );
+		} catch ( \ReflectionException $e ) {
+			return false;
 		}
 	}
 

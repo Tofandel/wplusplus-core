@@ -15,7 +15,7 @@ trait Initializable {
 	/**
 	 * Returns the initialized plugin.
 	 *
-	 * @return object
+	 * @return static
 	 * @throws \ReflectionException
 	 */
 	public static function __init__() {
