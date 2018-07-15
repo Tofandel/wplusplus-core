@@ -295,7 +295,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			return trailingslashit( $folder );
 		}
 
-		return trailingslashit( trailingslashit( dirname( $this->file ) ) . "$folder" );
+		return trailingslashit( trailingslashit( dirname( $this->file ) ) . ltrim( "$folder", '/' ) );
 	}
 
 	/**
@@ -308,7 +308,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			return $file;
 		}
 
-		return trailingslashit( dirname( $this->file ) ) . "$file";
+		return trailingslashit( dirname( $this->file ) ) . ltrim( "$file", '/' );
 	}
 
 	/**
