@@ -50,10 +50,13 @@ class WP_Filesystem {
 			self::$chmod_dir = FS_CHMOD_DIR;
 		}
 
+		$url = false;
 		global $wp;
-		$base = home_url( $wp->request );
+		if ( isset( $wp ) ) {
+			$base = home_url( $wp->request );
 
-		$url = wp_nonce_url( $base, isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'filesystem' );
+			$url = wp_nonce_url( $base, isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'filesystem' );
+		}
 
 		$this->filesystem_init( $url, 'direct' );
 	}

@@ -11,7 +11,7 @@ use Tofandel\Core\Objects\WP_Plugin;
  * Plugin Name: W++ Core
  * Plugin URI: https://github.com/tofandel/wplusplus-core/
  * Description: A powerful wordpress plugin for developers to create forms and so much more!
- * Version: 1.2.2
+ * Version: 1.2.3
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
  * Text Domain: wpluspluscore
