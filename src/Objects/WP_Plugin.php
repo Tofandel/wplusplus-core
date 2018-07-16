@@ -3,6 +3,7 @@
 namespace Tofandel\Core\Objects;
 
 use Exception;
+use ReduxFrameworkPlugin;
 use ReflectionClass;
 use Tofandel\Core\Traits\Singleton;
 
@@ -121,8 +122,19 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		if ( is_admin() && ! ( isset ( $_POST['action'] ) && $_POST['action'] == 'heartbeat' ) ) {
 			$this->_reduxOptions();
 			add_action( 'admin_init', [ $this, 'checkCompat' ] );
+			add_action( 'init', array( $this, 'removeDemoModeLink' ) );
 		} else {
 			do_action( 'redux_not_loaded' );
+		}
+	}
+
+
+	public function removeDemoModeLink() { // Be sure to rename this function to something more unique
+		if ( class_exists( 'ReduxFrameworkPlugin' ) ) {
+			remove_filter( 'plugin_row_meta', array( ReduxFrameworkPlugin::get_instance(), 'plugin_metalinks' ), null );
+		}
+		if ( class_exists( 'ReduxFrameworkPlugin' ) ) {
+			remove_action( 'admin_notices', array( ReduxFrameworkPlugin::get_instance(), 'admin_notices' ) );
 		}
 	}
 
