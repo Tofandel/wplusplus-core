@@ -133,9 +133,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			//Fresh install
 
 			//Check the version number
-			if ( version_compare( $last_version, $this->version, '>' ) ) {
+			if ( version_compare( $last_version, $this->version, '<' ) ) {
 				$this->multisiteUpgrade( $last_version );
-			} elseif ( version_compare( $last_version, $this->version, '<' ) ) {
+			} elseif ( version_compare( $last_version, $this->version, '>' ) ) {
 				$this->multisiteDowngrade( $last_version );
 			}
 			if ( $last_version != $this->version ) {
