@@ -126,6 +126,22 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		} else {
 			do_action( 'redux_not_loaded' );
 		}
+
+		if ( ! add_option( $this->slug . '_version', $this->version ) ) {
+			//An old version existed before
+			$last_version = get_option( $this->slug . '_version' );
+			//Fresh install
+
+			//Check the version number
+			if ( version_compare( $last_version, $this->version, '>' ) ) {
+				$this->multisiteUpgrade( $last_version );
+			} elseif ( version_compare( $last_version, $this->version, '<' ) ) {
+				$this->multisiteDowngrade( $last_version );
+			}
+			if ( $last_version != $this->version ) {
+				update_option( $this->slug . '_version', $this->version );
+			}
+		}
 	}
 
 
@@ -454,23 +470,6 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		if ( ! self::checkCompatibility() ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 			wp_die( sprintf( __( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, '5.6', PHP_VERSION ) );
-		}
-
-		if ( ! add_option( $this->slug . '_version', $this->version ) ) {
-			//An old version existed before
-			$last_version = get_option( $this->slug . '_version' );
-			//Fresh install
-
-			//Check the version number
-			if ( version_compare( $last_version, $this->version, '>' ) ) {
-				$this->multisiteUpgrade( $last_version );
-			} elseif ( version_compare( $last_version, $this->version, '<' ) ) {
-				$this->multisiteDowngrade( $last_version );
-			}
-			if ( $last_version != $this->version ) {
-				update_option( $this->slug . '_version', $this->version );
-			}
-
 		}
 
 		//Setup default plugin folders
