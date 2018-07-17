@@ -825,6 +825,15 @@
     ]
   },
   {
+    "name": "Twig",
+    "mime": "text\/x-twig",
+    "mode": "twig",
+    "dependencies": [
+    ],
+    "remote_dependencies": [
+    ]
+  },
+  {
     "name": "VB.NET",
     "mime": "text\/x-vb",
     "mode": "vb",

@@ -57,6 +57,7 @@ if ( ! class_exists( 'ReduxFramework_Field_codemirror' ) ) {
 				'editor_options'   => array(
 					'theme'        => 'default',
 					'mode'         => null,
+					'htmlMode'     => false,
 					'lineNumbers'  => true,
 					'lineWrapping' => true,
 					'lint'         => false,
@@ -84,7 +85,7 @@ if ( ! class_exists( 'ReduxFramework_Field_codemirror' ) ) {
 				}
 			}
 
-			$this->field = $this->parse_args_r( $this->field, $this->defaults );
+			$this->field = self::parse_args_r( $this->field, $this->defaults );
 
 			// get mode options, dependencies
 			$this->modes  = json_decode( file_get_contents( $this->extension_dir . "lib/codemirror_modes.json" ), true );

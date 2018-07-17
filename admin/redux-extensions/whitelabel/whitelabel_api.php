@@ -17,7 +17,7 @@ if ( ! class_exists( 'Redux_Whitelabel' ) ) {
 
 		/**
 		 * @access      private
-		 * @var         \ReduxFrameworkPlugin $instance The one true ReduxFrameworkPlugin
+		 * @var         Redux_Whitelabel
 		 * @since       3.0.0
 		 */
 		private static $instance;

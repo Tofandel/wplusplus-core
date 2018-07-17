@@ -184,5 +184,8 @@
   },
   "xmlfold": {
     "file": "addon/fold/xml-fold.js"
+  },
+  "overlay": {
+    "file": "addon/mode/overlay.js"
   }
 }
