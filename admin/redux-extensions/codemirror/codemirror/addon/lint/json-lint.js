@@ -1,22 +1,2 @@
-// Depends on jsonlint.js from https://github.com/zaach/jsonlint
-
-// declare global: jsonlint
-
-CodeMirror.registerHelper("lint", "json", function (text) {
-	var found = [];
-	jsonlint.parseError = function (str, hash) {
-		var loc = hash.loc;
-		found.push({
-			from: CodeMirror.Pos(loc.first_line - 1, loc.first_column),
-			to: CodeMirror.Pos(loc.last_line - 1, loc.last_column),
-			message: str
-		});
-	};
-	try {
-		jsonlint.parse(text);
-	}
-	catch (e) {
-	}
-	return found;
-});
-CodeMirror.jsonValidator = CodeMirror.lint.json; // deprecated
+'use strict';(function(a){"object"==typeof exports&&"object"==typeof module?a(require("../../lib/codemirror")):"function"==typeof define&&define.amd?define(["../../lib/codemirror"],a):a(CodeMirror)})(function(a){a.registerHelper("lint","json",function(e){var c=[];if(!window.jsonlint)return window.console&&window.console.error("Error: window.jsonlint not defined, CodeMirror JSON linting cannot run."),c;jsonlint.parseError=function(d,b){b=b.loc;c.push({from:a.Pos(b.first_line-1,b.first_column),to:a.Pos(b.last_line-
+1,b.last_column),message:d})};try{jsonlint.parse(e)}catch(d){}return c})});

@@ -1,49 +1,38 @@
-// declare global: tern, server
-
+'use strict';
 var server;
-
-this.onmessage = function (e) {
-	var data = e.data;
-	switch (data.type) {
+this.onmessage = function (b) {
+	var a = b.data;
+	switch (a.type) {
 		case "init":
-			return startServer(data.defs, data.plugins, data.scripts);
+			return startServer(a.defs, a.plugins, a.scripts);
 		case "add":
-			return server.addFile(data.name, data.text);
+			return server.addFile(a.name, a.text);
 		case "del":
-			return server.delFile(data.name);
+			return server.delFile(a.name);
 		case "req":
-			return server.request(data.body, function (err, reqData) {
-				postMessage({id: data.id, body: reqData, err: err && String(err)});
+			return server.request(a.body, function (b, d) {
+				postMessage({id: a.id, body: d, err: b && String(b)})
 			});
 		case "getFile":
-			var c = pending[data.id];
-			delete pending[data.id];
-			return c(data.err, data.text);
+			return b = pending[a.id], delete pending[a.id], b(a.err, a.text);
 		default:
-			throw new Error("Unknown message type: " + data.type);
+			throw Error("Unknown message type: " + a.type);
 	}
 };
-
 var nextId = 0, pending = {};
 
-function getFile(file, c) {
-	postMessage({type: "getFile", name: file, id: ++nextId});
-	pending[nextId] = c;
+function getFile(b, a) {
+	postMessage({type: "getFile", name: b, id: ++nextId});
+	pending[nextId] = a
 }
 
-function startServer(defs, plugins, scripts) {
-	if (scripts) importScripts.apply(null, scripts);
-
-	server = new tern.Server({
-		getFile: getFile,
-		async: true,
-		defs: defs,
-		plugins: plugins
-	});
+function startServer(b, a, c) {
+	c && importScripts.apply(null, c);
+	server = new tern.Server({getFile: getFile, async: !0, defs: b, plugins: a})
 }
 
-var console = {
-	log: function (v) {
-		postMessage({type: "debug", message: v});
+this.console = {
+	log: function (b) {
+		postMessage({type: "debug", message: b})
 	}
 };

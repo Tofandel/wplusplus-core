@@ -1,19 +1,2 @@
-// Depends on csslint.js from https://github.com/stubbornella/csslint
-
-// declare global: CSSLint
-
-CodeMirror.registerHelper("lint", "css", function (text) {
-	var found = [];
-	var results = CSSLint.verify(text), messages = results.messages, message = null;
-	for (var i = 0; i < messages.length; i++) {
-		message = messages[i];
-		var startLine = message.line - 1, endLine = message.line - 1, startCol = message.col - 1, endCol = message.col;
-		found.push({
-			from: CodeMirror.Pos(startLine, startCol),
-			to: CodeMirror.Pos(endLine, endCol),
-			message: message.message,
-			severity: message.type
-		});
-	}
-	return found;
-});
+'use strict';(function(b){"object"==typeof exports&&"object"==typeof module?b(require("../../lib/codemirror")):"function"==typeof define&&define.amd?define(["../../lib/codemirror"],b):b(CodeMirror)})(function(b){b.registerHelper("lint","css",function(c,a){var d=[];if(!window.CSSLint)return window.console&&window.console.error("Error: window.CSSLint not defined, CodeMirror CSS linting cannot run."),d;c=CSSLint.verify(c,a).messages;for(var e=0;e<c.length;e++){a=c[e];var f=a.line-1,g=a.col;d.push({from:b.Pos(a.line-
+1,a.col-1),to:b.Pos(f,g),message:a.message,severity:a.type})}return d})});
