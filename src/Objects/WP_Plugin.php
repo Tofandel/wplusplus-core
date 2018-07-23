@@ -8,8 +8,6 @@ use ReflectionClass;
 use Tofandel\Core\Traits\Singleton;
 
 
-require_once __DIR__ . '/../../admin/tgmpa-config.php';
-
 /**
  * Class WP_Plugin
  *
@@ -19,16 +17,40 @@ require_once __DIR__ . '/../../admin/tgmpa-config.php';
 abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	use Singleton;
 
+	static $required_php_version = '5.5';
+
 	protected $text_domain;
 	protected $slug;
 	protected $name;
 	protected $file;
 	protected $version = false;
 	protected $class;
+	protected $redux_opt_name;
 
 	protected $is_muplugin = false;
 
 	protected $download_url;
+	protected $is_licensed = false;
+
+	protected function isLicenseValid() {
+
+		return true;
+	}
+
+	private function getLicenseKey() {
+		return $this->getOption( 'license_key', '' );
+	}
+
+	private function getDownloadUrl() {
+		if ( $this->is_licensed ) {
+			return add_query_arg( array(
+				'license_key' => $this->getLicenseKey(),
+				'site_url'    => get_option( 'home' )
+			), $this->download_url );
+		}
+
+		return $this->download_url;
+	}
 
 	public function getFile() {
 		return $this->file;
@@ -67,12 +89,20 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			add_action( 'init', [ $this, 'activate' ], 1 );
 		}
 
+		if ( ! isset( $this->redux_opt_name ) ) {
+			$this->redux_opt_name = strtolower( $this->class->getShortName() ) . '_options';
+		}
+
 		//We define a global with the name of the class
 		if ( ! isset( $GLOBALS[ $this->class->getShortName() ] ) ) {
 			$GLOBALS[ $this->class->getShortName() ] = $this;
 		}
 
 		$this->setup();
+	}
+
+	public function getReduxOptName() {
+		return $this->redux_opt_name;
 	}
 
 	protected function extractFromComment( $comment ) {
@@ -115,7 +145,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		add_action( 'plugins_loaded', array( $this, 'loadTextdomain' ) );
 		register_activation_hook( $this->file, array( $this, 'activate' ) );
 		register_deactivation_hook( $this->file, array( $this, 'deactivate' ) );
-		register_uninstall_hook( $this->file, get_called_class() . '::uninstall' );
+		register_uninstall_hook( $this->file, get_called_class() . '::uninstallHook' );
 		$this->definitions();
 		$this->actionsAndFilters();
 
@@ -168,13 +198,24 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	abstract public function actionsAndFilters();
 
 	/**
+	 * @throws \ReflectionException
+	 */
+	public static function uninstallHook() {
+		$ref = new ReflectionClass( static::class );
+		delete_option( $ref->getShortName() . '_version' );
+		/**
+		 * @var self $plugin
+		 */
+		$plugin = static::__init__();
+		$plugin->uninstall();
+		delete_option( $plugin->redux_opt_name );
+	}
+
+	/**
 	 * Called function if a plugin is uninstalled
 	 * @throws \ReflectionException
 	 */
-	public static function uninstall() {
-		$ref = new ReflectionClass( static::class );
-		delete_option( $ref->getShortName() . '_version' );
-	}
+	abstract protected function uninstall();
 
 	/**
 	 * Magic method that returns the plugin text domain if trying to convert the plugin object to a string
@@ -198,6 +239,10 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			$wpdb->esc_like( '_transient_wpp_file_' ) . '%',
 			$wpdb->esc_like( '_transient_timeout_wpp_file_' ) . '%'
 		) );
+	}
+
+	public function getOption( $option = null, $default = false ) {
+		return self::getReduxOption( $this->redux_opt_name, $option, $default );
 	}
 
 	/**
@@ -452,7 +497,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @return bool
 	 */
 	public static function checkCompatibility() {
-		if ( version_compare( phpversion(), '5.6', '<' ) ) {
+		if ( version_compare( phpversion(), static::$required_php_version, '<' ) ) {
 			return false;
 		}
 
@@ -460,7 +505,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function disabled_notice() {
-		echo '<strong>' . sprintf( esc_html__( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, '5.6', PHP_VERSION ) . '</strong>';
+		echo '<strong>' . sprintf( esc_html__( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, static::$required_php_version, PHP_VERSION ) . '</strong>';
 	}
 
 	/**
@@ -469,7 +514,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	public function activate() {
 		if ( ! self::checkCompatibility() ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( sprintf( __( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, '5.6', PHP_VERSION ) );
+			wp_die( sprintf( __( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, static::$required_php_version, PHP_VERSION ) );
 		}
 
 		//Setup default plugin folders
@@ -523,7 +568,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	static $reduxInstance;
 
-	public static function getReduxInstance() {
+	public static function getAReduxInstance() {
 		if ( empty( static::$reduxInstance ) ) {
 			ReduxConfig::loadRedux();
 			if ( ! class_exists( \ReduxFrameworkInstances::class, true ) ) {
