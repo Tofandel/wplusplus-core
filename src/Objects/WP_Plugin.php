@@ -29,7 +29,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	protected $is_muplugin = false;
 
-	protected $download_url;
+	protected $download_url = '';
 	protected $is_licensed = false;
 
 	protected function isLicenseValid() {
@@ -98,7 +98,19 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			$GLOBALS[ $this->class->getShortName() ] = $this;
 		}
 
+		$this->initUpdateChecker();
+
 		$this->setup();
+	}
+
+	public function initUpdateChecker() {
+		if ( ! empty( $this->getDownloadUrl() ) && is_admin() && ! wp_doing_ajax() ) {
+			\Puc_v4_Factory::buildUpdateChecker(
+				$this->getDownloadUrl(),
+				$this->file, //Full path to the main plugin file or functions.php.
+				$this->slug
+			);
+		}
 	}
 
 	public function getReduxOptName() {
@@ -127,14 +139,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			define( strtoupper( $this->class->getShortName() ) . '_TD', $this->text_domain );
 		}
 
-		if ( $comment && preg_match( '#download[- ]?url[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
+		/** @deprecated Overwrite the variable instead */
+		if ( empty( $this->download_url ) && $comment && preg_match( '#download[- ]?url[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
 			$this->download_url = trim( $matches[1] );
-			//require __DIR__ . '/../../vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
-			\Puc_v4_Factory::buildUpdateChecker(
-				$this->download_url,
-				$this->file, //Full path to the main plugin file or functions.php.
-				$this->slug
-			);
 		}
 	}
 
@@ -149,7 +156,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		$this->definitions();
 		$this->actionsAndFilters();
 
-		if ( is_admin() && ! ( isset ( $_POST['action'] ) && $_POST['action'] == 'heartbeat' ) ) {
+		if ( is_admin() && ! wp_doing_ajax() ||
+		     ( wp_doing_ajax() && isset ( $_POST['action'] ) &&
+		       ( $_POST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_POST['action'], 'redux' ) === 0 ) ) ) {
 			$this->_reduxOptions();
 			add_action( 'admin_init', [ $this, 'checkCompat' ] );
 			add_action( 'init', array( $this, 'removeDemoModeLink' ) );
@@ -177,7 +186,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 
-	public function removeDemoModeLink() { // Be sure to rename this function to something more unique
+	public function removeDemoModeLink() {
 		if ( class_exists( 'ReduxFrameworkPlugin' ) ) {
 			remove_filter( 'plugin_row_meta', array( ReduxFrameworkPlugin::get_instance(), 'plugin_metalinks' ), null );
 		}
@@ -574,24 +583,6 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	protected function downgrade( $last_version ) {
 	}
 
-	static $reduxInstance;
-
-	public static function getAReduxInstance() {
-		if ( empty( static::$reduxInstance ) ) {
-			ReduxConfig::loadRedux();
-			if ( ! class_exists( \ReduxFrameworkInstances::class, true ) ) {
-				return false;
-			}
-			$reduxInstances = \ReduxFrameworkInstances::get_all_instances();
-			if ( empty( $reduxInstances ) ) {
-				return false;
-			}
-			static::$reduxInstance = array_pop( $reduxInstances );
-		}
-
-		return true;
-	}
-
 	/**
 	 * @param $folder
 	 *
@@ -810,7 +801,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			$link .= "&subset=" . implode( ',', $subsets );
 		}
 
-		return "'" . $link . "'";
+		return $link;
 	}
 
 	const async_typography = false;
@@ -818,22 +809,29 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	private function getFonts() {
 		$fonts     = array();
-		$opt_fonts = array_filter( $this->getOption(), function ( $key ) {
+		$opt_fonts = array_filter( $GLOBALS[ $this->redux_opt_name ], function ( $key ) {
 			return strpos( $key, 'font-' ) === 0;
 		}, ARRAY_FILTER_USE_KEY );
 		foreach ( $opt_fonts as $key => $value ) {
 			if ( (bool) $value['google'] == true ) {
+				$value['font-family'] = str_replace( ' ', '+', $value['font-family'] );
 				if ( ! isset( $fonts[ $value['font-family'] ] ) ) {
 					$fonts[ $value['font-family'] ] = array(
-						'font-style' => array( $value['font-style'] ),
-						'subset'     => array( $value['subsets'] )
+						'font-style' => ! empty( $value['font-style'] ) ? array( $value['font-style'] ) : array(),
+						'subset'     => ! empty( $value['subsets'] ) ? array( $value['subsets'] ) : array()
 					);
 				} else {
-					$fonts[ $value['font-family'] ]['font-style'][] = $value['font-style'];
-					$fonts[ $value['font-family'] ]['subset'][]     = $value['subsets'];
+					if ( ! empty( $value['font-style'] ) ) {
+						$fonts[ $value['font-family'] ]['font-style'][] = $value['font-style'];
+					}
+					if ( ! empty( $value['subsets'] ) ) {
+						$fonts[ $value['font-family'] ]['subset'][] = $value['subsets'];
+					}
 				}
 			}
 		}
+
+		return $fonts;
 	}
 
 	public function enqueueReduxFonts() {
@@ -846,24 +844,21 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			foreach ( $fonts as $key => $value ) {
 				$families[] = $key;
 			}
-			?>
-			<script>
-				/* You can add more configuration options to webfontloader by previously defining the WebFontConfig with your options */
-				if (typeof WebFontConfig === "undefined") {
-					WebFontConfig = {};
-				}
-				WebFontConfig['google'] = {families: [<?php echo $this->makeGoogleWebfontString( $fonts ) ?>]};
-
-				(function () {
-					var wf = document.createElement('script');
-					wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.3/webfont.js';
-					wf.type = 'text/javascript';
-					wf.async = 'true';
-					var s = document.getElementsByTagName('script')[0];
-					s.parentNode.insertBefore(wf, s);
-				})();
-			</script>
-			<?php
+			$fonts = $this->makeGoogleWebfontString( $fonts );
+			echo <<<HTML
+<script>
+if (typeof WebFontConfig === "undefined") {var WebFontConfig = {};}
+WebFontConfig['google'] = {families: ['{$fonts}']};
+(function () {
+	var wf = document.createElement('script');
+	wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.3/webfont.js';
+	wf.type = 'text/javascript';
+	wf.async = true;
+	var s = document.getElementsByTagName('script')[0];
+	s.parentNode.insertBefore(wf, s);
+})();
+</script>
+HTML;
 		} elseif ( ! static::disable_google_fonts_link ) {
 			wp_enqueue_style( 'redux-google-fonts-' . $this->redux_opt_name, $this->makeGoogleWebfontLink( $fonts ), '', $this->version );
 		}

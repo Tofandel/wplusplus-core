@@ -18,41 +18,47 @@ use Tofandel\Core\Traits\Singleton;
 abstract class WP_Theme extends WP_Plugin implements \Tofandel\Core\Interfaces\WP_Theme {
 	use Singleton;
 
+	/**
+	 * @var \WP_Theme
+	 */
+	protected $theme = null;
+	/**
+	 * @var \WP_Theme
+	 */
 	protected $parent = false;
+	/**
+	 * @var \WP_Theme
+	 */
+	protected $child = false;
 
 	/** @noinspection PhpMissingParentConstructorInspection */
 
 	/**
 	 * Plugin constructor.
 	 *
-	 * @param $parent
-	 *
 	 * @throws Exception
 	 */
-	public function __construct( $parent = false ) {
-		$this->parent = $parent;
-
+	public function __construct() {
 		$this->class = new ReflectionClass( $this );
-		$this->slug  = $this->class->getShortName();
-		$this->file  = $parent ? get_stylesheet() : get_template();
+		$this->file  = $this->class->getFileName();
+		$this->slug  = basename( dirname( $this->file ) );
 
-		$comment = '';
+		$this->theme = wp_get_theme( $this->slug );
 
-		$fh = fopen( $this->file, 'rb' );
-
-		for ( $i = 0; $i < 20; $i ++ ) {
-			$comment .= fgets( $fh );
-		}
-		fclose( $fh );
-
-		if ( preg_match( '#^/\*!?(.*?)\*/#', $comment, $match ) ) {
-			$comment = $match[1];
+		// Get parent theme info if this theme is a child theme
+		if ( $this->theme->parent() ) {
+			$this->parent = wp_get_theme( $this->theme->parent() );
+			$this->file   = $this->theme->get_stylesheet();
 		} else {
-			$comment = false;
+			$this->child = wp_get_theme( $this->theme->get_stylesheet() );
+			$this->file  = $this->theme->get_template();
 		}
 
-		$this->extractFromComment( $comment );
+		$this->version     = $this->theme->version;
+		$this->name        = $this->theme->name;
+		$this->text_domain = $this->theme->get( 'TextDomain' );
 
+		$this->initUpdateChecker();
 		$this->setup();
 	}
 
@@ -76,6 +82,7 @@ abstract class WP_Theme extends WP_Plugin implements \Tofandel\Core\Interfaces\W
 	 * Prepare theme internationalisation
 	 */
 	public function loadTextdomain() {
+		$this->theme->load_textdomain();
 		$this->parent ? load_child_theme_textdomain( $this->getTextDomain(), $this->folder( '/languages/' ) ) :
 			load_theme_textdomain( $this->getTextDomain(), $this->folder( '/languages/' ) );
 	}
