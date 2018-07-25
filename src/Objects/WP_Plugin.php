@@ -154,7 +154,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			add_action( 'admin_init', [ $this, 'checkCompat' ] );
 			add_action( 'init', array( $this, 'removeDemoModeLink' ) );
 		} else {
+			$GLOBALS[ $this->redux_opt_name ] = get_option( $this->redux_opt_name );
 			do_action( 'redux_not_loaded' );
+			add_action( 'wp_enqueue_scripts', [ $this, 'enqueueReduxFonts' ], 999 );
 		}
 
 		if ( ! add_option( $this->slug . '_version', $this->version ) ) {
@@ -254,6 +256,12 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	public static function getReduxOption( $opt_name, $option = null, $default = false ) {
 		static $options = array();
+
+		if ( ! isset( $options[ $opt_name ] ) ) {
+			if ( isset( $GLOBALS[ $opt_name ] ) ) {
+				$options[ $opt_name ] = $GLOBALS[ $opt_name ];
+			}
+		}
 
 		if ( ! isset( $options[ $opt_name ] ) ) {
 			$options[ $opt_name ] = get_option( $opt_name, array() );
@@ -718,5 +726,146 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		}
 
 		return false;
+	}
+
+	/** To enqueue redux fonts since we disable it on front for performance */
+
+	/**
+	 * makeGoogleWebfontLink Function.
+	 * Creates the google fonts link.
+	 *
+	 * @since ReduxFramework 3.0.0
+	 */
+	private function makeGoogleWebfontLink( $fonts ) {
+		$link    = "";
+		$subsets = array();
+
+		foreach ( $fonts as $family => $font ) {
+			if ( ! empty( $link ) ) {
+				$link .= "%7C"; // Append a new font to the string
+			}
+			$link .= $family;
+
+			if ( ! empty( $font['font-style'] ) || ! empty( $font['all-styles'] ) ) {
+				$link .= ':';
+				if ( ! empty( $font['all-styles'] ) ) {
+					$link .= implode( ',', $font['all-styles'] );
+				} else if ( ! empty( $font['font-style'] ) ) {
+					$link .= implode( ',', $font['font-style'] );
+				}
+			}
+
+			if ( ! empty( $font['subset'] ) ) {
+				foreach ( $font['subset'] as $subset ) {
+					if ( ! in_array( $subset, $subsets ) ) {
+						array_push( $subsets, $subset );
+					}
+				}
+			}
+		}
+
+		if ( ! empty( $subsets ) ) {
+			$link .= "&subset=" . implode( ',', $subsets );
+		}
+
+
+		return '//fonts.googleapis.com/css?family=' . str_replace( '|', '%7C', $link );
+	}
+
+	/**
+	 * makeGoogleWebfontString Function.
+	 * Creates the google fonts link.
+	 *
+	 * @since ReduxFramework 3.1.8
+	 */
+	private function makeGoogleWebfontString( $fonts ) {
+		$link    = "";
+		$subsets = array();
+
+		foreach ( $fonts as $family => $font ) {
+			if ( ! empty( $link ) ) {
+				$link .= "', '"; // Append a new font to the string
+			}
+			$link .= $family;
+
+			if ( ! empty( $font['font-style'] ) || ! empty( $font['all-styles'] ) ) {
+				$link .= ':';
+				if ( ! empty( $font['all-styles'] ) ) {
+					$link .= implode( ',', $font['all-styles'] );
+				} else if ( ! empty( $font['font-style'] ) ) {
+					$link .= implode( ',', $font['font-style'] );
+				}
+			}
+
+			if ( ! empty( $font['subset'] ) ) {
+				foreach ( $font['subset'] as $subset ) {
+					if ( ! in_array( $subset, $subsets ) ) {
+						array_push( $subsets, $subset );
+					}
+				}
+			}
+		}
+
+		if ( ! empty( $subsets ) ) {
+			$link .= "&subset=" . implode( ',', $subsets );
+		}
+
+		return "'" . $link . "'";
+	}
+
+	const async_typography = false;
+	const disable_google_fonts_link = false;
+
+	private function getFonts() {
+		$fonts     = array();
+		$opt_fonts = array_filter( $this->getOption(), function ( $key ) {
+			return strpos( $key, 'font-' ) === 0;
+		}, ARRAY_FILTER_USE_KEY );
+		foreach ( $opt_fonts as $key => $value ) {
+			if ( (bool) $value['google'] == true ) {
+				if ( ! isset( $fonts[ $value['font-family'] ] ) ) {
+					$fonts[ $value['font-family'] ] = array(
+						'font-style' => array( $value['font-style'] ),
+						'subset'     => array( $value['subsets'] )
+					);
+				} else {
+					$fonts[ $value['font-family'] ]['font-style'][] = $value['font-style'];
+					$fonts[ $value['font-family'] ]['subset'][]     = $value['subsets'];
+				}
+			}
+		}
+	}
+
+	public function enqueueReduxFonts() {
+		$fonts = $this->getFonts();
+		if ( empty( $fonts ) ) {
+			return;
+		}
+		if ( static::async_typography ) {
+			$families = array();
+			foreach ( $fonts as $key => $value ) {
+				$families[] = $key;
+			}
+			?>
+			<script>
+				/* You can add more configuration options to webfontloader by previously defining the WebFontConfig with your options */
+				if (typeof WebFontConfig === "undefined") {
+					WebFontConfig = {};
+				}
+				WebFontConfig['google'] = {families: [<?php echo $this->makeGoogleWebfontString( $fonts ) ?>]};
+
+				(function () {
+					var wf = document.createElement('script');
+					wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.3/webfont.js';
+					wf.type = 'text/javascript';
+					wf.async = 'true';
+					var s = document.getElementsByTagName('script')[0];
+					s.parentNode.insertBefore(wf, s);
+				})();
+			</script>
+			<?php
+		} elseif ( ! static::disable_google_fonts_link ) {
+			wp_enqueue_style( 'redux-google-fonts-' . $this->redux_opt_name, $this->makeGoogleWebfontLink( $fonts ), '', $this->version );
+		}
 	}
 }

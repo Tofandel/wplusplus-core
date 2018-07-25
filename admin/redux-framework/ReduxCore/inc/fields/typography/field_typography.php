@@ -291,26 +291,21 @@ if ( ! class_exists( 'ReduxFramework_typography' ) ) {
 					'900' => 'Bolder'
 				);
 
-				if ( isset( $gfonts[ $this->value['font-family'] ] ) ) {
-					foreach ( $gfonts[ $this->value['font-family'] ]['variants'] as $v ) {
-						echo '<option value="' . $v['id'] . '" ' . selected( $this->value['subsets'], $v['id'], false ) . '>' . $v['name'] . '</option>';
-					}
-				} else {
-					if ( ! isset( $this->value['font-weight'] ) && isset( $this->value['subsets'] ) ) {
-						$this->value['font-weight'] = $this->value['subsets'];
+
+				if ( ! isset( $this->value['font-weight'] ) && isset( $this->value['subsets'] ) ) {
+					$this->value['font-weight'] = $this->value['subsets'];
+				}
+
+				foreach ( $nonGStyles as $i => $style ) {
+					if ( ! isset( $this->value['font-weight'] ) ) {
+						$this->value['font-weight'] = false;
 					}
 
-					foreach ( $nonGStyles as $i => $style ) {
-						if ( ! isset( $this->value['font-weight'] ) ) {
-							$this->value['font-weight'] = false;
-						}
-
-						if ( ! isset( $this->value['subsets'] ) ) {
-							$this->value['subsets'] = false;
-						}
-
-						echo '<option value="' . $i . '" ' . selected( $this->value['font-weight'], $i, false ) . '>' . $style . '</option>';
+					if ( ! isset( $this->value['subsets'] ) ) {
+						$this->value['subsets'] = false;
 					}
+
+					echo '<option value="' . $i . '" ' . selected( $this->value['font-weight'], $i, false ) . '>' . $style . '</option>';
 				}
 
 				echo '</select></div>';
@@ -326,12 +321,6 @@ if ( ! class_exists( 'ReduxFramework_typography' ) ) {
 
 				if ( empty( $this->value['subsets'] ) ) {
 					echo '<option value=""></option>';
-				}
-
-				if ( isset( $gfonts[ $this->value['font-family'] ] ) ) {
-					foreach ( $gfonts[ $this->value['font-family'] ]['subsets'] as $v ) {
-						echo '<option value="' . $v['id'] . '" ' . selected( $this->value['subsets'], $v['id'], false ) . '>' . $v['name'] . '</option>';
-					}
 				}
 
 				echo '</select></div>';
@@ -666,16 +655,12 @@ if ( ! class_exists( 'ReduxFramework_typography' ) ) {
 				unset ( $this->field['all_styles'] );
 			}
 
-			// Check for font-backup.  If it's set, stick it on a variabhle for
+			// Check for font-backup.  If it's set, stick it on a variable for
 			// later use.
 			if ( ! empty( $font['font-family'] ) && ! empty( $font['font-backup'] ) ) {
 				$font['font-family'] = str_replace( ', ' . $font['font-backup'], '', $font['font-family'] );
 				$fontBackup          = ',' . $font['font-backup'];
 			}
-
-//                if (strpos($font['font-family'], ' ')) {
-//                    $font['font-family'] = '"' . $font['font-family'] . '"';
-//                }
 
 			$style = '';
 
