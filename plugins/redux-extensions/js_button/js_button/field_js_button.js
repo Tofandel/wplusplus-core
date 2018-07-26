@@ -43,7 +43,7 @@
 				redux.field_objects.js_button.modInit(el);
 
 				// Get the button handle
-				var button = $(el).find('input#' + redux.field_objects.js_button.mainID + '_input');
+				var button = $(el).find('input.redux-js-button');
 
 				$.each(button, function (key, value) {
 					$(value).on("click", function (e) {

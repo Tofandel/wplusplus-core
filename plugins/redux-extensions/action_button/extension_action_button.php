@@ -75,11 +75,30 @@ if ( ! class_exists( 'ReduxFramework_extension_action_button' ) ) {
 			// Set instance
 			self::$theInstance = $this;
 
+			foreach ( $this->parent->sections as $section ) {
+				if ( isset( $section['type'] ) && $section['type'] ) {
+
+				}
+			}
+
 			// Adds the local field
 			add_filter( 'redux/' . $this->parent->args['opt_name'] . '/field/class/' . $this->field_name, array(
 				&$this,
 				'overload_field_path'
 			) );
+		}
+
+		private function setAjaxHooks( $sections ) {
+			if ( is_array( $sections ) ) {
+				foreach ( $sections as $section ) {
+					if ( isset( $section['type'] ) && $section['type'] == $this->field_name ) {
+						add_action( 'wp_ajax_redux' );
+					}
+					if ( isset( $section['fields'] ) ) {
+						$this->setAjaxHooks( $section['fields'] );
+					}
+				}
+			}
 		}
 
 		static public function getInstance() {

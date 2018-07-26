@@ -175,23 +175,25 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	protected function extractFromComment( $comment ) {
 
 		//Read the version of the plugin from the comments
-		if ( $comment && preg_match( '#version[: ]*([0-9\.]+)#i', $comment, $matches ) ) {
+		if ( empty( $this->version ) && $comment && preg_match( '#version[: ]*([0-9\.]+)#i', $comment, $matches ) ) {
 			$this->version = trim( $matches[1] );
-		} else {
+		} elseif ( empty( $this->version ) ) {
 			$this->version = '1.0';
 		}
 
 		//Read the name of the plugin from the comments
-		if ( $comment && preg_match( '#(?:plugin|theme)[- ]?name[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
+		if ( empty( $this->name ) && $comment && preg_match( '#(?:plugin|theme)[- ]?name[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
 			$this->name = trim( $matches[1] );
-		} else {
+		} elseif ( empty( $this->name ) ) {
 			$this->name = $this->slug;
 		}
 
 		//Read the text domain of the plugin from the comments
-		if ( $comment && preg_match( '#text[- ]?domain[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
+		if ( empty( $this->text_domain ) && $comment && preg_match( '#text[- ]?domain[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
 			$this->text_domain = trim( $matches[1] );
 			define( strtoupper( $this->class->getShortName() ) . '_TD', $this->text_domain );
+		} elseif ( empty( $this->text_domain ) ) {
+			$this->text_domain = $this->slug;
 		}
 
 		/** @deprecated Overwrite the variable instead */
@@ -492,10 +494,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		}
 		if ( wp_script_is( $name, 'registered' ) ) {
 			if ( ! empty( $localize ) ) {
-				wp_localize_script( $name, str_replace( array(
-					'-',
-					'.'
-				), '_', $name ), array_merge( array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ), $localize ) );
+				wp_localize_script( $name, str_replace( '-', '_', $this->slug . '.' . str_replace( '.', '_', $name ) ), array_merge( array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ), $localize ) );
 			}
 		} else {
 			$file = false;

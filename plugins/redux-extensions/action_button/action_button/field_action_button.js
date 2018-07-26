@@ -39,34 +39,21 @@
 				}
 
 				// Get the button handle
-				var button = $(el).find('input#' + redux.field_objects.action_button.mainID + '_input');
+				var button = $(el).find('button.redux-action-button');
 
 				$.each(button, function (key, value) {
 					$(value).on("click", function (e) {
-						var data = {
-							action: 'redux_action_button',
-							nonce: redux.field_objects.action_button.nonce,
-							field_id: field_id
-						};
-						$.post(redux_ajax_script.ajaxurl, data, function (response) {
-						});
-						var funcName = $(value).data('function');
-
 						// Not really needed, but just in case.
 						e.preventDefault();
-
-						if (funcName !== '') {
-							// Ensure custom function exists
-							if (typeof(window[funcName]) === "function") {
-
-								// Add it to the window object and execute
-								window[funcName]();
-							} else {
-
-								// Let the dev know he fucked up someplace.
-								throw("JS Button Error.  Function " + funcName + " does not exist.");
-							}
-						}
+						var field_id = $(this).closest('.redux-action-button-container').data('id'),
+							button_id = $(this).data('id'),
+							data = {
+								action: 'redux_action_button_' + field_id,
+								nonce: redux.field_objects.action_button.nonce,
+								button_id: button_id
+							};
+						$.post(redux_ajax_script.ajaxurl, data, function (response) {
+						});
 					});
 				});
 			}

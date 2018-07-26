@@ -58,55 +58,37 @@ if ( ! class_exists( 'ReduxFramework_js_button' ) ) {
 		 * @return      void
 		 */
 		public function render() {
-			$field_id = $this->field['id'];
-			$dev_mode = $this->parent->args['dev_mode'];
-			$dev_tag  = '';
-
-			// Set dev_mode data, if active.
-			if ( true == $dev_mode ) {
-				$dev_tag = ' data-dev-mode="' . $this->parent->args['dev_mode'] . '"
-                            data-version="' . ReduxFramework_extension_js_button::$version . '"';
-			}
-
-			// primary container
-			echo
-				'<div
-                class="redux-js-button-container ' . $this->field['class'] . '"
-                id="' . $field_id . '_container"
-                data-id="' . $field_id . '"' .
-				$dev_tag . '
-                style="width: 0px;"
-            >';
-
 			// Button render.
 			if ( isset( $this->field['buttons'] ) && is_array( $this->field['buttons'] ) ) {
-				echo
-				'<div 
-                    class="redux-js-button-button-container" 
-                    id="redux-js-button-button-container"
-                    style="display: inline-flex;"
-                >';
+				$field_id = $this->field['id'];
+				$dev_mode = $this->parent->args['dev_mode'];
+				$dev_tag  = '';
+
+				// Set dev_mode data, if active.
+				if ( true == $dev_mode ) {
+					$dev_tag = ' data-dev-mode="' . $this->parent->args['dev_mode'] . '"
+                            data-version="' . ReduxFramework_extension_js_button::$version . '"';
+				}
+
+				// primary container
+				echo <<<HTML
+<div class="redux-js-button-container {$this->field['class']}" id="{$field_id}_container" data-id="{$field_id}" {$dev_tag} style="display: inline-flex;">
+HTML;
 
 				foreach ( $this->field['buttons'] as $idx => $arr ) {
 					$button_text  = $arr['text'];
 					$button_class = $arr['class'];
 					$button_func  = $arr['function'];
 
-					echo
-						'<input
-                        id="' . $field_id . '_input"
-                        class="hide-if-no-js button ' . $button_class . '"
-                        type="button"
-                        data-function="' . $button_func . '"
-                        value="' . $button_text . '"
-                    />&nbsp;&nbsp;';
+					echo <<<HTML
+<input id="{$field_id}_input_{$idx}" class="hide-if-no-js button redux-js-button {$button_class}" type="button" data-function="{$button_func}" value="{$button_text}">&nbsp;&nbsp;
+HTML;
 				}
 
+				// Close container
 				echo '</div>';
 			}
 
-			// Close container
-			echo '</div>';
 		}
 
 		/**

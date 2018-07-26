@@ -46,7 +46,6 @@ if ( ! class_exists( 'ReduxFramework_extension_js_button' ) ) {
 		public static $theInstance;
 		public static $ext_url;
 		public $field_id = '';
-		private $class_css = '';
 
 		/**
 		 * Class Constructor. Defines the args for the extions class
@@ -60,7 +59,7 @@ if ( ! class_exists( 'ReduxFramework_extension_js_button' ) ) {
 		 */
 		public function __construct( $parent ) {
 
-			$redux_ver = ReduxFramework::$_version;
+			ReduxFramework::$_version;
 
 			// Set parent object
 			$this->parent = $parent;

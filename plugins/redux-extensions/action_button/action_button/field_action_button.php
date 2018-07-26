@@ -46,13 +46,24 @@ if ( ! class_exists( 'ReduxFramework_action_button' ) ) {
 			$this->field  = $field;
 			$this->value  = $value;
 
+
+			if ( empty( $this->field['buttons'] ) ) {
+				$this->field['buttons'] = array(
+					array(
+						'id'       => $field['id'],
+						'text'     => $field['title'],
+						'function' => $field['function']
+					)
+				);
+			}
+
 			// Set extension dir & url
 			if ( empty( $this->extension_dir ) ) {
 				$this->extension_dir = trailingslashit( str_replace( '\\', '/', dirname( __FILE__ ) ) );
 				$this->extension_url = site_url( str_replace( trailingslashit( str_replace( '\\', '/', ABSPATH ) ), '', $this->extension_dir ) );
 			}
 
-			add_action( 'wp_ajax_redux_action_button', [ $this, 'do_action' ] );
+			add_action( 'wp_ajax_redux_action_button_' . $field['id'], [ $this, 'do_action' ] );
 		}
 
 		public function do_action() {
@@ -61,8 +72,10 @@ if ( ! class_exists( 'ReduxFramework_action_button' ) ) {
 				die( 0 );
 			}
 
-			$field_id = $_POST['field_id'];
+			$button_id = $_POST['button_id'];
 			var_dump( $this->field );
+
+			die();
 		}
 
 		/**
@@ -77,30 +90,25 @@ if ( ! class_exists( 'ReduxFramework_action_button' ) ) {
 		public function render() {
 			$field_id = $this->field['id'];
 
-			// primary container
-			echo <<<HTML
-<div class="redux-action-button-container {$this->field['class']}" id="{$field_id}_container" data-id="{$field_id}" style="width: 0;">
-HTML;
-
 			// Button render.
-			if ( isset( $this->field['buttons'] ) && is_array( $this->field['buttons'] ) ) {
-				echo
-				'<div class="redux-action-button-container" id="redux-action-button-container" style="display: inline-flex;">';
-
+			if ( ! empty( $this->field['buttons'] ) && is_array( $this->field['buttons'] ) ) {
+				// primary container
+				echo <<<HTML
+<div class="redux-action-button-container {$this->field['class']}" id="{$field_id}_container" data-id="{$field_id}" style="display: inline-flex;">
+HTML;
 				foreach ( $this->field['buttons'] as $idx => $arr ) {
+					$button_id    = $arr['id'];
 					$button_text  = $arr['text'];
-					$button_class = $arr['class'];
+					$button_class = isset( $arr['class'] ) ? $arr['class'] : '';
 
 					echo <<<HTML
-<input id="{$field_id}_input" class="hide-if-no-js button {$button_class}" type="button" value="{$button_text}">&nbsp;&nbsp;
+<button id="redux_{$button_id}_button" class="hide-if-no-js button redux-action-button {$button_class}" type="button" data-id="{$button_id}">{$button_text}</button>&nbsp;&nbsp;
 HTML;
 				}
 
+				// Close container
 				echo '</div>';
 			}
-
-			// Close container
-			echo '</div>';
 		}
 
 		/**
@@ -113,41 +121,6 @@ HTML;
 		 * @return      void
 		 */
 		public function enqueue() {
-			// Make sure script data exists first
-			if ( isset( $this->field['script'] ) && ! empty( $this->field['script'] ) ) {
-
-				// URI location of script to enqueue
-				$script_url = isset( $this->field['script']['url'] ) ? $this->field['script']['url'] : '';
-
-				// Get deps, if any
-				$script_dep = isset( $this->field['script']['dep'] ) ? $this->field['script']['dep'] : array();
-
-				// Get ver, if any
-				$script_ver = isset( $this->field['script']['ver'] ) ? $this->field['script']['ver'] : time();
-
-				// Script location in HTML
-				$script_footer = isset( $this->field['script']['in_footer'] ) ? $this->field['script']['in_footer'] : true;
-
-				// If a script exists, enqueue it.
-				if ( $script_url != '' ) {
-					wp_enqueue_script(
-						'redux-action-button-' . $this->field['id'] . '-js',
-						$script_url,
-						$script_dep,
-						$script_ver,
-						$script_footer
-					);
-				}
-
-				if ( isset( $this->field['enqueue_ajax'] ) && $this->field['enqueue_ajax'] ) {
-					wp_localize_script(
-						'redux-action-button-' . $this->field['id'] . '-js',
-						'redux_ajax_script',
-						array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) )
-					);
-				}
-			}
-
 			// Set up min files for dev_mode = false.
 			$min = Redux_Functions::isMin();
 
@@ -158,6 +131,11 @@ HTML;
 				array( 'jquery' ),
 				time(),
 				true
+			);
+			wp_localize_script(
+				'redux-field-action-button-js',
+				'redux_ajax_script',
+				array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) )
 			);
 		}
 	}

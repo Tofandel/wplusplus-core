@@ -275,11 +275,6 @@ if ( ! class_exists( 'Redux' ) ) {
 						$section['id'] = time();
 					}
 				}
-				if ( ! isset( $section['id'] ) ) {
-					print_r( $section );
-					echo "DOVY";
-				}
-
 				if ( isset( self::$sections[ $opt_name ][ $section['id'] ] ) ) {
 					$orig = $section['id'];
 					$i    = 0;
