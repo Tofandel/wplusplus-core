@@ -11,6 +11,7 @@ namespace Tofandel\Core\Objects;
 
 class ShortcodeParameter {
 	protected $name;
+	protected $label;
 	protected $description;
 	protected $type;
 	protected $default;
@@ -18,27 +19,43 @@ class ShortcodeParameter {
 
 	private $vc_mapping = array(
 		self::T_RAWHTML => 'textarea_raw_html',
-		self::T_LINK    => 'vc_link'
+		self::T_LINK    => 'vc_link',
+		self::T_IMAGE   => 'attach_image',
+		self::T_IMAGES  => 'attach_images'
 	);
+
+	const T_HIDDEN = 'hidden';
+	const T_WARNING = 'warning';
 
 	const T_CHOICE = 'dropdown';
 	const T_BOOL = 'checkbox';
 	const T_TEXT = 'textfield';
 	const T_LONGTEXT = 'textarea';
-	const T_IMAGE = 'attach_image';
-	const T_IMAGES = 'attach_images';
+	const T_NUMBER = 'number';
+	const T_IMAGE = 'image';
+	const T_IMAGES = 'images';
 	const T_COLOR = 'colorpicker';
-	const T_RAWHTML = 'raw_html';
+	const T_RAWHTML = 'rawhtml';
 	const T_LINK = 'link';
 	const T_CSS = 'css';
+
 	const T_PAGE = 'page';
 	const T_POST = 'post';
 
 
-	public function __construct( $name, $type, $default = '' ) {
+	public function __construct( $name, $label, $type, $default = '' ) {
 		$this->name    = $name;
+		$this->label   = $label;
 		$this->type    = $type;
 		$this->default = $default;
+	}
+
+	public function getName() {
+		return $this->name;
+	}
+
+	public function setLabel( $label ) {
+		$this->label = $label;
 	}
 
 	public function setDescription( $description ) {
@@ -49,7 +66,12 @@ class ShortcodeParameter {
 		$this->options = $options;
 	}
 
-	public function MapToVC() {
+
+	public function mapToVC() {
 		//TODO
+	}
+
+	public function mapToDoc() {
+
 	}
 }

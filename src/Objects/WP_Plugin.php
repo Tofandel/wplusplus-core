@@ -5,6 +5,7 @@ namespace Tofandel\Core\Objects;
 use Exception;
 use ReduxFrameworkPlugin;
 use ReflectionClass;
+use Tofandel\Core\Interfaces\SubModule;
 use Tofandel\Core\Traits\Singleton;
 
 
@@ -31,6 +32,42 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	protected $download_url = '';
 	protected $is_licensed = false;
+
+	/**
+	 * @var SubModule[]
+	 */
+	private $modules = array();
+
+	public function getModule( $name ) {
+		return isset( $this->modules[ $name ] ) ? $this->modules[ $name ] : null;
+	}
+
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * @param SubModule $submodule
+	 */
+	public function setSubModule( $submodule ) {
+		if ( $submodule instanceof SubModule ) {
+			try {
+				$reflection                                   = new ReflectionClass( $submodule );
+				$this->modules[ $reflection->getShortName() ] = $submodule;
+			} catch ( \ReflectionException $exception ) {
+				error_log( $exception->getMessage() );
+			}
+		}
+	}
+
+	/**
+	 * @param SubModule[] $submodules
+	 */
+	public function setSubModules( array $submodules ) {
+		foreach ( $submodules as $module ) {
+			$this->setSubModule( $module );
+		}
+	}
 
 	protected function isLicenseValid() {
 
@@ -86,7 +123,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 		$version = get_option( $this->slug . '_version' );
 		if ( version_compare( $version, $this->version, '!=' ) ) {
-			add_action( 'init', [ $this, 'activate' ], 1 );
+			add_action( 'init', [ $this, 'activated' ], 1 );
 		}
 
 		if ( ! isset( $this->redux_opt_name ) ) {
@@ -150,11 +187,14 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	protected function setup() {
 		add_action( 'plugins_loaded', array( $this, 'loadTextdomain' ) );
-		register_activation_hook( $this->file, array( $this, 'activate' ) );
+		register_activation_hook( $this->file, array( $this, 'activated' ) );
 		register_deactivation_hook( $this->file, array( $this, 'deactivate' ) );
 		register_uninstall_hook( $this->file, get_called_class() . '::uninstallHook' );
 		$this->definitions();
 		$this->actionsAndFilters();
+		foreach ( $this->modules as $module ) {
+			$module->actionsAndFilters();
+		}
 
 		if ( is_admin() && ! wp_doing_ajax() ||
 		     ( wp_doing_ajax() && isset ( $_POST['action'] ) &&
@@ -189,8 +229,6 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	public function removeDemoModeLink() {
 		if ( class_exists( 'ReduxFrameworkPlugin' ) ) {
 			remove_filter( 'plugin_row_meta', array( ReduxFrameworkPlugin::get_instance(), 'plugin_metalinks' ), null );
-		}
-		if ( class_exists( 'ReduxFrameworkPlugin' ) ) {
 			remove_action( 'admin_notices', array( ReduxFrameworkPlugin::get_instance(), 'admin_notices' ) );
 		}
 	}
@@ -207,6 +245,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * Add actions and filters here
 	 */
 	abstract public function actionsAndFilters();
+
 
 	/**
 	 * @throws \ReflectionException
@@ -237,9 +276,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 
-	public function pluginName() {
-		return esc_html__( str_replace( array( '-', '_' ), ' ', (string) $this ) );
-	}
+	//public function pluginName() {
+	//	return esc_html__( str_replace( array( '-', '_' ), ' ', (string) $this ) );
+	//}
 
 	public static function deleteTransients() {
 		global $wpdb;
@@ -528,10 +567,14 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	/**
 	 * Called function on plugin activation
 	 */
-	public function activate() {
+	public function activated() {
 		if ( ! self::checkCompatibility() ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 			wp_die( sprintf( __( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, static::$required_php_version, PHP_VERSION ) );
+		}
+
+		foreach ( $this->modules as $module ) {
+			$module->activated();
 		}
 
 		//Setup default plugin folders
@@ -544,15 +587,22 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	private function multisiteUpgrade( $last_version ) {
 		if ( ! is_multisite() ) {
-			$this->upgrade( $last_version );
+			$this->_upgrade( $last_version );
 		} else {
 			$sites = get_sites();
 			foreach ( $sites as $site ) {
 				switch_to_blog( $site->blog_id );
-				$this->upgrade( $last_version );
+				$this->_upgrade( $last_version );
 				restore_current_blog();
 			}
 		}
+	}
+
+	private function _upgrade( $last_version ) {
+		foreach ( $this->modules as $module ) {
+			$module->upgrade( $last_version );
+		}
+		$this->upgrade( $last_version );
 	}
 
 	/**

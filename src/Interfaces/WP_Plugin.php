@@ -18,6 +18,16 @@ namespace Tofandel\Core\Interfaces;
  */
 interface WP_Plugin {
 	/**
+	 * @param SubModule $module
+	 */
+	public function setSubModule( $module );
+
+	/**
+	 * @param SubModule[] $modules
+	 */
+	public function setSubModules( array $modules );
+
+	/**
 	 * Add the tables and settings and any plugin variable specifics here
 	 *
 	 * @return void
@@ -28,8 +38,6 @@ interface WP_Plugin {
 	 * Add actions and filters here
 	 */
 	public function actionsAndFilters();
-
-	public function pluginName();
 
 	/**
 	 * Searchs if a file exists in the plugin folder (minified or not)
@@ -97,7 +105,7 @@ interface WP_Plugin {
 	/**
 	 * Called function on plugin activation
 	 */
-	public function activate();
+	public function activated();
 
 	public function mkdir( $folder );
 

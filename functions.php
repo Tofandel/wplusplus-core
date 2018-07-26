@@ -698,6 +698,38 @@ function wpp_is_integer( $val ) {
 	return is_float( $val ) ? false : preg_match( '~^((?:\+|-)?[0-9]+)$~', $val );
 }
 
+
+function wpp_is_plugin_active( $plugin ) {
+	return in_array( $plugin, (array) get_option( 'active_plugins', array() ) ) || wpp_is_plugin_active_for_network( $plugin );
+}
+
+/**
+ * Check whether the plugin is active for the entire network.
+ *
+ * Only plugins installed in the plugins/ folder can be active.
+ *
+ * Plugins in the mu-plugins/ folder can't be "activated," so this function will
+ * return false for those plugins.
+ *
+ * @since 3.0.0
+ *
+ * @param string $plugin Path to the main plugin file from plugins directory.
+ *
+ * @return bool True, if active for the network, otherwise false.
+ */
+function wpp_is_plugin_active_for_network( $plugin ) {
+	if ( ! is_multisite() ) {
+		return false;
+	}
+
+	$plugins = get_site_option( 'active_sitewide_plugins' );
+	if ( isset( $plugins[ $plugin ] ) ) {
+		return true;
+	}
+
+	return false;
+}
+
 function wpp_slugify( $string, $slashes = true ) {
 	//Lower case everything
 	$string         = mb_strtolower( $string );
@@ -747,7 +779,7 @@ function wpp_slugify( $string, $slashes = true ) {
 	if ( $slashes ) {
 		$normalizeChars['/'] = '-';
 	}
-	$string         = strtr( $string, $normalizeChars );
+	$string = strtr( $string, $normalizeChars );
 	//Make alphanumeric (removes all other characters)
 	$string = preg_replace( "/[^a-z0-9_" . ( $slashes ? '' : '\/' ) . "-]/", "", $string );
 	//Clean up multiple dashes or whitespaces
@@ -850,22 +882,25 @@ function wpp_group_by( $array, $path ) {
 
 /**
  * Recursive remove empty elements from array
+ *
  * @param array
+ *
  * @return array
  */
-function wpp_remove_empty_elements($array){
-	foreach ((array)$array as $key=>$value){
-		if (is_array($value)){
-			if (empty($value)){
-				unset($array[$key]);
+function wpp_remove_empty_elements( $array ) {
+	foreach ( (array) $array as $key => $value ) {
+		if ( is_array( $value ) ) {
+			if ( empty( $value ) ) {
+				unset( $array[ $key ] );
 			} else {
-				$array[$key] = wpp_remove_empty_elements($value);
+				$array[ $key ] = wpp_remove_empty_elements( $value );
 			}
 		} else {
-			if (empty($value)){
-				unset($array[$key]);
+			if ( empty( $value ) ) {
+				unset( $array[ $key ] );
 			}
 		}
 	}
+
 	return $array;
 }

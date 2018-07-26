@@ -22,10 +22,13 @@ trait WP_Shortcode {
 	public static function __init__() {
 		self::__baseInit__();
 
-		static::$_name = strtolower( static::$reflectionClass->getShortName() );
+		if ( ! static::$reflectionClass->implementsInterface( \Tofandel\Core\Interfaces\WP_Shortcode::class ) ) {
+			return;
+		}
+
+		static::$_name = static::$reflectionClass->getShortName();
 
 		new \Tofandel\Core\Objects\WP_Shortcode( static::$_name, [ static::class, 'shortcode' ], static::$atts );
-		//add_shortcode( self::$_name, [ self::class, 'do_shortcode' ] );
 	}
 
 	/**
@@ -35,7 +38,7 @@ trait WP_Shortcode {
 	 *
 	 * @return string
 	 */
-	abstract public static function shortcode( $attributes, $content, $name );
+	//abstract public function shortcode( $attributes, $content, $name );
 
 	/**
 	 * @return mixed

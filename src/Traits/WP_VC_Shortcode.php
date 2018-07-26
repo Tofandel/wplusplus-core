@@ -59,7 +59,11 @@ trait WP_VC_Shortcode {
 	public static function __init__() {
 		self::__baseInit__();
 
-		static::$_name = strtolower( static::$reflectionClass->getShortName() );
+		if ( ! static::$reflectionClass->implementsInterface( \Tofandel\Core\Interfaces\WP_Shortcode::class ) ) {
+			return;
+		}
+
+		static::$_name = static::$reflectionClass->getShortName();
 
 		static::$vc_params = array_merge( array(
 			'base' => static::$_name

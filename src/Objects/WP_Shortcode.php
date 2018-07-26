@@ -29,6 +29,7 @@ class WP_Shortcode {
 		$this->default_atts = $default_atts;
 
 		add_shortcode( $name, [ $this, 'call' ] );
+		add_shortcode( $this->name, [ $this, 'call' ] );
 
 		self::$shortcodes[ $this->name ] = &$this;
 	}

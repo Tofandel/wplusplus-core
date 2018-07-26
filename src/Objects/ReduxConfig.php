@@ -15,22 +15,27 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 	 * @var string
 	 */
 	protected $opt_name;
+	/**
+	 * @var WP_Plugin
+	 */
+	protected $plugin;
 
 	/**
 	 * ReduxConfig constructor.
 	 *
-	 * @param string $opt_name
+	 * @param WP_Plugin $plugin
 	 * @param array|null $args
 	 */
-	public function __construct( $opt_name, $args = null ) {
-		$this->opt_name = $opt_name;
+	public function __construct( $plugin, $args = null ) {
+		$this->opt_name = $plugin->getReduxOptName();
+		$this->plugin   = $plugin;
 
 		self::loadRedux();
 
 		if ( ! class_exists( Redux::class, false ) ) {
 			return;
 		}
-		self::loadExtensions( $opt_name );
+		self::loadExtensions( $this->opt_name );
 
 		if ( isset( $args ) ) {
 			$this->setArgs( $args );
@@ -67,7 +72,7 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 		}
 		if ( ! class_exists( Redux::class, false ) ) {
 			global $WPlusPlusCore;
-			if ( file_exists( $f = $WPlusPlusCore->file( 'admin/redux-framework/redux-framework.php' ) ) ) {
+			if ( file_exists( $f = $WPlusPlusCore->file( 'plugins/redux-framework/redux-framework.php' ) ) ) {
 				require_once $f;
 			}
 		}
@@ -76,7 +81,7 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 	public static function loadExtensions( $opt_name ) {
 		global $WPlusPlusCore;
 		// All extensions placed within the extensions directory will be auto-loaded for your Redux instance.
-		Redux::setExtensions( $opt_name, $WPlusPlusCore->folder( 'admin/redux-extensions' ) );
+		Redux::setExtensions( $opt_name, $WPlusPlusCore->folder( 'plugins/redux-extensions' ) );
 	}
 
 	public function setArgs( $args = array() ) {
@@ -85,18 +90,20 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 		}
 		//Just some defaults, can override
 		$def_args = array(
-			'opt_name'           => $this->opt_name,
-			'dev_mode'           => false,
-			'use_cdn'            => true,
-			'display_version'    => false,
-			'update_notice'      => false,
-			'menu_type'          => 'menu',
-			'menu_title'         => 'W++',
-			'allow_sub_menu'     => false,
-			'page_priority'      => '39',
-			'customizer'         => true,
-			'default_mark'       => ' ¤',
-			'hints'              => array(
+			'opt_name'            => $this->opt_name,
+			'show_custom_fonts'   => false,
+			'show_options_object' => false,
+			'dev_mode'            => false,
+			'use_cdn'             => true,
+			'display_version'     => false,
+			'update_notice'       => false,
+			'menu_type'           => 'menu',
+			'menu_title'          => $this->plugin->getName(),
+			'allow_sub_menu'      => true,
+			'page_priority'       => '39',
+			'customizer'          => false,
+			'default_mark'        => ' ¤',
+			'hints'               => array(
 				'icon'          => 'el el-question-sign',
 				'icon_position' => 'right',
 				'icon_color'    => '#071f49',
@@ -124,18 +131,18 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 					),
 				),
 			),
-			'output'             => true,
-			'output_tag'         => true,
-			'settings_api'       => true,
-			'cdn_check_time'     => '1440',
-			'compiler'           => true,
-			'page_permissions'   => 'manage_options',
-			'save_defaults'      => true,
-			'show_import_export' => true,
-			'open_expanded'      => false,
-			'database'           => 'options',
-			'transient_time'     => '3600',
-			'network_sites'      => true,
+			'output'              => true,
+			'output_tag'          => true,
+			'settings_api'        => true,
+			'cdn_check_time'      => '1440',
+			'compiler'            => true,
+			'page_permissions'    => 'manage_options',
+			'save_defaults'       => true,
+			'show_import_export'  => true,
+			'open_expanded'       => false,
+			'database'            => 'options',
+			'transient_time'      => '3600',
+			'network_sites'       => true,
 		);
 
 		$args = array_merge( $def_args, $args );

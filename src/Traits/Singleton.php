@@ -29,9 +29,9 @@ trait Singleton {
 			if ( method_exists( $instance, '__init' ) ) {
 				$instance->__init();
 			}
-			if ( method_exists( $instance, 'init' ) ) {
-				$instance->init();
-			}
+			//if ( method_exists( $instance, 'init' ) ) {
+			//	$instance->init();
+			//}
 			$singletons[ $class->getName() ] = $instance;
 		}
 

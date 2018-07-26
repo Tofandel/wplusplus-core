@@ -67,7 +67,7 @@ abstract class WP_Theme extends WP_Plugin implements \Tofandel\Core\Interfaces\W
 	 */
 	protected function setup() {
 		add_action( 'after_setup_theme', array( $this, 'loadTextdomain' ) );
-		add_action( 'after_switch_theme', array( $this, 'activate' ) );
+		add_action( 'after_switch_theme', array( $this, 'activated' ) );
 		add_action( 'switch_theme', array( $this, 'deactivate' ) );
 		$this->definitions();
 		$this->actionsAndFilters();

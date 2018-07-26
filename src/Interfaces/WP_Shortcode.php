@@ -8,15 +8,13 @@
 
 namespace Tofandel\Core\Interfaces;
 
-
 /**
- * Class WP_Plugin
- *
- * @author Adrien Foulon <tofandel@tukan.hu>
+ * Interface WP_Shortcode
+ * @package Tofandel\Core\Interfaces
  */
 interface WP_Shortcode {
 	/**
-	 * The initialisation function
+	 * The shortcode initialisation function
 	 */
 	public static function __init__();
 
