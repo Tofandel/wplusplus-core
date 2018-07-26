@@ -8,7 +8,7 @@
 
 namespace Tofandel\Core\Traits;
 
-use Tofandel\Core\Objects\WP_Plugin;
+use Tofandel\Core\Interfaces\WP_Plugin;
 
 trait SubModule {
 	protected $parent;

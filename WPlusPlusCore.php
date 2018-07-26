@@ -3,7 +3,7 @@
 namespace Tofandel;
 
 use Tofandel\Core\Interfaces\WP_Plugin as WP_Plugin_Interface;
-use Tofandel\Core\Objects\VC_Integration;
+use Tofandel\Core\Modules\VC_Integration;
 use Tofandel\Core\Objects\WP_Plugin;
 
 if ( is_admin() && ! wp_doing_ajax() ) {
