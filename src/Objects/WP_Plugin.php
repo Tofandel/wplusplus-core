@@ -38,12 +38,30 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	private $modules = array();
 
+	/**
+	 * @var string[]
+	 */
+	private $shortcodes = array();
+
 	public function getModule( $name ) {
 		return isset( $this->modules[ $name ] ) ? $this->modules[ $name ] : null;
 	}
 
 	public function getName() {
 		return $this->name;
+	}
+
+	/**
+	 * @param string[] $shortcodes array of class names
+	 */
+	public function setShortcodes( array $shortcodes ) {
+		$this->shortcodes = $shortcodes;
+	}
+
+	public function initShortcodes() {
+		foreach ( $this->shortcodes as $shortcode ) {
+			call_user_func( [ $shortcode, '__init__' ] );
+		}
 	}
 
 	/**
@@ -195,6 +213,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		foreach ( $this->modules as $module ) {
 			$module->actionsAndFilters();
 		}
+
+		add_action( 'init', [ $this, 'initShortcodes' ], 1 );
+
 
 		if ( is_admin() && ! wp_doing_ajax() ||
 		     ( wp_doing_ajax() && isset ( $_POST['action'] ) &&

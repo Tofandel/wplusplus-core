@@ -18,7 +18,7 @@ interface SubModule {
 	 *
 	 * @param WP_Plugin|null $parent
 	 */
-	public function __construct( WP_Plugin $parent = null );
+	public function __construct( WP_Plugin &$parent = null );
 
 	/**
 	 * Called function on plugin activation

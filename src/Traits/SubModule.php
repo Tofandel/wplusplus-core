@@ -13,7 +13,7 @@ use Tofandel\Core\Interfaces\WP_Plugin;
 trait SubModule {
 	protected $parent;
 
-	public function __construct( WP_Plugin $parent = null ) {
+	public function __construct( WP_Plugin &$parent = null ) {
 		$this->parent = $parent;
 	}
 
