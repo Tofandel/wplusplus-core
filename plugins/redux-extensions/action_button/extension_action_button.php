@@ -45,7 +45,7 @@ if ( ! class_exists( 'ReduxFramework_extension_action_button' ) ) {
 		public $extension_dir;
 		public static $theInstance;
 		public static $ext_url;
-		public $field_id = '';
+		private $sections;
 
 		/**
 		 * Class Constructor. Defines the args for the extions class
@@ -75,11 +75,7 @@ if ( ! class_exists( 'ReduxFramework_extension_action_button' ) ) {
 			// Set instance
 			self::$theInstance = $this;
 
-			foreach ( $this->parent->sections as $section ) {
-				if ( isset( $section['type'] ) && $section['type'] ) {
-
-				}
-			}
+			$this->setAjaxHooks( $this->parent->sections );
 
 			// Adds the local field
 			add_filter( 'redux/' . $this->parent->args['opt_name'] . '/field/class/' . $this->field_name, array(
@@ -88,11 +84,54 @@ if ( ! class_exists( 'ReduxFramework_extension_action_button' ) ) {
 			) );
 		}
 
+		public function do_action() {
+			// Verify nonce
+			$field_id  = $_POST['field_id'];
+			$button_id = $_POST['button_id'];
+			if ( ! isset( $_REQUEST['nonce'] ) || ! wp_verify_nonce( $_REQUEST['nonce'], "redux_{$this->parent->args['opt_name']}_action_button_" . $field_id ) ) {
+				die( - 1 );
+			}
+			header( 'Content-Type: application/json' );
+
+			if ( isset( $this->sections[ $field_id ] ) ) {
+				$section = $this->sections[ $field_id ];
+				foreach ( $section['buttons'] as $button ) {
+					if ( $button['id'] != $button_id ) {
+						continue;
+					}
+					$msg = '';
+					if ( is_callable( $button['function'] ) ) {
+						$msg = call_user_func( $button['function'] );
+					} elseif ( is_string( $button['function'] ) ) {
+						do_action( $button['function'] );
+					}
+					$msg = $msg ?: $button['message'];
+					if ( empty( $msg ) ) {
+						global $WPlusPlusCore;
+						$msg = sprintf( __( 'Action %s has been executed', $WPlusPlusCore->getTextDomain() ), $button['id'] );
+					}
+					die( json_encode( array( 'success' => true, 'message' => $msg ) ) );
+				}
+			}
+
+			die( json_encode( array( 'success' => false ) ) );
+		}
+
 		private function setAjaxHooks( $sections ) {
 			if ( is_array( $sections ) ) {
 				foreach ( $sections as $section ) {
 					if ( isset( $section['type'] ) && $section['type'] == $this->field_name ) {
-						add_action( 'wp_ajax_redux' );
+						if ( empty( $section['buttons'] ) ) {
+							$section['buttons'] = array(
+								array(
+									'id'       => $section['id'],
+									'text'     => $section['title'],
+									'function' => $section['function']
+								)
+							);
+						}
+						$this->sections[ $section['id'] ] = $section;
+						add_action( 'wp_ajax_redux_action_button_' . $section['id'], [ $this, 'do_action' ] );
 					}
 					if ( isset( $section['fields'] ) ) {
 						$this->setAjaxHooks( $section['fields'] );

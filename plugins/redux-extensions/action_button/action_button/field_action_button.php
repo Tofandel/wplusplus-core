@@ -63,20 +63,8 @@ if ( ! class_exists( 'ReduxFramework_action_button' ) ) {
 				$this->extension_url = site_url( str_replace( trailingslashit( str_replace( '\\', '/', ABSPATH ) ), '', $this->extension_dir ) );
 			}
 
-			add_action( 'wp_ajax_redux_action_button_' . $field['id'], [ $this, 'do_action' ] );
 		}
 
-		public function do_action() {
-			// Verify nonce
-			if ( ! isset( $_REQUEST['nonce'] ) || ! wp_verify_nonce( $_REQUEST['nonce'], "redux_{$this->parent->args['opt_name']}_action_button" ) ) {
-				die( 0 );
-			}
-
-			$button_id = $_POST['button_id'];
-			var_dump( $this->field );
-
-			die();
-		}
 
 		/**
 		 * Field Render Function.
@@ -93,8 +81,10 @@ if ( ! class_exists( 'ReduxFramework_action_button' ) ) {
 			// Button render.
 			if ( ! empty( $this->field['buttons'] ) && is_array( $this->field['buttons'] ) ) {
 				// primary container
+				// Nonce
+				$nonce = wp_create_nonce( "redux_{$this->parent->args['opt_name']}_action_button_" . $field_id );
 				echo <<<HTML
-<div class="redux-action-button-container {$this->field['class']}" id="{$field_id}_container" data-id="{$field_id}" style="display: inline-flex;">
+<div class="redux-action-button-container {$this->field['class']}" id="{$field_id}_container" data-id="{$field_id}" data-nonce="{$nonce}" style="display: inline-flex;">
 HTML;
 				foreach ( $this->field['buttons'] as $idx => $arr ) {
 					$button_id    = $arr['id'];
