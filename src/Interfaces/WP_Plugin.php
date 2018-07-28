@@ -28,6 +28,16 @@ interface WP_Plugin {
 	public function setSubModules( array $modules );
 
 	/**
+	 * @param string $shortcode
+	 */
+	public function setShortcode( $shortcode );
+
+	/**
+	 * @param array $shortcodes
+	 */
+	public function setShortcodes( array $shortcodes );
+
+	/**
 	 * Add the tables and settings and any plugin variable specifics here
 	 *
 	 * @return void
@@ -86,7 +96,7 @@ interface WP_Plugin {
 	 */
 	public function registerStyle( $css, $media = 'all' );
 
-	public function webPath( $folder = '' );
+	public function dirUrl( $folder = '' );
 
 	/**
 	 * Prepare plugin internationalisation
@@ -94,13 +104,40 @@ interface WP_Plugin {
 	public function loadTextdomain();
 
 	/**
-	 * Returns the list of version information for the plugin
+	 * Returns the version of the plugin
+	 * @return string
 	 */
 	public function getVersion();
 
-	public function checkCompat();
+	/**
+	 * @return string
+	 */
+	public function getName();
 
-	public function disabled_notice();
+	/**
+	 * @return string
+	 */
+	public function getSlug();
+
+	/**
+	 * @return string
+	 */
+	public function getDownloadUrl();
+
+	/**
+	 * @return string
+	 */
+	public function getLicenseEmail();
+
+	/**
+	 * @return string
+	 */
+	public function getLicenseKey();
+
+	/**
+	 * @return string
+	 */
+	public function getReduxOptName();
 
 	/**
 	 * Called function on plugin activation
@@ -114,11 +151,11 @@ interface WP_Plugin {
 	 *
 	 * @see https://docs.reduxframework.com/core/redux-api/ For a complete documentation on how to use redux framework
 	 */
-	public function reduxOptions();
+	public function reduxConfig();
 
 	/**
 	 * Called function on plugin deactivation
 	 * Options and plugin data should only be removed in the uninstall function
 	 */
-	public function deactivate();
+	public function deactivated();
 }

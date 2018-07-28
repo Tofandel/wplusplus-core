@@ -26,6 +26,11 @@ interface SubModule {
 	public function activated();
 
 	/**
+	 * Called function on plugin deactivation
+	 */
+	public function deactivated();
+
+	/**
 	 * The hooks of the submodule
 	 */
 	public function actionsAndFilters();

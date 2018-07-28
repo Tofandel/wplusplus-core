@@ -6,6 +6,7 @@ use Exception;
 use ReduxFrameworkPlugin;
 use ReflectionClass;
 use Tofandel\Core\Interfaces\SubModule;
+use Tofandel\Core\Modules\LicenseManager;
 use Tofandel\Core\Traits\Singleton;
 
 
@@ -51,11 +52,26 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		return $this->name;
 	}
 
+	public function getDownloadUrl() {
+		return $this->download_url;
+	}
+
+	public function getSlug() {
+		return $this->slug;
+	}
+
 	/**
 	 * @param string[] $shortcodes array of class names
 	 */
 	public function setShortcodes( array $shortcodes ) {
 		$this->shortcodes = $shortcodes;
+	}
+
+	/**
+	 * @param string $shortcode class name
+	 */
+	public function setShortcode( $shortcode ) {
+		$this->shortcodes[ $shortcode ] = $shortcode;
 	}
 
 	public function initShortcodes() {
@@ -87,24 +103,12 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		}
 	}
 
-	protected function isLicenseValid() {
-
-		return true;
+	public function getLicenseEmail() {
+		return $this->getOption( 'license_email', '' );
 	}
 
-	private function getLicenseKey() {
+	public function getLicenseKey() {
 		return $this->getOption( 'license_key', '' );
-	}
-
-	private function getDownloadUrl() {
-		if ( $this->is_licensed ) {
-			return add_query_arg( array(
-				'license_key' => $this->getLicenseKey(),
-				'site_url'    => get_option( 'home' )
-			), $this->download_url );
-		}
-
-		return $this->download_url;
 	}
 
 	public function getFile() {
@@ -151,6 +155,10 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		//We define a global with the name of the class
 		if ( ! isset( $GLOBALS[ $this->class->getShortName() ] ) ) {
 			$GLOBALS[ $this->class->getShortName() ] = $this;
+		}
+
+		if ( $this->is_licensed ) {
+			$this->setSubModule( new LicenseManager( $this ) );
 		}
 
 		$this->initUpdateChecker();
@@ -208,7 +216,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	protected function setup() {
 		add_action( 'plugins_loaded', array( $this, 'loadTextdomain' ) );
 		register_activation_hook( $this->file, array( $this, 'activated' ) );
-		register_deactivation_hook( $this->file, array( $this, 'deactivate' ) );
+		register_deactivation_hook( $this->file, array( $this, 'deactivated' ) );
 		register_uninstall_hook( $this->file, get_called_class() . '::uninstallHook' );
 		$this->definitions();
 		$this->actionsAndFilters();
@@ -222,7 +230,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		if ( is_admin() && ! wp_doing_ajax() ||
 		     ( wp_doing_ajax() && isset ( $_POST['action'] ) &&
 		       ( $_POST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_POST['action'], 'redux' ) === 0 ) ) ) {
-			$this->_reduxOptions();
+			$this->_reduxConfig();
 			add_action( 'admin_init', [ $this, 'checkCompat' ] );
 			add_action( 'init', array( $this, 'removeDemoModeLink' ) );
 		} else {
@@ -543,7 +551,11 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		return isset( $file ) ? $file : $name;
 	}
 
-	public function webPath( $folder = '' ) {
+	public function dirUrl( $dir = '' ) {
+		return plugin_dir_url( $this->file ) . "$dir";
+	}
+
+	public function fileUrl( $folder = '' ) {
 		return plugin_dir_url( $this->file ) . "$folder";
 	}
 
@@ -737,20 +749,30 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
+	 * @var ReduxConfig
+	 */
+	public $redux_config;
+
+	/**
 	 * Add redux framework menus, sub-menus and settings page in this function
 	 */
-	abstract public function reduxOptions();
+	abstract public function reduxConfig();
 
-	public function _reduxOptions() {
-		$this->reduxOptions();
+	public function _reduxConfig() {
+		$this->reduxConfig();
+		do_action( 'wpp_redux_' . $this->redux_opt_name . '_config' );
 	}
 
 	/**
 	 * Called function on plugin deactivation
 	 * Options and plugin data should only be removed in the uninstall function
 	 */
-	public function deactivate() {
+	public function deactivated() {
 		flush_rewrite_rules();
+
+		foreach ( $this->modules as $module ) {
+			$module->deactivated();
+		}
 	}
 
 	/**

@@ -68,13 +68,13 @@ abstract class WP_Theme extends WP_Plugin implements \Tofandel\Core\Interfaces\W
 	protected function setup() {
 		add_action( 'after_setup_theme', array( $this, 'loadTextdomain' ) );
 		add_action( 'after_switch_theme', array( $this, 'activated' ) );
-		add_action( 'switch_theme', array( $this, 'deactivate' ) );
+		add_action( 'switch_theme', array( $this, 'deactivated' ) );
 		$this->definitions();
 		$this->actionsAndFilters();
 		add_action( 'admin_init', [ $this, 'menusAndSettings' ] );
 	}
 
-	public function webPath( $folder = '' ) {
+	public function dirUrl( $folder = '' ) {
 		return ( $this->parent ? get_stylesheet_directory_uri() : get_template_directory_uri() ) . "$folder";
 	}
 

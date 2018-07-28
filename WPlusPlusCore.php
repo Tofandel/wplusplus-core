@@ -58,7 +58,7 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 		$this->copy( 'wplusplus-muloader.php.bak', self::MULOADER_DIR . '/wplusplus-muloader.php' );
 	}
 
-	public function deactivate() {
+	public function deactivated() {
 		//Clean the muloader
 		$this->delete_file( self::MULOADER_DIR . '/wplusplus-muloader.php' );
 	}
@@ -69,7 +69,7 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	/**
 	 * Add redux framework menus, sub-menus and settings page in this function
 	 */
-	public function reduxOptions() {
+	public function reduxConfig() {
 	}
 
 }

@@ -27,8 +27,9 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 	 * @param array|null $args
 	 */
 	public function __construct( $plugin, $args = null ) {
-		$this->opt_name = $plugin->getReduxOptName();
-		$this->plugin   = $plugin;
+		$this->opt_name       = $plugin->getReduxOptName();
+		$this->plugin         = $plugin;
+		$plugin->redux_config = &$this;
 
 		self::loadRedux();
 

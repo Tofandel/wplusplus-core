@@ -15,17 +15,11 @@ namespace Tofandel\Core\Interfaces;
  * @author Adrien Foulon <tofandel@tukan.hu>
  */
 interface WP_Theme extends WP_Plugin {
-	public function webPath( $folder = '' );
+	public function dirUrl( $folder = '' );
 
 	/**
 	 * Prepare theme internationalisation
 	 */
 	public function loadTextdomain();
 
-	/**
-	 * @param string $folder
-	 *
-	 * @return string Path to the theme's folder
-	 */
-	public function folder( $folder = '' );
 }
