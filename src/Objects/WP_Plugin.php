@@ -6,7 +6,7 @@ use Exception;
 use ReduxFrameworkPlugin;
 use ReflectionClass;
 use Tofandel\Core\Interfaces\SubModule;
-use Tofandel\Core\Modules\LicenseManager;
+use Tofandel\Core\Modules\LicenceManager;
 use Tofandel\Core\Traits\Singleton;
 
 
@@ -32,7 +32,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	protected $is_muplugin = false;
 
 	protected $download_url = '';
+	protected $buy_url = '';
 	protected $is_licensed = false;
+	protected $product_id = '';
 
 	/**
 	 * @var SubModule[]
@@ -52,8 +54,16 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		return $this->name;
 	}
 
+	public function getProductID() {
+		return ! empty( $this->product_id ) ? $this->product_id : $this->slug;
+	}
+
+	public function getBuyUrl() {
+		return trailingslashit( $this->buy_url ?: $this->download_url );
+	}
+
 	public function getDownloadUrl() {
-		return $this->download_url;
+		return trailingslashit( $this->download_url );
 	}
 
 	public function getSlug() {
@@ -103,11 +113,11 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		}
 	}
 
-	public function getLicenseEmail() {
+	public function getLicenceEmail() {
 		return $this->getOption( 'license_email', '' );
 	}
 
-	public function getLicenseKey() {
+	public function getLicenceKey() {
 		return $this->getOption( 'license_key', '' );
 	}
 
@@ -158,7 +168,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		}
 
 		if ( $this->is_licensed ) {
-			$this->setSubModule( new LicenseManager( $this ) );
+			$this->setSubModule( new LicenceManager( $this ) );
 		}
 
 		$this->initUpdateChecker();
@@ -362,9 +372,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 			return $v;
 		} elseif ( is_string( $option ) ) {
-			return $options[ $opt_name ][ $opt_name ];
+			return isset( $options[ $opt_name ][ $option ] ) ? $options[ $opt_name ][ $option ] : $default;
 		} else {
-			return $options[ $opt_name ];
+			return isset( $options[ $opt_name ] ) ? $options[ $opt_name ] : $default;
 		}
 	}
 

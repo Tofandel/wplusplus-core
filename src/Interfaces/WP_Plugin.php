@@ -127,12 +127,12 @@ interface WP_Plugin {
 	/**
 	 * @return string
 	 */
-	public function getLicenseEmail();
+	public function getLicenceEmail();
 
 	/**
 	 * @return string
 	 */
-	public function getLicenseKey();
+	public function getLicenceKey();
 
 	/**
 	 * @return string
@@ -158,4 +158,8 @@ interface WP_Plugin {
 	 * Options and plugin data should only be removed in the uninstall function
 	 */
 	public function deactivated();
+
+	public function getProductID();
+
+	public function getBuyUrl();
 }

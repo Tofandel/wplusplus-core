@@ -8,7 +8,7 @@
 
 namespace Tofandel\Core\Interfaces;
 
-interface LicenseManager extends SubModule {
+interface LicenceManager extends SubModule {
 	/**
 	 * Returns the message of the last request
 	 *
@@ -17,18 +17,18 @@ interface LicenseManager extends SubModule {
 	public function getMessage();
 
 	/**
-	 * Activates the license
+	 * Activates the licence
 	 */
-	public function activateLicense();
+	public function activateLicence();
 
 	/**
-	 * Checks the license
+	 * Checks the licence
 	 */
-	public function checkLicense();
+	public function checkLicence();
 
 	/**
-	 * Deactivate the license
+	 * Deactivate the licence
 	 */
-	public function deactivateLicense();
+	public function deactivateLicence();
 
 }
