@@ -69,6 +69,20 @@ interface WP_Plugin {
 	public function folder( $folder = '' );
 
 	/**
+	 * @param string $file
+	 *
+	 * @return string Web url to the file
+	 */
+	public function fileUrl( $file = '' );
+
+	/**
+	 * @param string $folder
+	 *
+	 * @return string Web url to the folder
+	 */
+	public function dirUrl( $folder = '' );
+
+	/**
 	 * @param string $js Filename (optional extension)
 	 * @param array $require
 	 * @param bool $localize
@@ -95,8 +109,6 @@ interface WP_Plugin {
 	 * @return string
 	 */
 	public function registerStyle( $css, $media = 'all' );
-
-	public function dirUrl( $folder = '' );
 
 	/**
 	 * Prepare plugin internationalisation

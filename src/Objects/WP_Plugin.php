@@ -244,7 +244,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			add_action( 'admin_init', [ $this, 'checkCompat' ] );
 			add_action( 'init', array( $this, 'removeDemoModeLink' ) );
 		} else {
-			$GLOBALS[ $this->redux_opt_name ] = get_option( $this->redux_opt_name );
+			$GLOBALS[ $this->redux_opt_name ] = get_option( $this->redux_opt_name, array() );
 			do_action( 'redux_not_loaded' );
 			add_action( 'wp_enqueue_scripts', [ $this, 'enqueueReduxFonts' ], 999 );
 		}
@@ -512,7 +512,11 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		}
 		if ( wp_script_is( $name, 'registered' ) ) {
 			if ( ! empty( $localize ) ) {
-				wp_localize_script( $name, str_replace( '-', '_', $this->slug . '.' . str_replace( '.', '_', $name ) ), array_merge( array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ), $localize ) );
+				wp_localize_script( $name, str_replace( '-', '_', $this->slug ), array(
+					'ajaxurl' => admin_url( 'admin-ajax.php' ),
+					$name     => $localize
+				) );
+				//wp_localize_script( $name, str_replace( '-', '_', $this->slug . '.' . str_replace( '.', '_', $name ) ), array_merge( array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ), $localize ) );
 			}
 		} else {
 			$file = false;
