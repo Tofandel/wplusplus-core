@@ -96,8 +96,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	public function setSubModule( $submodule ) {
 		if ( $submodule instanceof SubModule ) {
 			try {
-				$reflection                                   = new ReflectionClass( $submodule );
-				$this->modules[ $reflection->getShortName() ] = $submodule;
+				$reflection                              = new ReflectionClass( $submodule );
+				$this->modules[ $reflection->getName() ] = $submodule;
 			} catch ( \ReflectionException $exception ) {
 				error_log( $exception->getMessage() );
 			}
@@ -114,11 +114,41 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function getLicenceEmail() {
-		return $this->getOption( 'license_email', '' );
+		return $this->getOption( 'licence_email', '' );
 	}
 
 	public function getLicenceKey() {
-		return $this->getOption( 'license_key', '' );
+		return $this->getOption( 'licence_key', '' );
+	}
+
+	public function isLicensed() {
+		/**
+		 * @var LicenceManager $LicenceManager
+		 */
+		$LicenceManager = $this->getModule( LicenceManager::class );
+		if ( $LicenceManager ) {
+			return $LicenceManager->checkLicence();
+		}
+
+		return false;
+	}
+
+	public function initUpdateChecker() {
+		if ( ! empty( $this->getDownloadUrl() ) && is_admin() && ! wp_doing_ajax() && ! $this->is_licensed ) {
+			\Puc_v4_Factory::buildUpdateChecker(
+				$this->getDownloadUrl(),
+				$this->file, //Full path to the main plugin file or functions.php.
+				$this->slug
+			);
+		} elseif ( ! empty( $this->getDownloadUrl() ) && is_admin() && ! wp_doing_ajax() && $this->is_licensed ) {
+			/**
+			 * @var LicenceManager $LicenceManager
+			 */
+			$LicenceManager = $this->getModule( LicenceManager::class );
+			if ( $LicenceManager ) {
+				$LicenceManager->updateRequest();
+			}
+		}
 	}
 
 	public function getFile() {
@@ -176,15 +206,6 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		$this->setup();
 	}
 
-	public function initUpdateChecker() {
-		if ( ! empty( $this->getDownloadUrl() ) && is_admin() && ! wp_doing_ajax() ) {
-			\Puc_v4_Factory::buildUpdateChecker(
-				$this->getDownloadUrl(),
-				$this->file, //Full path to the main plugin file or functions.php.
-				$this->slug
-			);
-		}
-	}
 
 	public function getReduxOptName() {
 		return $this->redux_opt_name;

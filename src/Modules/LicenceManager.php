@@ -48,7 +48,6 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 
 	public function updateRequest() {
 		$request = array(
-			'request'          => '',
 			'slug'             => $this->parent->getSlug(),
 			'plugin_name'      => $this->parent->getName(),
 			'version'          => $this->version,
@@ -60,7 +59,24 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 			'software_version' => $this->version
 		);
 
-		return wp_remote_get( $this->api_url . 'woocommerce/?wc-api=upgrade-api&request=pluginupdatecheck&' . http_build_query( $request ) );
+		$data = wp_remote_retrieve_body( wp_remote_post( $this->api_url . 'woocommerce/?wc-api=upgrade-api&request=pluginupdatecheck', array(
+			'method'   => 'POST',
+			'timeout'  => 30,
+			'blocking' => true,
+			'body'     => $request,
+			'cookies'  => array()
+		) ) );
+
+		$data = unserialize( $data );
+		if ( empty( $data ) ) {
+			return false;
+		}
+		if ( ! empty( $data['errors'] ) ) {
+			return false;
+		}
+
+
+		return $data;
 	}
 
 	private function doRequest( $request, $args = array() ) {
@@ -127,7 +143,25 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 		return false;
 	}
 
-	public function checkLicence() {
+	public function hasCredentials() {
+		return ! empty( $this->api_key ) && ! empty( $this->email );
+	}
+
+	public function logic() {
+		if ( ! $this->hasCredentials() ) {
+			if ( $this->isActivated() ) {
+				$this->setDeactivated();
+			}
+
+			return false;
+		} elseif ( $this->activateLicence() ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private function _checkLicence() {
 		if ( $this->checkLicenceTransient() ) {
 			return true;
 		}
@@ -149,7 +183,7 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 
 	public function activateLicence() {
 		if ( $this->isActivated() ) {
-			return $this->checkLicence();
+			return $this->_checkLicence();
 		}
 		$data = $this->doRequest( 'activation', array(
 			'software_version' => $this->version
@@ -161,8 +195,10 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 
 			return true;
 		} elseif ( $data['code'] == '104' ) {
-			return $this->checkLicence();
+			//Already activated
+			return $this->_checkLicence();
 		} else {
+			$this->setDeactivated();
 			$this->setMessage( $data['error'] );
 		}
 
