@@ -143,7 +143,7 @@ trait WP_Post_Entity {
 		$this->parentSetOverride( $name, $val );
 	}
 
-	public static function init() {
+	public static function __init__() {
 		$post_type = static::StaticPostType();
 		if ( ! isset( static::$capability ) ) {
 			static::$capability = $post_type;

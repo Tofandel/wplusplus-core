@@ -21,6 +21,11 @@ interface SubModule {
 	public function __construct( WP_Plugin &$parent = null );
 
 	/**
+	 * @return string
+	 */
+	public function getTextDomain();
+
+	/**
 	 * Called function on plugin activation
 	 */
 	public function activated();

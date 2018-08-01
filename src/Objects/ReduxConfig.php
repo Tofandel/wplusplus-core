@@ -18,18 +18,19 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 	/**
 	 * @var WP_Plugin
 	 */
-	protected $plugin;
+	//protected $plugin;
 
 	/**
 	 * ReduxConfig constructor.
 	 *
-	 * @param WP_Plugin $plugin
-	 * @param array|null $args
+	 * param WP_Plugin $plugin
+	 *
+	 * @param array $args
 	 */
-	public function __construct( $plugin, $args = null ) {
-		$this->opt_name       = $plugin->getReduxOptName();
-		$this->plugin         = $plugin;
-		$plugin->redux_config = &$this;
+	public function __construct( $opt_name, $args = array() ) {
+		$this->opt_name = $opt_name;
+		//$this->plugin         = $plugin;
+		//$plugin->redux_config = &$this;
 
 		self::loadRedux();
 
@@ -38,9 +39,7 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 		}
 		self::loadExtensions( $this->opt_name );
 
-		if ( isset( $args ) ) {
-			$this->setArgs( $args );
-		}
+		$this->setArgs( $args );
 	}
 
 
@@ -98,8 +97,8 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 			'use_cdn'             => true,
 			'display_version'     => false,
 			'update_notice'       => false,
-			'menu_type'           => 'menu',
-			'menu_title'          => $this->plugin->getName(),
+			'menu_type'           => 'hidden',
+			'menu_title'          => '',
 			'allow_sub_menu'      => true,
 			'page_priority'       => '39',
 			'customizer'          => false,

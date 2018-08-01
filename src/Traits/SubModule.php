@@ -21,6 +21,13 @@ trait SubModule {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getTextDomain() {
+		return $this->parent->getTextDomain();
+	}
+
+	/**
 	 * Called function on plugin activation
 	 */
 	public function activated() {
