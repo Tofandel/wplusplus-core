@@ -1246,6 +1246,9 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 				}
 			}
 
+			$updated = false;
+			$diff    = array();
+
 			$check = $this->post_type_fields[ $_POST['post_type'] ];
 
 			$toSave = apply_filters( 'redux/metaboxes/save', $toSave, $toCompare, $this->sections );
@@ -1257,7 +1260,8 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 					unset( $check[ $key ] );
 				}
 
-				update_post_meta( $post_id, $key, $value, $prev_value );
+				$updated      = update_post_meta( $post_id, $key, $value, $prev_value ) || $updated;
+				$diff[ $key ] = $value;
 			}
 
 			foreach ( $toDelete as $key => $value ) {
@@ -1265,13 +1269,18 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 					unset( $check[ $key ] );
 				}
 
-				$prev_value = isset( $this->meta[ $post_id ][ $key ] ) ? $this->meta[ $post_id ][ $key ] : '';
-				delete_post_meta( $post_id, $key, $prev_value );
+				$prev_value   = isset( $this->meta[ $post_id ][ $key ] ) ? $this->meta[ $post_id ][ $key ] : '';
+				$updated      = delete_post_meta( $post_id, $key, $prev_value ) || $updated;
+				$diff[ $key ] = null;
 			}
 
 			foreach ( $check as $key => $value ) {
-				delete_post_meta( $post_id, $key );
+				$updated      = delete_post_meta( $post_id, $key ) || $updated;
+				$diff[ $key ] = null;
 			}
+
+			do_action( "redux/metabox/saved", $post, $updated, $diff );
+			do_action( "redux/metabox/{$post->post_type}/saved", $post, $updated, $diff );
 		} // meta_boxes_save()
 
 		/**
