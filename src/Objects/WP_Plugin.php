@@ -15,6 +15,9 @@ use Tofandel\Core\Traits\Singleton;
  *
  * @author Adrien Foulon <tofandel@tukan.hu>
  *
+ * TODO Plugin tracking via cron
+ * TODO Licence manager premium updater
+ * TODO Premium support
  */
 abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	use Singleton;
@@ -139,13 +142,16 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function initUpdateChecker() {
-		if ( ! empty( $this->getRepoUrl() ) && is_admin() && ! wp_doing_ajax() ) {
+		if ( ! empty( $this->getRepoUrl() ) && ( ( is_admin() && ! wp_doing_ajax() )
+		                                         || ( wp_doing_ajax() && $_REQUEST['action'] == 'update-plugin' ) ) ) {
 			\Puc_v4_Factory::buildUpdateChecker(
 				$this->getRepoUrl(),
 				$this->file, //Full path to the main plugin file or functions.php.
 				$this->slug
 			);
-		} elseif ( ! empty( $this->getDownloadUrl() ) && is_admin() && ! wp_doing_ajax() && $this->is_licensed ) {
+		} elseif ( ! empty( $this->getDownloadUrl() )
+		           && ( ( is_admin() && ! wp_doing_ajax() ) ||
+		                ( wp_doing_ajax() && $_REQUEST['action'] == 'update-plugin' ) ) && $this->is_licensed ) {
 			/**
 			 * @var LicenceManager $LicenceManager
 			 */
