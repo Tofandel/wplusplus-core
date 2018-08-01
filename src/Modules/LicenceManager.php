@@ -47,6 +47,13 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 	}
 
 	public function updateRequest() {
+		if ( empty( $this->api_url ) ) {
+			return false;
+		}
+
+		if ( ! $this->isActivated() ) {
+			$this->activateLicence();
+		}
 		$request = array(
 			'slug'             => $this->parent->getSlug(),
 			'plugin_name'      => $this->parent->getName(),
@@ -71,7 +78,12 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 		if ( empty( $data ) ) {
 			return false;
 		}
+		$data = (array) $data;
 		if ( ! empty( $data['errors'] ) ) {
+			if ( in_array( 'no_activation', $data['errors'] ) ) {
+				$this->activateLicence();
+			}
+
 			return false;
 		}
 
@@ -147,7 +159,7 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 		return ! empty( $this->api_key ) && ! empty( $this->email );
 	}
 
-	public function logic() {
+	public function checkLicence() {
 		if ( ! $this->hasCredentials() ) {
 			if ( $this->isActivated() ) {
 				$this->setDeactivated();
@@ -250,7 +262,7 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 
 	public function addSection() {
 		if ( isset( $this->parent->redux_config ) ) {
-			$url = parse_url( $this->api_url );
+			$url = parse_url( $this->buy_url );
 			global $WPlusPlusCore;
 			$this->parent->redux_config->setSection( array(
 				'title'  => __( "Licence key", $this->parent->getTextDomain() ),

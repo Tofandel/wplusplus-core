@@ -30,7 +30,7 @@ class WP_Metabox {
 	 */
 	public function __construct( $opt_name, $id, $title, $post_types, $position = 'normal', $priority = 'default' ) {
 		global $pagenow;
-		if ( ! is_admin() || ! ( $pagenow == "post-new.php" || $pagenow == "post.php" || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) || ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'heartbeat' ) ) {
+		if ( ! is_admin() || ! ( $pagenow == "post-new.php" || $pagenow == "post.php" || wp_doing_ajax() ) || ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'heartbeat' ) ) {
 			return;
 		}
 		$this->opt_name = $opt_name;

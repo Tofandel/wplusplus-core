@@ -19,21 +19,21 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Plugin Name: W++ Core
  * Plugin URI: https://github.com/tofandel/wplusplus-core/
  * Description: A Wordpress Plugin acting as core for other of my plugins and including the Ultimate Redux Framework Bundle and OOP APIs to use it
- * Version: 1.2.6
+ * Version: 1.2.7
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
- * Text Domain: wpluspluscore
+ * Text Domain: wplusplus-core
  * Domain Path: /languages/
  * Requires at least: 4.7
  * Tested up to: 4.9.7
  * Requires PHP: 5.5
- * Download Url: https://github.com/tofandel/wplusplus-core/
  */
 
 require_once 'functions.php';
 
 class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	const MULOADER_DIR = WPMU_PLUGIN_DIR;
+	protected $repo_url = 'https://github.com/tofandel/wplusplus-core/';
 
 	public function actionsAndFilters() {
 	}

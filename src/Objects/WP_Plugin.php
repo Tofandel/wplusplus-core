@@ -31,6 +31,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	protected $is_muplugin = false;
 
+	protected $repo_url = '';
 	protected $download_url = '';
 	protected $buy_url = '';
 	protected $is_licensed = false;
@@ -133,10 +134,14 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		return false;
 	}
 
+	public function getRepoUrl() {
+		return trailingslashit( $this->repo_url );
+	}
+
 	public function initUpdateChecker() {
-		if ( ! empty( $this->getDownloadUrl() ) && is_admin() && ! wp_doing_ajax() && ! $this->is_licensed ) {
+		if ( ! empty( $this->getRepoUrl() ) && is_admin() && ! wp_doing_ajax() ) {
 			\Puc_v4_Factory::buildUpdateChecker(
-				$this->getDownloadUrl(),
+				$this->getRepoUrl(),
 				$this->file, //Full path to the main plugin file or functions.php.
 				$this->slug
 			);
@@ -145,8 +150,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			 * @var LicenceManager $LicenceManager
 			 */
 			$LicenceManager = $this->getModule( LicenceManager::class );
-			if ( $LicenceManager ) {
-				$LicenceManager->updateRequest();
+			if ( $LicenceManager && $data = $LicenceManager->updateRequest() ) {
+				//TODO
 			}
 		}
 	}
