@@ -273,6 +273,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		     ( wp_doing_ajax() && isset ( $_POST['action'] ) &&
 		       ( $_POST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_POST['action'], 'redux' ) === 0 ) ) ) {
 			$this->_reduxConfig();
+			do_action( 'redux_loaded' );
 			add_action( 'admin_init', [ $this, 'checkCompat' ] );
 			add_action( 'init', array( $this, 'removeDemoModeLink' ) );
 		} else {
