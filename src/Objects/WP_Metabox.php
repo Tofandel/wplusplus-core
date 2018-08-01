@@ -29,8 +29,17 @@ class WP_Metabox {
 	 * @param string $priority Either 'high', 'core', 'default', or low - Priorities of placement
 	 */
 	public function __construct( $opt_name, $id, $title, $post_types, $position = 'normal', $priority = 'default' ) {
-		global $pagenow;
-		if ( ! is_admin() || ! ( $pagenow == "post-new.php" || $pagenow == "post.php" || wp_doing_ajax() ) || ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'heartbeat' ) ) {
+		global $pagenow, $post;
+		if ( is_string( $post_types ) ) {
+			$post_types = array( $post_types );
+		}
+		if ( ! is_object( $post ) && isset( $_REQUEST['post'] ) ) {
+			$post = get_post( intval( $_REQUEST['post'] ) );
+		}
+		if ( ! is_admin()
+		     || ! ( ( ( ( $pagenow == "post-new.php" || $pagenow == "post.php" ) && isset( $_REQUEST['post_type'] ) && in_array( $_REQUEST['post_type'], $post_types ) )
+		              || ( $pagenow == "post.php" && ( ! empty( $post ) && in_array( $post->post_type, $post_types ) ) ) ) || wp_doing_ajax() )
+		     || ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'heartbeat' ) ) {
 			return;
 		}
 		new ReduxConfig( $opt_name );
