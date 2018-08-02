@@ -4,6 +4,7 @@ namespace Tofandel;
 
 use Tofandel\Core\Interfaces\WP_Plugin as WP_Plugin_Interface;
 use Tofandel\Core\Modules\VC_Integration;
+use Tofandel\Core\Objects\ReduxConfig;
 use Tofandel\Core\Objects\WP_Plugin;
 
 if ( is_admin() && ! wp_doing_ajax() ) {
@@ -70,6 +71,7 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	 * Add redux framework menus, sub-menus and settings page in this function
 	 */
 	public function reduxConfig() {
+		new ReduxConfig( $this->redux_opt_name );
 	}
 
 }

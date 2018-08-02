@@ -42,7 +42,7 @@ class WP_Metabox {
 		     || ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'heartbeat' ) ) {
 			return;
 		}
-		new ReduxConfig( $opt_name );
+
 		$this->opt_name = $opt_name;
 		$this->id       = $id;
 		$this->title    = $title;
