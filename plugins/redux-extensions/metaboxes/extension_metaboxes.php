@@ -49,6 +49,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 		public $parent_options = array();
 		public $parent_defaults = array();
 		public $post_type_fields = array();
+		protected $post_type_values = array();
 		public $wp_links = array();
 		public $options_defaults = array();
 		public $localize_data = array();
@@ -934,7 +935,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 
 			if ( isset( $thePost->post_type ) && in_array( $thePost->post_type, $this->post_types ) ) {
 				if ( isset( $this->post_type_values[ $thePost->post_type ] ) ) {
-					$meta = $this->post_type_fields[ $thePost->post_type ];
+					$meta = $this->post_type_values[ $thePost->post_type ];
 				} else {
 					$defaults = array();
 					if ( ! empty( $this->post_type_fields[ $thePost->post_type ] ) ) {
@@ -946,7 +947,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
 					}
 
 					$meta                                          = wp_parse_args( $this->get_meta( $thePost->ID ), $defaults );
-					$this->post_type_fields[ $thePost->post_type ] = $meta;
+					$this->post_type_values[ $thePost->post_type ] = $meta;
 				}
 
 				if ( ! empty( $meta_key ) ) {
@@ -1347,11 +1348,19 @@ if ( ! function_exists( 'redux_metaboxes_loop_end' ) ) {
 
 
 if ( ! function_exists( 'redux_post_meta' ) ) {
+	/**
+	 * @param string $opt_name
+	 * @param array $thePost
+	 * @param string $meta_key
+	 * @param string $def_val
+	 *
+	 * @return string|array
+	 */
 	function redux_post_meta( $opt_name = "", $thePost = array(), $meta_key = "", $def_val = "" ) {
 		global $post;
 
 		if ( empty( $opt_name ) ) {
-			return;
+			return null;
 		}
 
 		$redux     = ReduxFrameworkInstances::get_instance( $opt_name );
