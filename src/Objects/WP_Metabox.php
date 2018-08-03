@@ -17,6 +17,15 @@ class WP_Metabox {
 	protected $position;
 	protected $last_section;
 
+	/**
+	 * @param $post_id
+	 * @param string $meta_key
+	 *
+	 * @return string|array
+	 */
+	public static function get_meta_value( $post_id, $meta_key = "" ) {
+		return get_post_meta( $post_id, $meta_key, true );
+	}
 
 	/**
 	 * WP_Metabox constructor.
