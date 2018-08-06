@@ -523,7 +523,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @return string
 	 */
 	public function addScript( $js, $require = array(), $localize = false, $in_footer = false ) {
+		if ( ! did_action( 'init' ) ) {
+			add_action( 'init', function () use ( $js, $require, $localize, $in_footer ) {
+				$this->addScript( $js, $require, $localize, $in_footer );
+			} );
 
+			return false;
+		}
 		$name = basename( $js );
 		$file = $this->registerScript( $js, $require, $localize, $in_footer );
 
@@ -537,6 +543,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function registerScript( $js, $require = array(), $localize = false, $in_footer = false ) {
+		if ( ! did_action( 'init' ) ) {
+			add_action( 'init', function () use ( $js, $require, $localize, $in_footer ) {
+				$this->registerScript( $js, $require, $localize, $in_footer );
+			} );
+
+			return false;
+		}
 		$name = basename( $js );
 		if ( ! wp_script_is( $name, 'registered' ) ) {
 			if ( $file = $this->searchFile( $js, 'js', true, 'js' ) ) {
@@ -565,6 +578,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @return string
 	 */
 	public function addStyle( $css, $media = 'all' ) {
+		if ( ! did_action( 'init' ) ) {
+			add_action( 'init', function () use ( $css, $media ) {
+				$this->addStyle( $css, $media );
+			} );
+
+			return false;
+		}
 		$name = basename( $css );
 		$file = $this->registerStyle( $css, $media );
 
@@ -584,6 +604,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @return string
 	 */
 	public function registerStyle( $css, $media = 'all' ) {
+		if ( ! did_action( 'init' ) ) {
+			add_action( 'init', function () use ( $css, $media ) {
+				$this->registerStyle( $css, $media );
+			} );
+
+			return false;
+		}
 		$name = basename( $css );
 		if ( ! wp_style_is( $name, 'registered' ) ) {
 			if ( $file = $this->searchFile( $css, 'css', true, 'css' ) ) {
