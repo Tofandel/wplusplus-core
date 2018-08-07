@@ -28,7 +28,12 @@ class VC_Integration implements SubModule {
 		//vc_add_shortcode_param( 'wpp_dropdown', array( $this, 'createVCDropdown' ) );
 		vc_add_shortcode_param( 'dimensions', array( $this, 'createVCDimensions' ) );
 		vc_add_shortcode_param( 'warning', array( $this, 'createVCWarning' ) );
+		vc_add_shortcode_param( 'pro', array( $this, 'createVCPro' ) );
 		vc_add_shortcode_param( 'hidden', '__return_false' );
+	}
+
+	public function createVCPro() {
+		return '<strong>' . sprintf( esc_html( __( 'This is a pro feature, %sgo pro now !%s', $this->getTextDomain() ) ), '<a href="' . $this->parent->getBuyUrl() . '" target="_blank" rel="noopener">', '</a>' ) . '</strong>';
 	}
 
 	/**

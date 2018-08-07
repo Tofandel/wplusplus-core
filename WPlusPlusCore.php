@@ -4,7 +4,6 @@ namespace Tofandel;
 
 use Tofandel\Core\Interfaces\WP_Plugin as WP_Plugin_Interface;
 use Tofandel\Core\Modules\VC_Integration;
-use Tofandel\Core\Objects\ReduxConfig;
 use Tofandel\Core\Objects\WP_Plugin;
 
 if ( is_admin() && ! wp_doing_ajax() ) {
@@ -20,7 +19,7 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Plugin Name: W++ Core
  * Plugin URI: https://github.com/tofandel/wplusplus-core/
  * Description: A Wordpress Plugin acting as core for other of my plugins and including the Ultimate Redux Framework Bundle and OOP APIs to use it
- * Version: 1.4
+ * Version: 1.5
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
  * Text Domain: wplusplus-core
@@ -35,6 +34,7 @@ require_once 'functions.php';
 class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	const MULOADER_DIR = WPMU_PLUGIN_DIR;
 	protected $repo_url = 'https://github.com/tofandel/wplusplus-core/';
+	protected $no_redux = true;
 
 	public function actionsAndFilters() {
 	}
@@ -66,14 +66,6 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 
 	public function uninstall() {
 	}
-
-	/**
-	 * Add redux framework menus, sub-menus and settings page in this function
-	 */
-	public function reduxConfig() {
-		new ReduxConfig( $this->redux_opt_name );
-	}
-
 }
 
 

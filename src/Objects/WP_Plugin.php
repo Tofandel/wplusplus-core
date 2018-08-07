@@ -2,11 +2,11 @@
 
 namespace Tofandel\Core\Objects;
 
-use Exception;
 use ReduxFrameworkPlugin;
 use ReflectionClass;
 use Tofandel\Core\Interfaces\SubModule;
 use Tofandel\Core\Modules\LicenceManager;
+use Tofandel\Core\Modules\ReduxFramework;
 use Tofandel\Core\Traits\Singleton;
 
 
@@ -39,6 +39,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	protected $buy_url = '';
 	protected $is_licensed = false;
 	protected $product_id = '';
+	protected $no_redux = false;
 
 	/**
 	 * @var SubModule[]
@@ -156,9 +157,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			 * @var LicenceManager $LicenceManager
 			 */
 			$LicenceManager = $this->getModule( LicenceManager::class );
-			if ( $LicenceManager && $data = $LicenceManager->updateRequest() ) {
+			//if ( $LicenceManager && $data = $LicenceManager->updateRequest() ) {
 				//TODO
-			}
+			//}
 		}
 	}
 
@@ -178,10 +179,20 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	/**
 	 * Plugin constructor.
 	 *
-	 * @throws Exception
+	 * @throws \ReflectionException
 	 */
 	public function __construct() {
+		$this->init();
 
+		$this->initUpdateChecker();
+
+		$this->setup();
+	}
+
+	/**
+	 * @throws \ReflectionException
+	 */
+	private function init() {
 		$this->class = new ReflectionClass( $this );
 		$this->slug  = $this->class->getShortName();
 		$this->file  = $this->class->getFileName();
@@ -193,11 +204,6 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		$comment = $this->class->getDocComment();
 
 		$this->extractFromComment( $comment );
-
-		$version = get_option( $this->slug . '_version' );
-		if ( version_compare( $version, $this->version, '!=' ) ) {
-			add_action( 'init', [ $this, 'activated' ], 1 );
-		}
 
 		if ( ! isset( $this->redux_opt_name ) ) {
 			$this->redux_opt_name = strtolower( $this->class->getShortName() ) . '_options';
@@ -211,10 +217,6 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		if ( $this->is_licensed ) {
 			$this->setSubModule( new LicenceManager( $this ) );
 		}
-
-		$this->initUpdateChecker();
-
-		$this->setup();
 	}
 
 
@@ -259,7 +261,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		add_action( 'plugins_loaded', array( $this, 'loadTextdomain' ) );
 		register_activation_hook( $this->file, array( $this, 'activated' ) );
 		register_deactivation_hook( $this->file, array( $this, 'deactivated' ) );
-		register_uninstall_hook( $this->file, get_called_class() . '::uninstallHook' );
+		register_uninstall_hook( $this->file, static::class . '::uninstallHook' );
 		$this->definitions();
 		$this->actionsAndFilters();
 		foreach ( $this->modules as $module ) {
@@ -268,18 +270,19 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 		add_action( 'init', [ $this, 'initShortcodes' ], 1 );
 
-
-		if ( is_admin() && ! wp_doing_ajax() ||
-		     ( wp_doing_ajax() && isset ( $_POST['action'] ) &&
-		       ( $_POST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_POST['action'], 'redux' ) === 0 ) ) ) {
-			$this->_reduxConfig();
-			do_action( 'redux_loaded' );
-			add_action( 'admin_init', [ $this, 'checkCompat' ] );
-			add_action( 'init', array( $this, 'removeDemoModeLink' ) );
-		} else {
-			$GLOBALS[ $this->redux_opt_name ] = get_option( $this->redux_opt_name, array() );
-			do_action( 'redux_not_loaded' );
-			add_action( 'wp_enqueue_scripts', [ $this, 'enqueueReduxFonts' ], 999 );
+		if ( ! $this->no_redux ) {
+			if ( is_admin() && ! wp_doing_ajax() ||
+			     ( wp_doing_ajax() && isset ( $_POST['action'] ) &&
+			       ( $_POST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_POST['action'], 'redux' ) === 0 ) ) ) {
+				$this->_reduxConfig();
+				do_action( 'redux_loaded' );
+				add_action( 'admin_init', [ $this, 'checkCompat' ] );
+				add_action( 'init', array( $this, 'removeDemoModeLink' ) );
+			} else {
+				$GLOBALS[ $this->redux_opt_name ] = get_option( $this->redux_opt_name, array() );
+				do_action( 'redux_not_loaded' );
+				add_action( 'wp_enqueue_scripts', [ $this, 'enqueueReduxFonts' ], 999 );
+			}
 		}
 
 		if ( ! add_option( $this->slug . '_version', $this->version ) ) {
@@ -289,8 +292,10 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 			//Check the version number
 			if ( version_compare( $last_version, $this->version, '<' ) ) {
+				$this->activated();
 				$this->multisiteUpgrade( $last_version );
 			} elseif ( version_compare( $last_version, $this->version, '>' ) ) {
+				$this->activated();
 				$this->multisiteDowngrade( $last_version );
 			}
 			if ( $last_version != $this->version ) {
@@ -330,9 +335,10 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		/**
 		 * @var self $plugin
 		 */
-		$plugin = static::__init__();
+		$plugin = $ref->newInstanceWithoutConstructor();
+		$plugin->init();
 		$plugin->uninstall();
-		delete_option( $plugin->redux_opt_name );
+		delete_option( $plugin->getReduxOptName() );
 	}
 
 	/**
@@ -828,13 +834,18 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	public $redux_config;
 
 	/**
+	 * @param ReduxFramework $framework
+	 *
 	 * Add redux framework menus, sub-menus and settings page in this function
 	 */
-	abstract public function reduxConfig();
+	public function reduxInit( ReduxFramework $framework ) {
+	}
 
-	public function _reduxConfig() {
-		$this->reduxConfig();
-		do_action( 'wpp_redux_' . $this->redux_opt_name . '_config' );
+	protected function _reduxConfig() {
+		$module = new ReduxFramework( $this );
+		$this->setSubModule( $module );
+		$this->reduxInit( $module );
+		do_action( 'wpp_redux_' . $this->redux_opt_name . '_config', $module );
 	}
 
 	/**

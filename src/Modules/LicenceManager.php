@@ -249,6 +249,9 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 		$this->activateLicence();
 	}
 
+	/**
+	 * Called function on plugin deactivation
+	 */
 	public function deactivated() {
 		$this->deactivateLicence();
 	}
@@ -257,93 +260,91 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 	 * The hooks of the submodule
 	 */
 	public function actionsAndFilters() {
-		add_action( 'wpp_redux_' . $this->parent->getReduxOptName() . '_config', [ $this, 'addSection' ] );
+		add_action( 'wpp_redux_' . $this->parent->getReduxOptName() . '_config', [ $this, 'addSection' ], 50, 1 );
 	}
 
-	public function addSection() {
-		if ( isset( $this->parent->redux_config ) ) {
-			$url = parse_url( $this->buy_url );
-			global $WPlusPlusCore;
-			$this->parent->redux_config->setSection( array(
-				'title'  => __( "Licence key", $this->parent->getTextDomain() ),
-				'id'     => 'licence',
-				'icon'   => 'el el-shopping-cart', //'el el-key'
-				'fields' => array(
-					array(
-						'title'             => __( 'Licence Email Address', $this->parent->getTextDomain() ),
-						'description'       => sprintf( esc_html__( 'If you have not yet purchased the product you can do it %shere%s', $WPlusPlusCore->getTextDomain() ),
-							'<a href="' . $this->buy_url . '" target="_blank" rel="noopener">', '</a>' ),
-						'id'                => 'licence_email',
-						'type'              => 'text',
-						'validate_callback' => function ( $field, $value, $existing_value ) use ( $WPlusPlusCore ) {
-							$error = false;
-							if ( ! is_email( $value ) ) {
-								$error = true;
-								$value = '';
-							} else {
-								$this->email = $value;
+	public function addSection( ReduxFramework $framework ) {
+		$url = parse_url( $this->buy_url );
+		global $WPlusPlusCore;
+		$framework->setSection( array(
+			'title'  => __( "Licence key", $this->parent->getTextDomain() ),
+			'id'     => 'licence',
+			'icon'   => 'el el-shopping-cart', //'el el-key'
+			'fields' => array(
+				array(
+					'title'             => __( 'Licence Email Address', $this->parent->getTextDomain() ),
+					'description'       => sprintf( esc_html__( 'If you have not yet purchased the product you can do it %shere%s', $WPlusPlusCore->getTextDomain() ),
+						'<a href="' . $this->buy_url . '" target="_blank" rel="noopener">', '</a>' ),
+					'id'                => 'licence_email',
+					'type'              => 'text',
+					'validate_callback' => function ( $field, $value, $existing_value ) use ( $WPlusPlusCore ) {
+						$error = false;
+						if ( ! is_email( $value ) ) {
+							$error = true;
+							$value = '';
+						} else {
+							$this->email = $value;
+						}
+						if ( $existing_value != $value && $this->isActivated() ) {
+							$this->email = $existing_value;
+							$this->deactivateLicence();
+						}
+						$return['value'] = $value;
+						if ( $error == true ) {
+							$return['msg']   = __( 'Invalid email', $WPlusPlusCore->getTextDomain() );
+							$return['error'] = $field;
+						}
+
+						return $return;
+					}
+				),
+				array(
+					'title'             => __( 'Licence Key', $WPlusPlusCore->getTextDomain() ),
+					'description'       => sprintf( esc_html__( 'If you have purchased the product you will find your api key %shere%s', $WPlusPlusCore->getTextDomain() ),
+						'<a href="' . $url['scheme'] . '://' . $url['host'] . '/my-account/my-api-keys/" target="_blank" rel="noopener">', '</a>' ),
+					'id'                => 'licence_key',
+					'type'              => 'password',
+					'class'             => 'regular-text',
+					'username'          => false,
+					'required'          => array(
+						'licence_email',
+						'contains',
+						'@'
+					),
+					'validate_callback' => function ( $field, $value, $existing_value ) use ( $WPlusPlusCore ) {
+						$return['value'] = $value;
+						if ( empty( $value ) ) {
+							$this->deactivateLicence();
+							$this->setDeactivated();
+							if ( ! empty( $existing_value ) ) {
+								$field['msg'] = __( 'You must enter an Api key', $WPlusPlusCore->getTextDomain() );
 							}
+						} else {
 							if ( $existing_value != $value && $this->isActivated() ) {
-								$this->email = $existing_value;
+								$this->api_key = $existing_value;
 								$this->deactivateLicence();
 							}
-							$return['value'] = $value;
-							if ( $error == true ) {
-								$return['msg']   = __( 'Invalid email', $WPlusPlusCore->getTextDomain() );
-								$return['error'] = $field;
-							}
+							if ( $existing_value != $value || ! $this->isActivated() ) {
+								$this->api_key = $value;
 
-							return $return;
-						}
-					),
-					array(
-						'title'             => __( 'Licence Key', $WPlusPlusCore->getTextDomain() ),
-						'description'       => sprintf( esc_html__( 'If you have purchased the product you will find your api key %shere%s', $WPlusPlusCore->getTextDomain() ),
-							'<a href="' . $url['scheme'] . '://' . $url['host'] . '/my-account/my-api-keys/" target="_blank" rel="noopener">', '</a>' ),
-						'id'                => 'licence_key',
-						'type'              => 'password',
-						'class'             => 'regular-text',
-						'username'          => false,
-						'required'          => array(
-							'licence_email',
-							'contains',
-							'@'
-						),
-						'validate_callback' => function ( $field, $value, $existing_value ) use ( $WPlusPlusCore ) {
-							$return['value'] = $value;
-							if ( empty( $value ) ) {
-								$this->deactivateLicence();
-								$this->setDeactivated();
-								if ( ! empty( $existing_value ) ) {
-									$field['msg'] = __( 'You must enter an Api key', $WPlusPlusCore->getTextDomain() );
+								$error = ! $this->activateLicence();
+
+								$msg = $this->getMessage();
+								if ( ! empty( $msg ) ) {
+									$field['msg'] = $msg;
 								}
-							} else {
-								if ( $existing_value != $value && $this->isActivated() ) {
-									$this->api_key = $existing_value;
-									$this->deactivateLicence();
-								}
-								if ( $existing_value != $value || ! $this->isActivated() ) {
-									$this->api_key = $value;
 
-									$error = ! $this->activateLicence();
-
-									$msg = $this->getMessage();
-									if ( ! empty( $msg ) ) {
-										$field['msg'] = $msg;
-									}
-
-									if ( $error == true ) {
-										$return['error'] = $field;
-									}
+								if ( $error == true ) {
+									$return['error'] = $field;
 								}
 							}
-
-							return $return;
 						}
-					),
-				)
-			) );
-		}
+
+						return $return;
+					}
+				),
+			)
+		) );
 	}
 
 	/**

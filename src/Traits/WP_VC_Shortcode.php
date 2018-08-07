@@ -70,7 +70,9 @@ trait WP_VC_Shortcode {
 		), static::$vc_params );
 		if ( empty( static::$atts ) ) {
 			foreach ( static::$vc_params['params'] as $param ) {
-				static::$atts[ $param['param_name'] ] = isset( $param['std'] ) ? $param['std'] : '';
+				if ( isset( $param['param_name'] ) ) {
+					static::$atts[ $param['param_name'] ] = isset( $param['std'] ) ? $param['std'] : '';
+				}
 			}
 		}
 		if ( function_exists( 'vc_map' ) ) {

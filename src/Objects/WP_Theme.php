@@ -39,6 +39,16 @@ abstract class WP_Theme extends WP_Plugin implements \Tofandel\Core\Interfaces\W
 	 * @throws Exception
 	 */
 	public function __construct() {
+		$this->init();
+
+		$this->initUpdateChecker();
+		$this->setup();
+	}
+
+	/**
+	 * @throws \ReflectionException
+	 */
+	private function init() {
 		$this->class = new ReflectionClass( $this );
 		$this->file  = $this->class->getFileName();
 		$this->slug  = basename( dirname( $this->file ) );
@@ -57,9 +67,6 @@ abstract class WP_Theme extends WP_Plugin implements \Tofandel\Core\Interfaces\W
 		$this->version     = $this->theme->version;
 		$this->name        = $this->theme->name;
 		$this->text_domain = $this->theme->get( 'TextDomain' );
-
-		$this->initUpdateChecker();
-		$this->setup();
 	}
 
 	/**

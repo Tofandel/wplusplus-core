@@ -8,6 +8,8 @@
 
 namespace Tofandel\Core\Interfaces;
 
+use Tofandel\Core\Modules\ReduxFramework;
+
 
 /**
  * Class WP_Plugin
@@ -159,11 +161,13 @@ interface WP_Plugin {
 	public function mkdir( $folder );
 
 	/**
+	 * @param ReduxFramework $framework
+	 *
 	 * Add menus, sub-menus and settings page in this function
 	 *
 	 * @see https://docs.reduxframework.com/core/redux-api/ For a complete documentation on how to use redux framework
 	 */
-	public function reduxConfig();
+	public function reduxInit( ReduxFramework $framework );
 
 	/**
 	 * Called function on plugin deactivation
