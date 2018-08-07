@@ -272,8 +272,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 		if ( ! $this->no_redux ) {
 			if ( is_admin() && ! wp_doing_ajax() ||
-			     ( wp_doing_ajax() && isset ( $_POST['action'] ) &&
-			       ( $_POST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_POST['action'], 'redux' ) === 0 ) ) ) {
+			     ( wp_doing_ajax() && isset ( $_REQUEST['action'] ) &&
+			       ( $_REQUEST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_REQUEST['action'], 'redux' ) === 0 ) ) ) {
 				$this->_reduxConfig();
 				do_action( 'redux_loaded' );
 				add_action( 'admin_init', [ $this, 'checkCompat' ] );
