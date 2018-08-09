@@ -63,7 +63,7 @@ trait WP_VC_Shortcode {
 			return;
 		}
 
-		static::$_name = static::$reflectionClass->getShortName();
+		static::getName();
 
 		static::$vc_params = array_merge( array(
 			'base' => static::$_name

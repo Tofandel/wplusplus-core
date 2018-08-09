@@ -1293,7 +1293,7 @@ pre {
 }
 
 @media screen and (max-width: 640px) {
-  #redux-defaults-section {
+  #redux-defaults-section-header, #redux-defaults-section-footer {
     display: none;
   }
 }
@@ -1305,9 +1305,6 @@ pre {
 }
 
 @media screen and (max-width: 730px) {
-  #redux-defaults-section2 {
-    display: none;
-  }
   #redux-share {
     display: none;
   }

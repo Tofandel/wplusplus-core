@@ -276,8 +276,6 @@ if ( ! class_exists( 'ReduxFramework_repeater' ) ) {
 		 */
 		public function enqueue() {
 
-			$extension = ReduxFramework_extension_repeater::getInstance();
-
 			// Set up min files for dev_mode = false.
 			$min = Redux_Functions::isMin();
 

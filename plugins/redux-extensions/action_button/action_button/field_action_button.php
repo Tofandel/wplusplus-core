@@ -118,7 +118,7 @@ HTML;
 			wp_enqueue_script(
 				'redux-field-action-button-js',
 				apply_filters( "redux/action_button/{$this->parent->args['opt_name']}/enqueue/redux-field-action-button-js", $this->extension_url . 'field_action_button' . $min . '.js' ),
-				array( 'jquery' ),
+				array( 'jquery', 'redux-js' ),
 				time(),
 				true
 			);

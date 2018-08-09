@@ -19,7 +19,7 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Plugin Name: W++ Core
  * Plugin URI: https://github.com/tofandel/wplusplus-core/
  * Description: A Wordpress Plugin acting as core for other of my plugins and including the Ultimate Redux Framework Bundle and OOP APIs to use it
- * Version: 1.5
+ * Version: 1.5.1
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
  * Text Domain: wplusplus-core

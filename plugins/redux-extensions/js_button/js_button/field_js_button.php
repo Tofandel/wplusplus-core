@@ -101,7 +101,6 @@ HTML;
 		 * @return      void
 		 */
 		public function enqueue() {
-			$extension = ReduxFramework_extension_js_button::getInstance();
 
 			// Make sure script data exists first
 			if ( isset( $this->field['script'] ) && ! empty( $this->field['script'] ) ) {
@@ -145,7 +144,7 @@ HTML;
 			wp_enqueue_script(
 				'redux-field-js-button-js',
 				apply_filters( "redux/js_button/{$this->parent->args['opt_name']}/enqueue/redux-field-js-button-js", $this->extension_url . 'field_js_button' . $min . '.js' ),
-				array( 'jquery' ),
+				array( 'jquery', 'redux-js' ),
 				time(),
 				true
 			);

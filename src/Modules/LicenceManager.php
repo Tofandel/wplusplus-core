@@ -179,7 +179,7 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 		}
 
 		$data = $this->doRequest( 'status' );
-		if ( $data['status_check'] == 'active' ) {
+		if ( ! empty( $data['status_check'] ) && $data['status_check'] == 'active' ) {
 			$this->setMessage( $data['activations_remaining'] );
 			$this->setActivated();
 			$this->setLicenceTransient();

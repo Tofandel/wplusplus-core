@@ -26,7 +26,7 @@ trait WP_Shortcode {
 			return;
 		}
 
-		static::$_name = static::$reflectionClass->getShortName();
+		static::getName();
 
 		new \Tofandel\Core\Objects\WP_Shortcode( static::$_name, [ static::class, 'shortcode' ], static::$atts );
 	}
@@ -41,10 +41,26 @@ trait WP_Shortcode {
 	//abstract public function shortcode( $attributes, $content, $name );
 
 	/**
-	 * @return mixed
+	 * @throws \ReflectionException
 	 */
-	public function getName() {
-		return static::$_name;
+	public static function getName() {
+		if ( ! empty( static::$_name ) ) {
+			return static::$_name;
+		}
+		if ( ! isset( static::$reflectionClass ) ) {
+			static::$reflectionClass = new \ReflectionClass( static::class );
+		}
+
+		return static::$_name = static::$reflectionClass->getShortName();
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getNames() {
+		$name = static::getName();
+
+		return array( $name, strtolower( $name ) );
 	}
 
 }

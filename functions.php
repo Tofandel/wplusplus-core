@@ -11,6 +11,34 @@ function wpp_admin_notice( $text, $type = 'success' ) {
 }
 
 /**
+ * @param WP_Post $post
+ * @param string|array $shortcode
+ *
+ * @return bool
+ */
+function wpp_has_shortcode( $post, $shortcode ) {
+	if ( is_array( $shortcode ) ) {
+		foreach ( $shortcode as $sh ) {
+			if ( has_shortcode( $post->post_content, $sh ) ) {
+				return true;
+			}
+			if ( has_shortcode( $post->post_content, strtolower( $sh ) ) ) {
+				return true;
+			}
+		}
+	} else {
+		if ( has_shortcode( $post->post_content, $shortcode ) ) {
+			return true;
+		}
+		if ( has_shortcode( $post->post_content, strtolower( $shortcode ) ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
  * @param string $string The string to slugifiy
  * @param bool $prepend Can be (and should) be used as a vendor name to separate slugs
  *

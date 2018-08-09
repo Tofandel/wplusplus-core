@@ -55,12 +55,15 @@
 			<span class="spinner"></span>
 			<?php
 			if ( false === $this->parent->args['hide_save'] ) {
-				submit_button( __( 'Save Changes', 'redux-framework' ), 'primary', 'redux_save', false );
+				submit_button( __( 'Save Changes', 'redux-framework' ), 'primary', 'redux_save', false, array( 'id' => 'redux-save-footer' ) );
 			}
 
-			if ( false === $this->parent->args['hide_reset'] ) {
-				submit_button( __( 'Reset Section', 'redux-framework' ), 'secondary', $this->parent->args['opt_name'] . '[defaults-section]', false, array( 'id' => 'redux-defaults-section' ) );
-				submit_button( __( 'Reset All', 'redux-framework' ), 'secondary', $this->parent->args['opt_name'] . '[defaults]', false, array( 'id' => 'redux-defaults' ) );
+			if ( false === $this->parent->args['hide_reset'] ) { ?>
+				<?php submit_button( esc_attr__( 'Reset Section', 'redux-framework' ), 'secondary',
+					$this->parent->args['opt_name'] . '[defaults-section]', false, array( 'id' => 'redux-defaults-section-footer' ) ); ?>
+				<?php submit_button( esc_attr__( 'Reset All', 'redux-framework' ), 'secondary',
+					$this->parent->args['opt_name'] . '[defaults]', false, array( 'id' => 'redux-defaults-footer' ) ); ?>
+				<?php
 			}
 			?>
 		</div>
