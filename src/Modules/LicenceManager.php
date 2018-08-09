@@ -268,6 +268,7 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 		global $WPlusPlusCore;
 		$framework->setSection( array(
 			'title'  => __( "Licence key", $this->parent->getTextDomain() ),
+			'desc'   => $this->parent->isLicensed() ? __( 'Your licence is active', $this->getTextDomain() ) : __( 'Your licence is inactive', $this->getTextDomain() ),
 			'id'     => 'licence',
 			'icon'   => 'el el-shopping-cart', //'el el-key'
 			'fields' => array(
