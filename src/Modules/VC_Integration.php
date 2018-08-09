@@ -34,7 +34,7 @@ class VC_Integration implements SubModule {
 
 
 	public function createVCPro( $settings ) {
-		return '<strong>' . sprintf( esc_html( __( 'This is a pro feature, %sgo pro now !%s', $this->getTextDomain() ) ), '<a href="' . $settings['buy_url'] . '" target="_blank" rel="noopener">', '</a>' ) . '</strong>';
+		return '<i class="dashicons dashicons-lock"></i><strong>' . sprintf( esc_html( __( 'This is a pro feature, %sgo pro now !%s', $this->getTextDomain() ) ), '<a href="' . $settings['buy_url'] . '" target="_blank" rel="noopener">', '</a>' ) . '</strong>';
 	}
 
 	/**
