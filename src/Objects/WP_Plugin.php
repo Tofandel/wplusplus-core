@@ -487,7 +487,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	public static function removeExtension( $string, $ext ) {
 		$ext     = '.' . $ext;
 		$ext_len = strlen( $ext );
-		if ( strrpos( $string, $ext, $ext_len ) === 0 ) {
+		if ( @strrpos( $string, $ext, $ext_len ) === 0 ) {
 			$string = substr( $string, 0, - $ext_len );
 		}
 
