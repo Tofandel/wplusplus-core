@@ -45,7 +45,7 @@ require_once 'functions.php';
 
 class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	const MULOADER_DIR = WPMU_PLUGIN_DIR;
-	protected $repo_url = 'https://github.com/tofandel/wplusplus-core/';
+	protected $repo_url = 'https://github.com/Tofandel/wplusplus-core/';
 	protected $no_redux = true;
 
 	public function actionsAndFilters() {
