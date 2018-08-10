@@ -1,4 +1,11 @@
 <?php
+/**
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
 
 namespace Tofandel;
 
@@ -19,10 +26,10 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Plugin Name: W++ Core
  * Plugin URI: https://github.com/tofandel/wplusplus-core/
  * Description: A Wordpress Plugin acting as core for other of my plugins and including the Ultimate Redux Framework Bundle and OOP APIs to use it
- * Version: 1.5.1
+ * Version: 1.6
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
- * Text Domain: wplusplus-core
+ * Text Domain: wppc
  * Domain Path: /languages/
  * Requires at least: 4.7
  * Tested up to: 4.9.7

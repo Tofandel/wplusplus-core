@@ -1,4 +1,11 @@
 <?php
+/**
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
 
 namespace Tofandel\Core\Objects;
 
@@ -24,11 +31,11 @@ class WP_Shortcode {
 	public $default_atts;
 
 	public function __construct( $name, $function, $default_atts = array() ) {
-		$this->name         = wpp_slugify( $name );
+		$this->name         = $name;
 		$this->function     = $function;
 		$this->default_atts = $default_atts;
 
-		add_shortcode( $name, [ $this, 'call' ] );
+		add_shortcode( wpp_slugify( $name ), [ $this, 'call' ] );
 		add_shortcode( $this->name, [ $this, 'call' ] );
 
 		self::$shortcodes[ $this->name ] = &$this;

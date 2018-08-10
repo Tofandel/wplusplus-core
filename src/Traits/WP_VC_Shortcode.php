@@ -1,10 +1,16 @@
 <?php
+/**
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
 
 namespace Tofandel\Core\Traits;
 
 /**
- * Class WP_Shortcode
- * @package Abstracts
+ * Class WP_VC_Shortcode
  *
  * @author Adrien Foulon <tofandel@tukan.hu>
  */
@@ -35,7 +41,7 @@ trait WP_VC_Shortcode {
 	 *      )
 	 * Elements marked with * are already defined and thus not required but can be overridden
 	 */
-	static $vc_params = array(
+	protected static $vc_params = array(
 		'name'                      => '',
 		'description'               => '',
 		'weight'                    => 1,
@@ -56,31 +62,56 @@ trait WP_VC_Shortcode {
 		'params'                    => array()
 	);
 
-	public static function __init__() {
-		self::__baseInit__();
+	protected function __init() {
+	}
 
-		if ( ! static::$reflectionClass->implementsInterface( \Tofandel\Core\Interfaces\WP_Shortcode::class ) ) {
+	public static function initVCParams() {
+	}
+
+	private static function _initVCParams() {
+		static $init = false;
+
+		if ( $init ) {
 			return;
 		}
+		$init = true;
 
 		static::getName();
+		static::initVCParams();
+		foreach ( static::$vc_params['params'] as $key => $param ) {
+			if ( isset( static::$atts[ $param['param_name'] ] ) ) {
+				static::$vc_params['params'][ $key ]['std'] = static::$atts[ $param['param_name'] ];
+			}
+		}
 
 		static::$vc_params = array_merge( array(
 			'base' => static::$_name
 		), static::$vc_params );
+	}
+
+	public static function __init__() {
+		self::__baseInit__();
+
+		if ( ! static::$reflectionClass->implementsInterface( \Tofandel\Core\Interfaces\WP_VC_Shortcode::class ) ) {
+			return;
+		}
 		if ( empty( static::$atts ) ) {
+			static::_initVCParams();
 			foreach ( static::$vc_params['params'] as $param ) {
 				if ( isset( $param['param_name'] ) ) {
 					static::$atts[ $param['param_name'] ] = isset( $param['std'] ) ? $param['std'] : '';
 				}
 			}
 		}
-		if ( function_exists( 'vc_map' ) ) {
-			add_action( 'vc_before_init', function () {
+		global $pagenow;
+
+		if ( function_exists( 'vc_map' ) && ( $pagenow == "post-new.php" || $pagenow == "post.php" || ( wp_doing_ajax() && strpos( 'vc_', $_REQUEST['action'] ) === 0 ) ) ) {
+			add_action( 'vc_before_mapping', function () {
+				static::_initVCParams();
 				vc_map( static::$vc_params );
 			} );
 		}
 
-		new \Tofandel\Core\Objects\WP_Shortcode( static::$_name, [ static::class, 'shortcode' ], static::$atts );
+		new \Tofandel\Core\Objects\WP_Shortcode( static::getName(), [ static::class, 'shortcode' ], static::$atts );
 	}
 }
