@@ -1,20 +1,15 @@
 <?php
 /**
- * This file represents an example of the code that themes would use to register
- * the required plugins.
- *
- * It is expected that theme authors would copy and paste this code into their
- * functions.php file, and amend to suit.
- *
- * @see http://tgmpluginactivation.com/configuration/ for detailed documentation.
- *
- * @package    TGM-Plugin-Activation
- * @subpackage Example
- * @version    2.6.1 for plugin Wplusplus
- * @author     Thomas Griffin, Gary Jones, Juliette Reinders Folmer
- * @copyright  Copyright (c) 2011, Thomas Griffin
- * @license    http://opensource.org/licenses/gpl-2.0.php GPL v2 or later
- * @link       https://github.com/TGMPA/TGM-Plugin-Activation
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -52,14 +47,8 @@ require_once dirname( __FILE__ ) . '/../vendor/tgmpa/tgm-plugin-activation/class
  */
 add_action( 'tgmpa_register',
 	function () {
-		/*
-		 * Array of plugin arrays. Required keys are name and slug.
-		 * If the source is NOT from the .org repo, then source is also required.
-		 */
 		$plugins = array(
-
-			// This is an example of how to include a plugin bundled with a theme.
-			array(
+			/*array(
 				'name'               => 'Redux Framework',
 				'slug'               => 'redux-framework',
 				'source'             => __DIR__ . '/zips/redux-framework.zip',
@@ -67,7 +56,7 @@ add_action( 'tgmpa_register',
 				'version'            => '3.6.9',
 				'force_activation'   => false,
 				'force_deactivation' => false,
-			),
+			),*/
 			array(
 				'name'               => 'WPBakery Page Builder',
 				'slug'               => 'js_composer',
@@ -78,15 +67,6 @@ add_action( 'tgmpa_register',
 				'force_deactivation' => false,
 			),
 
-			/*
-			 * Array of configuration settings. Amend each line as needed.
-			 *
-			 * TGMPA will start providing localized text strings soon. If you already have translations of our standard
-			 * strings available, please help us make TGMPA even better by giving us access to these translations or by
-			 * sending in a pull-request with .po file(s) with the translations.
-			 *
-			 * Only uncomment the strings in the config array if you want to customize the strings.
-			 */
 			$config = array(
 				'id'           => basename( dirname( __DIR__ ) ),
 				// Unique ID for hashing notices for multiple instances of TGMPA.

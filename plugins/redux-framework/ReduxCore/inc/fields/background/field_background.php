@@ -1,4 +1,16 @@
 <?php
+/**
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /**
  * Redux Framework is free software: you can redistribute it and/or modify
@@ -154,7 +166,7 @@ if ( ! class_exists( 'ReduxFramework_background' ) ) {
 					'content-box' => 'Content Box',
 					'padding-box' => 'Padding Box',
 				);
-				echo '<select id="' . $this->field['id'] . '-repeat-select" data-placeholder="' . __( 'Background Clip', 'redux-framework' ) . '" name="' . $this->field['name'] . $this->field['name_suffix'] . '[background-clip]" class="redux-select-item redux-background-input redux-background-clip ' . $this->field['class'] . '">';
+				echo '<select id="' . $this->field['id'] . '-clip-select" data-placeholder="' . __( 'Background Clip', 'redux-framework' ) . '" name="' . $this->field['name'] . $this->field['name_suffix'] . '[background-clip]" class="redux-select-item redux-background-input redux-background-clip ' . $this->field['class'] . '">';
 				echo '<option></option>';
 
 				foreach ( $array as $k => $v ) {
@@ -170,7 +182,7 @@ if ( ! class_exists( 'ReduxFramework_background' ) ) {
 					'content-box' => 'Content Box',
 					'padding-box' => 'Padding Box',
 				);
-				echo '<select id="' . $this->field['id'] . '-repeat-select" data-placeholder="' . __( 'Background Origin', 'redux-framework' ) . '" name="' . $this->field['name'] . $this->field['name_suffix'] . '[background-origin]" class="redux-select-item redux-background-input redux-background-origin ' . $this->field['class'] . '">';
+				echo '<select id="' . $this->field['id'] . '-origin-select" data-placeholder="' . __( 'Background Origin', 'redux-framework' ) . '" name="' . $this->field['name'] . $this->field['name_suffix'] . '[background-origin]" class="redux-select-item redux-background-input redux-background-origin ' . $this->field['class'] . '">';
 				echo '<option></option>';
 
 				foreach ( $array as $k => $v ) {
@@ -185,7 +197,7 @@ if ( ! class_exists( 'ReduxFramework_background' ) ) {
 					'cover'   => 'Cover',
 					'contain' => 'Contain',
 				);
-				echo '<select id="' . $this->field['id'] . '-repeat-select" data-placeholder="' . __( 'Background Size', 'redux-framework' ) . '" name="' . $this->field['name'] . $this->field['name_suffix'] . '[background-size]" class="redux-select-item redux-background-input redux-background-size ' . $this->field['class'] . '">';
+				echo '<select id="' . $this->field['id'] . '-size-select" data-placeholder="' . __( 'Background Size', 'redux-framework' ) . '" name="' . $this->field['name'] . $this->field['name_suffix'] . '[background-size]" class="redux-select-item redux-background-input redux-background-size ' . $this->field['class'] . '">';
 				echo '<option></option>';
 
 				foreach ( $array as $k => $v ) {
@@ -276,11 +288,11 @@ if ( ! class_exists( 'ReduxFramework_background' ) ) {
 
 				$placeholder = isset( $this->field['placeholder'] ) ? $this->field['placeholder'] : __( 'No media selected', 'redux-framework' );
 
-				echo '<input placeholder="' . $placeholder . '" type="text" class="redux-background-input ' . $hide . 'upload ' . $this->field['class'] . '" name="' . $this->field['name'] . $this->field['name_suffix'] . '[background-image]" id="' . $this->parent->args['opt_name'] . '[' . $this->field['id'] . '][background-image]" value="' . $this->value['background-image'] . '" />';
-				echo '<input type="hidden" class="upload-id ' . $this->field['class'] . '" name="' . $this->field['name'] . $this->field['name_suffix'] . '[media][id]" id="' . $this->parent->args['opt_name'] . '[' . $this->field['id'] . '][media][id]" value="' . $this->value['media']['id'] . '" />';
-				echo '<input type="hidden" class="upload-height" name="' . $this->field['name'] . $this->field['name_suffix'] . '[media][height]" id="' . $this->parent->args['opt_name'] . '[' . $this->field['id'] . '][media][height]" value="' . $this->value['media']['height'] . '" />';
-				echo '<input type="hidden" class="upload-width" name="' . $this->field['name'] . $this->field['name_suffix'] . '[media][width]" id="' . $this->parent->args['opt_name'] . '[' . $this->field['id'] . '][media][width]" value="' . $this->value['media']['width'] . '" />';
-				echo '<input type="hidden" class="upload-thumbnail" name="' . $this->field['name'] . $this->field['name_suffix'] . '[media][thumbnail]" id="' . $this->parent->args['opt_name'] . '[' . $this->field['id'] . '][media][thumbnail]" value="' . $this->value['media']['thumbnail'] . '" />';
+				echo '<input placeholder="' . $placeholder . '" type="text" class="redux-background-input ' . $hide . 'upload ' . $this->field['class'] . '" name="' . $this->field['name'] . $this->field['name_suffix'] . '[background-image]" id="' . $this->parent->args['opt_name'] . '-' . $this->field['id'] . '-background-image" value="' . $this->value['background-image'] . '" />';
+				echo '<input type="hidden" class="upload-id ' . $this->field['class'] . '" name="' . $this->field['name'] . $this->field['name_suffix'] . '[media][id]" id="' . $this->parent->args['opt_name'] . '-' . $this->field['id'] . '-media-id" value="' . $this->value['media']['id'] . '" />';
+				echo '<input type="hidden" class="upload-height" name="' . $this->field['name'] . $this->field['name_suffix'] . '[media][height]" id="' . $this->parent->args['opt_name'] . '-' . $this->field['id'] . '-media-height" value="' . $this->value['media']['height'] . '" />';
+				echo '<input type="hidden" class="upload-width" name="' . $this->field['name'] . $this->field['name_suffix'] . '[media][width]" id="' . $this->parent->args['opt_name'] . '-' . $this->field['id'] . '-media-width" value="' . $this->value['media']['width'] . '" />';
+				echo '<input type="hidden" class="upload-thumbnail" name="' . $this->field['name'] . $this->field['name_suffix'] . '[media][thumbnail]" id="' . $this->parent->args['opt_name'] . '-' . $this->field['id'] . '-media-thumbnail" value="' . $this->value['media']['thumbnail'] . '" />';
 
 				//Preview
 				$hide = '';

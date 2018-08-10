@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.redux-container-border .select2-container{float:left;display:block;margin-right:10px}.redux-container-border .select_wrapper{float:left;width:inherit}.redux-container-border .select_wrapper select{width:80px;float:left}.redux-container-border .field-border-input{margin-right:10px;margin-bottom:7px}.redux-container-border .wp-picker-container{margin-top:2px}@media screen and (max-width:782px){.redux-container-border .field-border-input input{display:inline-block !important;width:100px !important}.redux-container-border .field-border-input .add-on{padding:7px 4px;font-size:16px;line-height:1.5}.redux-container-border .select_wrapper{margin-top:6px}}

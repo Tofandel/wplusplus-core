@@ -1,4 +1,16 @@
 <?php
+/**
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /**
  * Redux Framework is free software: you can redistribute it and/or modify
@@ -108,11 +120,11 @@ if ( ! class_exists( 'ReduxFramework_checkbox' ) ) {
 
 				echo '</ul>';
 			} else if ( empty ( $this->field['data'] ) ) {
+				echo '<ul class="data-full"><li>';
 
-				echo ( ! empty ( $this->field['desc'] ) ) ? ' <ul class="data-full"><li><label for="' . strtr( $this->parent->args['opt_name'] . '[' . $this->field['id'] . ']', array(
-						'[' => '_',
-						']' => ''
-					) ) . '">' : '';
+				if ( ! empty( $this->field['label'] ) ) {
+					echo '<label>';
+				}
 
 				// Got the "Checked" status as "0" or "1" then insert it as the "value" option
 				//$ch_value = 1; // checked($this->value, '1', false) == "" ? "0" : "1";
@@ -121,8 +133,13 @@ if ( ! class_exists( 'ReduxFramework_checkbox' ) ) {
 						'[' => '_',
 						']' => ''
 					) ) . '" value="1" class="checkbox ' . $this->field['class'] . '" ' . checked( $this->value, '1', false ) . '/>';
-				echo isset( $this->field['label'] ) ? ' ' . $this->field['label'] : '';
-				echo '</label></li></ul>';
+
+				if ( ! empty( $this->field['label'] ) ) {
+					echo ' ' . $this->field['label'];
+					echo '</label>';
+				}
+
+				echo '</li></ul>';
 			}
 		}
 
@@ -155,5 +172,4 @@ if ( ! class_exists( 'ReduxFramework_checkbox' ) ) {
 			);
 		}
 	}
-
 }

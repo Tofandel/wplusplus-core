@@ -1,4 +1,4 @@
-## Redux Options Framework [![WordPress plugin](https://img.shields.io/wordpress/plugin/v/redux-framework.svg?maxAge=2592000)]() [![WordPress](https://img.shields.io/wordpress/v/redux-framework.svg?maxAge=2592000)]() [![Build Status](https://travis-ci.org/reduxframework/redux-framework.png?branch=master)](https://travis-ci.org/reduxframework/redux-framework) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Slack](https://redux-slackin.herokuapp.com/badge.svg)](https://redux-slackin.herokuapp.com) 
+## Redux Options Framework [![WordPress plugin](https://img.shields.io/wordpress/plugin/v/redux-framework.svg?maxAge=2592000)](https://wordpress.org/plugins/redux-framework) [![WordPress](https://img.shields.io/wordpress/v/redux-framework.svg?maxAge=2592000)](https://wordpress.org/download/) [![Build Status](https://travis-ci.org/reduxframework/redux-framework.png?branch=master)](https://travis-ci.org/reduxframework/redux-framework) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Slack](https://redux-slackin.herokuapp.com/badge.svg)](https://redux-slackin.herokuapp.com) 
 
 [Get it in the WordPress plugin repo](https://wordpress.org/plugins/redux-framework/)
 
@@ -16,9 +16,6 @@ If you are stuck in some of your own code, or need help with PHP and anything el
 ## Kickstart Your Development ##
 
 Are you authoring a theme, or plugin?  Visit the  [Redux Builder](http://build.reduxframework.com) site and get started!
-
-## Demo Your Products ##
-We help you create a seamless user experience for your users to demo your WordPress products.  Not only that, we help you make sure they’re engaged, turning them into a potential customer.  Visit [wpdemo.io/](http://wpdemo.io/)
 
 ## Documentation ##
 
@@ -70,8 +67,8 @@ If you can, please donate to help support the ongoing development of Redux Frame
 * Much more
 
 ## Stay In The Loop! ##
-
-[![Follow us on Twitter](http://iod.unh.edu/Images/Twitter_follow_us.png "Follow us on Twitter")](https://www.twitter.com/ReduxFramework)
+[![Follow us on Twitter](https://www.download82.com/images/produse/iconuri/twitter-for-android.png "Follow us on Twitter")](https://www.twitter.com/ReduxFramework)
+[![Like us on Facebook](https://addons.thunderbird.net/user-media/addon_icons/79/79494-64.png "Like us on Facebook")](https://www.facebook.com/ReduxFramework/)
 
 ## FAQs ##
 

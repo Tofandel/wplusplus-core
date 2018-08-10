@@ -1,3 +1,16 @@
+/*
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /********************************************************************
  * Limit the characters that may be entered in a text field
  * Common options: alphanumeric, alphabetic or numeric
@@ -60,7 +73,7 @@
 		allowLatin: true, // a-z A-Z
 		allowOtherCharSets: true, // eg �, �, Arabic, Chinese etc
 		maxLength: NaN   // eg Max Length
-	};
+	}
 
 	var DEFAULT_SETTINGS_NUM = {
 		allowPlus: false, // Allow the + sign
@@ -73,7 +86,7 @@
 		maxPreDecimalPlaces: NaN,   // The max number digits before the decimal point
 		max: NaN,   // The max numeric value allowed
 		min: NaN    // The min numeric value allowed
-	};
+	}
 
 	// Some pre-defined groups of settings for convenience
 	var CONVENIENCE_SETTINGS_ALPHANUM = {
@@ -154,7 +167,7 @@
 				var pastedText = "";
 
 				if (e.originalEvent && e.originalEvent.clipboardData && e.originalEvent.clipboardData.getData)
-					pastedText = e.originalEvent.clipboardData.getData("text/plain");
+					pastedText = e.originalEvent.clipboardData.getData("text/plain")
 
 				// setTimeout is necessary for handling the 'paste' event
 				setTimeout(function () {
@@ -636,7 +649,7 @@
 			newSet.map[key] = true;
 
 		return newSet;
-	};
+	}
 
 	Set.prototype.subtract = function (set) {
 
@@ -646,14 +659,14 @@
 			delete newSet.map[key];
 
 		return newSet;
-	};
+	}
 
 	Set.prototype.contains = function (key) {
 		if (this.map[key])
 			return true;
 		else
 			return false;
-	};
+	}
 
 	Set.prototype.clone = function () {
 		var newSet = new Set();
@@ -662,7 +675,7 @@
 			newSet.map[key] = true;
 
 		return newSet;
-	};
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////
 
@@ -726,7 +739,7 @@
 			el.focus();
 			el.setSelectionRange(index, index);
 		}
-	}
+	};
 
 	// Another behind the scenes that collects the
 	// current caret position for an element
@@ -746,7 +759,7 @@
 		} else if (el.selectionStart != null) {
 			return el.selectionStart;
 		}
-	}
+	};
 
 	// The following methods are queued under fx for more
 	// flexibility when combining with $.fn.delay() and
@@ -915,4 +928,4 @@
 		}
 	};
 	e.fn.selection.getCharElement = a
-})(jQuery);
+})(jQuery)

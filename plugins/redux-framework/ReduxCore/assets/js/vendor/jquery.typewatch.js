@@ -1,16 +1,15 @@
 /*
-*	TypeWatch 2.2
-*
-*	Examples/Docs: github.com/dennyferra/TypeWatch
-*	
-*  Copyright(c) 2013 
-*	Denny Ferrassoli - dennyferra.com
-*   Charles Christolini
-*  
-*  Dual licensed under the MIT and GPL licenses:
-*  http://www.opensource.org/licenses/mit-license.php
-*  http://www.gnu.org/licenses/gpl.html
-*/
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 (function (jQuery) {
 	jQuery.fn.typeWatch = function (o) {
@@ -37,7 +36,7 @@
 				timer.text = value.toUpperCase();
 				timer.cb.call(timer.el, value);
 			}
-		}
+		};
 
 		function watchElement(elem) {
 			var elementType = elem.type.toUpperCase();
@@ -74,7 +73,7 @@
 
 					var timerCallbackFx = function () {
 						checkElement(timer, overrideBool)
-					};
+					}
 
 					// Clear timer					
 					clearTimeout(timer.timer);
@@ -83,7 +82,7 @@
 
 				jQuery(elem).on('keydown paste cut input', startWatch);
 			}
-		}
+		};
 
 		// Watch Each Element
 		return this.each(function () {

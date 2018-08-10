@@ -1,4 +1,16 @@
 <?php
+/**
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -127,7 +139,7 @@ if ( ! class_exists( 'ReduxFramework_dimensions' ) ) {
 				// nothing to do here, but I'm leaving the construct just in case I have to debug this again.
 			}
 
-			echo '<fieldset id="' . $this->field['id'] . '" class="redux-dimensions-container" data-id="' . $this->field['id'] . '">';
+			echo '<fieldset id="' . $this->field['id'] . '-fieldset" class="redux-dimensions-container" data-id="' . $this->field['id'] . '">';
 
 			if ( isset( $this->field['select2'] ) ) { // if there are any let's pass them to js
 				$select2_params = json_encode( $this->field['select2'] );

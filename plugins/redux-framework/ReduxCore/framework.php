@@ -1,5 +1,18 @@
 <?php
 /**
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
  * Redux Framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -69,7 +82,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 		// Please update the build number with each push, no matter how small.
 		// This will make for easier support when we ask users what version they are using.
 
-		public static $_version = '3.6.9';
+		public static $_version = '3.6.11';
 		public static $_dir;
 		public static $_url;
 		public static $_upload_dir;
@@ -190,6 +203,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 		 * @param       array $args Class constructor arguments.
 		 * @param       array $extra_tabs Extra panel tabs. // REMOVE
 		 *
+		 * @return \ReduxFramework
 		 */
 		public function __construct( $sections = array(), $args = array(), $extra_tabs = array() ) {
 			// Disregard WP AJAX 'heartbeat'call.  Why waste resources?
@@ -1444,33 +1458,26 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 				if ( true === $this->args['allow_sub_menu'] ) {
 					foreach ( $this->sections as $k => $section ) {
 						$canBeSubSection = ( $k > 0 && ( ! isset ( $this->sections[ ( $k ) ]['type'] ) || $this->sections[ ( $k ) ]['type'] != "divide" ) ) ? true : false;
-
 						if ( ! isset ( $section['title'] ) || ( $canBeSubSection && ( isset ( $section['subsection'] ) && $section['subsection'] == true ) ) ) {
 							continue;
 						}
-
 						if ( isset ( $section['submenu'] ) && $section['submenu'] == false ) {
 							continue;
 						}
-
 						if ( isset ( $section['customizer_only'] ) && $section['customizer_only'] == true ) {
 							continue;
 						}
-
 						if ( isset ( $section['hidden'] ) && $section['hidden'] == true ) {
 							continue;
 						}
-
 						if ( isset( $section['permissions'] ) && ! self::current_user_can( $section['permissions'] ) ) {
 							continue;
 						}
-
 						// ONLY for non-wp.org themes OR plugins. Theme-Check alert shown if used and IS theme.
 						call_user_func( 'add_submenu_page', $this->args['page_slug'], $section['title'], $section['title'], $this->args['page_permissions'], $this->args['page_slug'] . '&tab=' . $k,
 							//create_function( '$a', "return null;" )
 							'__return_null' );
 					}
-
 					// Remove parent submenu item instead of adding null item.
 					remove_submenu_page( $this->args['page_slug'], $this->args['page_slug'] );
 				}
@@ -1490,9 +1497,6 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 		 */
 		public function _admin_bar_menu() {
 			global $menu, $submenu, $wp_admin_bar;
-
-			//$ct         = wp_get_theme();
-			//$theme_data = $ct;
 
 			if ( ! is_super_admin() || ! is_admin_bar_showing() || ! $this->args['admin_bar'] || $this->args['menu_type'] == 'hidden' ) {
 				return;
@@ -1568,7 +1572,6 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 				$nodeargs = array(
 					'id'    => $this->args["page_slug"],
 					'title' => $title,
-					// $theme_data->get( 'Name' ) . " " . __( 'Options', 'redux-framework-demo' ),
 					'href'  => admin_url( 'admin.php?page=' . $this->args["page_slug"] ),
 					'meta'  => array()
 				);
@@ -1680,7 +1683,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 					<script>
 						/* You can add more configuration options to webfontloader by previously defining the WebFontConfig with your options */
 						if (typeof WebFontConfig === "undefined") {
-							WebFontConfig = {};
+							WebFontConfig = new Object();
 						}
 						WebFontConfig['google'] = {families: [<?php echo $typography->makeGoogleWebfontString( $this->typography ) ?>]};
 
@@ -3652,7 +3655,6 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 		 *
 		 * @param array $field
 		 *
-		 *
 		 */
 		public function check_dependencies( $field ) {
 			//$params = array('data_string' => "", 'class_string' => "");
@@ -4258,4 +4260,5 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 	 */
 	ReduxFramework::init();
 	do_action( 'redux/init' );
+
 } // class_exists('ReduxFramework')

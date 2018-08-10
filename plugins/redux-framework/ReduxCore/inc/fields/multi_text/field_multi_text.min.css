@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.redux-container-multi_text ul.redux-multi-text{margin:0;padding:0}.redux-container-multi_text .redux-multi-text-add{clear:both;margin:5px 0}.redux-container-multi_text a.redux-multi-text-remove.deletion{color:#F00;padding:2px 4px;margin-left:5px}.redux-container-multi_text a.redux-multi-text-remove.deletion:hover{background:red;color:#fff;text-decoration:none}@media screen and (max-width:782px){.redux-container-multi_text input{clear:both}.redux-container-multi_text .redux-multi-text-remove{margin:0;float:right}}.wp-customizer .redux-container-multi_text .button{float:right}.wp-customizer .redux-container-multi_text .redux-multi-text-remove{float:right;margin-bottom:5px}.wp-customizer .redux-container-multi_text ul.redux-multi-text input{width:100% !important}

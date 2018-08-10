@@ -73,48 +73,6 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 	protected static $redux_loc;
 
 	public static function loadRedux() {
-
-		if ( ! class_exists( Redux::class, false ) ) {
-			$file = get_transient( 'wpp_redux_install' );
-			if ( $file && file_exists( $file ) ) {
-				if ( ! function_exists( 'deactivate_plugins' ) ) {
-					require_once ABSPATH . '/wp-admin/includes/plugin.php';
-				}
-				$plugin = trailingslashit( basename( dirname( $file ) ) ) . basename( $file );
-				deactivate_plugins( $plugin );
-				self::$redux_loc = $plugin;
-				add_action( 'pre_current_active_plugins', [ self::class, 'hide_redux_plugin' ] );
-				add_filter( 'all_plugins', [ self::class, 'mu_hide_redux_plugin' ] );
-				require_once $file;
-			} else {
-				if ( $file ) {
-					delete_transient( 'wpp_redux_install' );
-				}
-				$plugins = get_option( 'active_plugins' );
-				foreach ( $plugins as $plugin ) {
-					if ( strpos( $plugin, 'redux-framework' ) !== false ) {
-						//We load redux's plugin
-						$p_file = trailingslashit( WP_PLUGIN_DIR ) . $plugin;
-						if ( file_exists( $p_file ) ) {
-							if ( preg_match( '#version[: ]*([0-9\.]+)#i', file_get_contents( $p_file ), $matches ) ) {
-								if ( version_compare( '3.6.9', $matches[1], '<=' ) ) {
-									if ( ! function_exists( 'deactivate_plugins' ) ) {
-										require_once ABSPATH . '/wp-admin/includes/plugin.php';
-									}
-									deactivate_plugins( $plugin );
-									self::$redux_loc = $plugin;
-									add_action( 'pre_current_active_plugins', [ self::class, 'hide_redux_plugin' ] );
-									add_filter( 'all_plugins', [ self::class, 'mu_hide_redux_plugin' ] );
-									set_transient( 'wpp_redux_install', $p_file, 86400 );
-									require_once $p_file;
-									break;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
 		if ( ! class_exists( Redux::class, false ) ) {
 			global $WPlusPlusCore;
 			if ( file_exists( $f = $WPlusPlusCore->file( 'plugins/redux-framework/redux-framework.php' ) ) ) {

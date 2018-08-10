@@ -1,4 +1,17 @@
 <?php
+/**
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -196,8 +209,10 @@ class Redux_Welcome {
 	 */
 	public function admin_menus() {
 
+		$page = 'add_management_page';
+
 		// About Page
-		add_management_page(
+		$page(
 			esc_html__( 'Welcome to Redux Framework', 'redux-framework' ), esc_html__( 'Redux Framework', 'redux-framework' ), $this->minimum_capability, 'redux-about', array(
 				$this,
 				'about_screen'
@@ -205,7 +220,7 @@ class Redux_Welcome {
 		);
 
 		// Changelog Page
-		add_management_page(
+		$page(
 			esc_html__( 'Redux Framework Changelog', 'redux-framework' ), esc_html__( 'Redux Framework Changelog', 'redux-framework' ), $this->minimum_capability, 'redux-changelog', array(
 				$this,
 				'changelog_screen'
@@ -213,23 +228,24 @@ class Redux_Welcome {
 		);
 
 		// Support Page
-		//add_management_page(
-		//	esc_html__( 'Get Support', 'redux-framework' ), esc_html__( 'Get Support', 'redux-framework' ), $this->minimum_capability, 'redux-support', array(
-		//		$this,
-		//		'get_support'
-		//	)
-		//);
+		$page(
+			esc_html__( 'Get Support', 'redux-framework' ), esc_html__( 'Get Support', 'redux-framework' ), $this->minimum_capability, 'redux-support', array(
+				$this,
+				'get_support'
+			)
+		);
 
-		//add_management_page(
-		//	esc_html__( 'Redux Extensions', 'redux-framework' ), esc_html__( 'Redux Extensions', 'redux-framework' ), $this->minimum_capability, 'redux-extensions', array(
-		//		$this,
-		//		'redux_extensions'
-		//	)
-		//);
+		// Support Page
+		$page(
+			esc_html__( 'Redux Extensions', 'redux-framework' ), esc_html__( 'Redux Extensions', 'redux-framework' ), $this->minimum_capability, 'redux-extensions', array(
+				$this,
+				'redux_extensions'
+			)
+		);
 
 
 		// Credits Page
-		add_management_page(
+		$page(
 			esc_html__( 'The people that develop Redux Framework', 'redux-framework' ), esc_html__( 'The people that develop Redux Framework', 'redux-framework' ), $this->minimum_capability, 'redux-credits', array(
 				$this,
 				'credits_screen'
@@ -237,7 +253,7 @@ class Redux_Welcome {
 		);
 
 		// Status Page
-		add_management_page(
+		$page(
 			esc_html__( 'Redux Framework Status', 'redux-framework' ), esc_html__( 'Redux Framework Status', 'redux-framework' ), $this->minimum_capability, 'redux-status', array(
 				$this,
 				'status_screen'
@@ -251,6 +267,8 @@ class Redux_Welcome {
 		remove_submenu_page( 'tools.php', 'redux-credits' );
 		remove_submenu_page( 'tools.php', 'redux-support' );
 		remove_submenu_page( 'tools.php', 'redux-extensions' );
+
+
 	}
 
 	/**

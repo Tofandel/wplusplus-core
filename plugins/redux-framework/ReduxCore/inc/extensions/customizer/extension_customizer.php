@@ -1,4 +1,17 @@
 <?php
+/**
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 // <input type="radio" value="1" name="_customize-radio-redux_demo[opt-radio]" data-customize-setting-link="redux_demo[opt-color-title]">
 //return;
 /**
@@ -81,8 +94,8 @@ if ( ! class_exists( 'ReduxFramework_extension_customizer' ) ) {
 			}
 
 			if ( empty( $this->_extension_dir ) ) {
-				$this->_extension_dir = trailingslashit( str_replace( '\\', '/', dirname( __FILE__ ) ) );
-				$this->_extension_url = site_url( str_replace( trailingslashit( str_replace( '\\', '/', ABSPATH ) ), '', $this->_extension_dir ) );
+				$this->_extension_dir = apply_filters( "redux/extension/customizer/dir", trailingslashit( str_replace( '\\', '/', dirname( __FILE__ ) ) ) );
+				$this->_extension_url = apply_filters( "redux/extension/customizer/url", site_url( str_replace( trailingslashit( str_replace( '\\', '/', ABSPATH ) ), '', $this->_extension_dir ) ) );
 			}
 
 			self::get_post_values();

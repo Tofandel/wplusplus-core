@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.redux-container-palette label{border:3px solid transparent;border-color:transparent !important;border-radius:0;width:100% !important;display:block}.redux-container-palette label.ui-button.ui-widget{width:95%;background:0;padding:0}.redux-container-palette label.ui-button.ui-widget .ui-button-text{display:flex}.redux-container-palette label.ui-button.ui-widget .ui-button-text span{padding:10px;flex-grow:1;font-size:0;line-height:10px;color:transparent;-webkit-transition:all 200ms ease-in-out;-moz-transition:all 200ms ease-in-out;-ms-transition:all 200ms ease-in-out;-o-transition:all 200ms ease-in-out;transition:all 200ms ease-in-out;text-shadow:0}.redux-container-palette label.ui-button.ui-widget .ui-button-text span:hover{flex-grow:3;font-weight:bold;min-width:60px;font-size:12px;line-height:10px;color:#333;text-shadow:0 0 8px #fff,0 0 8px #fff}.redux-container-palette label.ui-state-active{border:3px solid #333 !important}.wp-customizer .redux-main .redux-container-palette label{margin-bottom:3px}

@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) Adrien Foulon - 2018. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.redux-container-editor .mceLayout td{border-width:1px;margin:0;padding:1px}.redux-container-editor input,.redux-container-editor textarea{margin:inherit}.redux-container-editor textarea{border-style:none;border:0;border-width:0}.redux-container-editor .wp-editor-container{-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px}.redux-container-editor .wp-editor-container textarea{-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;border-style:inherit}.redux-container-editor .quicktags-toolbar input{margin:2px 1px 4px;line-height:18px;display:inline-block;min-width:26px;padding:2px 4px;font:12px/18px Arial,Helvetica,sans-serif normal;color:#464646;border:1px solid #c3c3c3;-webkit-border-radius:3px;border-radius:3px;background:#eee;background-image:-webkit-gradient(linear,left bottom,left top,from(#e3e3e3),to(#fff));background-image:-webkit-linear-gradient(bottom,#e3e3e3,#fff);background-image:-moz-linear-gradient(bottom,#e3e3e3,#fff);background-image:-o-linear-gradient(bottom,#e3e3e3,#fff);background-image:linear-gradient(to top,#e3e3e3,#fff)}
