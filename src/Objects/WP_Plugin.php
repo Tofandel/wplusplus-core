@@ -239,30 +239,35 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	protected function extractFromComment( $comment ) {
 
 		//Read the version of the plugin from the comments
-		if ( empty( $this->version ) && $comment && preg_match( '#version[: ]*([0-9\.]+)#i', $comment, $matches ) ) {
+		if ( empty( $this->version ) && $comment && preg_match( '#version[:\s]*([0-9\.]+)#i', $comment, $matches ) ) {
 			$this->version = trim( $matches[1] );
 		} elseif ( empty( $this->version ) ) {
 			$this->version = '1.0';
 		}
 
 		//Read the name of the plugin from the comments
-		if ( empty( $this->name ) && $comment && preg_match( '#(?:plugin|theme)[- ]?name[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
+		if ( empty( $this->name ) && $comment && preg_match( '#(?:plugin|theme)[-\s]?name[:\s]*([^\r\n]*)#i', $comment, $matches ) ) {
 			$this->name = trim( $matches[1] );
 		} elseif ( empty( $this->name ) ) {
 			$this->name = $this->slug;
 		}
 
 		//Read the text domain of the plugin from the comments
-		if ( empty( $this->text_domain ) && $comment && preg_match( '#text[- ]?domain[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
+		if ( empty( $this->text_domain ) && $comment && preg_match( '#text[-\s]?domain[:\s]*([^\r\n]*)#i', $comment, $matches ) ) {
 			$this->text_domain = trim( $matches[1] );
-			define( strtoupper( $this->class->getShortName() ) . '_TD', $this->text_domain );
 		} elseif ( empty( $this->text_domain ) ) {
 			$this->text_domain = $this->slug;
 		}
 
 		/** @deprecated Overwrite the variable instead */
-		if ( empty( $this->download_url ) && $comment && preg_match( '#download[- ]?url[: ]*([^\r\n]*)#i', $comment, $matches ) ) {
+		if ( empty( $this->download_url ) && $comment && preg_match( '#download[-\s]?url[:\s]*([^\r\n]*)#i', $comment, $matches ) ) {
 			$this->download_url = trim( $matches[1] );
+		}
+
+		if ( empty( $this->buy_url ) && $comment && preg_match( '#donate[-\s]?url[:\s]*([^\r\n]*)#i', $comment, $matches ) ) {
+			$this->buy_url = trim( $matches[1] );
+		} elseif ( empty( $this->buy_url ) ) {
+			$this->buy_url = $this->download_url;
 		}
 	}
 
