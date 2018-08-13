@@ -34,15 +34,9 @@ function wpp_has_shortcode( $post, $shortcode ) {
 			if ( has_shortcode( $post->post_content, $sh ) ) {
 				return true;
 			}
-			if ( has_shortcode( $post->post_content, strtolower( $sh ) ) ) {
-				return true;
-			}
 		}
 	} else {
 		if ( has_shortcode( $post->post_content, $shortcode ) ) {
-			return true;
-		}
-		if ( has_shortcode( $post->post_content, strtolower( $shortcode ) ) ) {
 			return true;
 		}
 	}
@@ -943,4 +937,115 @@ function wpp_remove_empty_elements( $array ) {
 	}
 
 	return $array;
+}
+
+
+/**
+ * Get timezone offset in seconds.
+ *
+ * @return float
+ */
+function wpp_timezone_offset() {
+	$timezone = get_option( 'timezone_string' );
+
+	if ( $timezone ) {
+		$timezone_object = new DateTimeZone( $timezone );
+
+		return $timezone_object->getOffset( new DateTime( 'now' ) );
+	} else {
+		return floatval( get_option( 'gmt_offset', 0 ) ) * HOUR_IN_SECONDS;
+	}
+}
+
+/**
+ * Convert mysql datetime to PHP timestamp, forcing UTC. Wrapper for strtotime.
+ *
+ * @param  string $time_string Time string.
+ * @param  int|null $from_timestamp Timestamp to convert from.
+ *
+ * @return int
+ */
+function wpp_string_to_timestamp( $time_string, $from_timestamp = null ) {
+	$original_timezone = date_default_timezone_get();
+
+	// @codingStandardsIgnoreStart
+	date_default_timezone_set( 'UTC' );
+
+	if ( null === $from_timestamp ) {
+		$next_timestamp = strtotime( $time_string );
+	} else {
+		$next_timestamp = strtotime( $time_string, $from_timestamp );
+	}
+
+	date_default_timezone_set( $original_timezone );
+
+	// @codingStandardsIgnoreEnd
+
+	return $next_timestamp;
+}
+
+if ( ! function_exists( 'wp_timezone_string' ) ) {
+
+	/**
+	 * Helper to retrieve the timezone string for a site until.
+	 * a WP core method exists (see https://core.trac.wordpress.org/ticket/24730).
+	 *
+	 * Adapted from https://secure.php.net/manual/en/function.timezone-name-from-abbr.php#89155.
+	 *
+	 * @return string PHP timezone string for the site
+	 */
+	function wp_timezone_string() {
+		// If site timezone string exists, return it.
+		$timezone = get_option( 'timezone_string' );
+		if ( $timezone ) {
+			return $timezone;
+		}
+
+		// Get UTC offset, if it isn't set then return UTC.
+		$utc_offset = intval( get_option( 'gmt_offset', 0 ) );
+		if ( 0 === $utc_offset ) {
+			return 'UTC';
+		}
+
+		// Adjust UTC offset from hours to seconds.
+		$utc_offset *= 3600;
+
+		// Attempt to guess the timezone string from the UTC offset.
+		$timezone = timezone_name_from_abbr( '', $utc_offset );
+		if ( $timezone ) {
+			return $timezone;
+		}
+
+		// Last try, guess timezone string manually.
+		foreach ( timezone_abbreviations_list() as $abbr ) {
+			foreach ( $abbr as $city ) {
+				if ( (bool) date( 'I' ) === (bool) $city['dst'] && $city['timezone_id'] && intval( $city['offset'] ) === $utc_offset ) {
+					return $city['timezone_id'];
+				}
+			}
+		}
+
+		// Fallback to UTC.
+		return 'UTC';
+	}
+}
+
+/**
+ * Wrapper for wpp_doing_it_wrong.
+ *
+ * @param string $function Function used.
+ * @param string $message Message to log.
+ * @param string $version Version the message was added in.
+ */
+function wpp_doing_it_wrong( $function, $message, $version ) {
+	// @codingStandardsIgnoreStart
+	$message .= ' Backtrace: ' . wp_debug_backtrace_summary();
+
+	if ( wp_doing_ajax() ) {
+		do_action( 'doing_it_wrong_run', $function, $message, $version );
+		error_log( "{$function} was called incorrectly. {$message}. This message was added in version {$version}." );
+	} else {
+		_doing_it_wrong( $function, $message, $version );
+	}
+	// @codingStandardsIgnoreEnd
 }

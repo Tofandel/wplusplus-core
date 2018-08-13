@@ -12,13 +12,6 @@
  * limitations under the License.
  */
 
-/**
- * Created by PhpStorm.
- * User: Adrien
- * Date: 26/07/2018
- * Time: 01:58
- */
-
 namespace Tofandel\Core\Traits;
 
 use Tofandel\Core\Interfaces\WP_Plugin;

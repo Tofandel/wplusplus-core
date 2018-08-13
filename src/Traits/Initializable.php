@@ -14,9 +14,9 @@
 
 namespace Tofandel\Core\Traits;
 
-global $initializables;
+global $static_initializables;
 
-$initializables = array();
+$static_initializables = array();
 
 trait Initializable {
 	/**
@@ -25,39 +25,25 @@ trait Initializable {
 	protected static $reflectionClass;
 
 	/**
-	 * Returns the initialized plugin.
+	 * Do the child initialisation in this
+	 */
+	abstract static function __StaticInit();
+
+	/**
+	 * Initializes a class
 	 *
-	 * @return static
 	 * @throws \ReflectionException
 	 */
-	public static function __init__() {
-		global $initializables;
+	public final static function __StaticInit__() {
+		global $static_initializables;
 
 		$class                   = new \ReflectionClass( static::class );
 		static::$reflectionClass = $class;
-		if ( ! isset( $initializables [ $class->getName() ] ) ) {
-			$instance = $class->newInstanceWithoutConstructor();
-			if ( method_exists( $instance, '__init' ) ) {
-				$instance->__init();
+		if ( ! isset( $static_initializables [ $class->getName() ] ) ) {
+			if ( is_callable( [ static::class, '__StaticInit' ] ) ) {
+				static::__StaticInit();
 			}
-			if ( method_exists( $instance, 'init' ) ) {
-				$instance->init();
-			}
-			$initializables[ $class->getName() ] = $class;
+			$static_initializables[ $class->getName() ] = $class;
 		}
-
-		return $initializables[ $class->getName() ];
 	}
-
-	/**
-	 * @return array
-	 */
-	public static function getInitializables() {
-		global $initializables;
-
-		return $initializables;
-	}
-
-	abstract protected function __init();
-
 }

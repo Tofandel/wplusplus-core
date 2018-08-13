@@ -34,7 +34,7 @@ use Tofandel\Core\Traits\Singleton;
 abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	use Singleton;
 
-	static $required_php_version = '5.5';
+	protected $required_php_version = '5.5';
 
 	protected $text_domain;
 	protected $slug;
@@ -103,7 +103,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	public function initShortcodes() {
 		foreach ( $this->shortcodes as $shortcode ) {
-			call_user_func( [ $shortcode, '__init__' ] );
+			call_user_func( [ $shortcode, '__StaticInit' ] );
 		}
 	}
 
@@ -268,6 +268,11 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			$this->buy_url = trim( $matches[1] );
 		} elseif ( empty( $this->buy_url ) ) {
 			$this->buy_url = $this->download_url;
+		}
+
+		if ( $comment && preg_match( '#requires[-\s]?php[:\s]*([0-9\.]+)#i', $comment, $matches ) ) {
+			$v                          = trim( $matches[1] );
+			$this->required_php_version = version_compare( $this->required_php_version, $v, '<' ) ? $v : $this->required_php_version;
 		}
 	}
 
@@ -687,7 +692,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function checkCompat() {
-		if ( ! self::checkCompatibility() ) {
+		if ( ! $this->checkCompatibility() ) {
 			if ( is_plugin_active( $this->file ) ) {
 				deactivate_plugins( $this->file );
 				add_action( 'admin_notices', array( $this, 'disabled_notice' ) );
@@ -704,8 +709,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 *
 	 * @return bool
 	 */
-	public static function checkCompatibility() {
-		if ( version_compare( phpversion(), static::$required_php_version, '<' ) ) {
+	public function checkCompatibility() {
+		if ( version_compare( phpversion(), $this->required_php_version, '<' ) ) {
 			return false;
 		}
 
@@ -713,16 +718,16 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function disabled_notice() {
-		echo '<strong>' . sprintf( esc_html__( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, static::$required_php_version, PHP_VERSION ) . '</strong>';
+		echo '<strong>' . sprintf( esc_html__( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, $this->required_php_version, PHP_VERSION ) . '</strong>';
 	}
 
 	/**
 	 * Called function on plugin activation
 	 */
 	public function activated() {
-		if ( ! self::checkCompatibility() ) {
+		if ( ! $this->checkCompatibility() ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( sprintf( __( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, static::$required_php_version, PHP_VERSION ) );
+			wp_die( sprintf( __( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, $this->required_php_version, PHP_VERSION ) );
 		}
 
 		foreach ( $this->modules as $module ) {
@@ -792,7 +797,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	public function mkdir( $folder ) {
 		try {
-			return WP_Filesystem::__init__()->mkdir( $this->folder( $folder ) );
+			return WP_Filesystem::__StaticInit()->mkdir( $this->folder( $folder ) );
 		} catch ( \ReflectionException $e ) {
 			return false;
 		}
@@ -808,7 +813,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	public function copy( $file, $dest, $overwrite = true ) {
 		try {
-			return WP_Filesystem::__init__()->copy( $this->file( $file ), $this->file( $dest ), $overwrite );
+			return WP_Filesystem::__StaticInit()->copy( $this->file( $file ), $this->file( $dest ), $overwrite );
 		} catch ( \ReflectionException $e ) {
 			return false;
 		}
@@ -822,7 +827,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	public function put_contents( $file, $content ) {
 		try {
-			return WP_Filesystem::__init__()->putContents( $this->file( $file ), $content );
+			return WP_Filesystem::__StaticInit()->putContents( $this->file( $file ), $content );
 		} catch ( \ReflectionException $e ) {
 			return false;
 		}
@@ -835,7 +840,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	public function get_contents( $file ) {
 		try {
-			return WP_Filesystem::__init__()->getContents( $this->file( $file ) );
+			return WP_Filesystem::__StaticInit()->getContents( $this->file( $file ) );
 		} catch ( \ReflectionException $e ) {
 			return false;
 		}
@@ -848,7 +853,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	public function delete_file( $file ) {
 		try {
-			return WP_Filesystem::__init__()->deleteFile( $this->file( $file ) );
+			return WP_Filesystem::__StaticInit()->deleteFile( $this->file( $file ) );
 		} catch ( \ReflectionException $e ) {
 			return false;
 		}
@@ -862,7 +867,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	public function delete_dir( $folder, $recursive = true ) {
 		try {
-			return WP_Filesystem::__init__()->deleteDir( $this->folder( $folder ), $recursive );
+			return WP_Filesystem::__StaticInit()->deleteDir( $this->folder( $folder ), $recursive );
 		} catch ( \ReflectionException $e ) {
 			return false;
 		}

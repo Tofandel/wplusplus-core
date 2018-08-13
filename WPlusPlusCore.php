@@ -36,9 +36,9 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
  * Text Domain: wppc
  * Domain Path: /languages/
+ * Requires PHP: 5.5
  * Requires at least: 4.7
  * Tested up to: 4.9.7
- * Requires PHP: 5.5
  */
 
 require_once 'functions.php';

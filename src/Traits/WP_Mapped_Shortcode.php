@@ -23,51 +23,56 @@ use Tofandel\Core\Objects\ShortcodeParameter;
  * @author Adrien Foulon <tofandel@tukan.hu>
  */
 trait WP_Mapped_Shortcode {
-	use Initializable {
-		__init__ as __baseInit__;
-	}
+	use WP_Shortcode;
+	//Define this
+	protected static $default_attributes = array();
 
-	protected static $builder_atts = array();
-	protected static $atts = array();
-	protected static $params = array();
+	//Don't touch
+	protected static $_info = array();
 	protected static $_name;
+	protected static $_params;
 
 	protected static $last_param;
 
-	public static function builder() {
-
+	protected function __init() {
 	}
 
-	public static function setBuilderInfo( $name, $description = '', $category = '', $icon = '' ) {
-		self::$builder_atts['name']        = $name;
-		self::$builder_atts['description'] = $description;
-		self::$builder_atts['category']    = $category;
-		self::$builder_atts['icon']        = $icon;
+	public static function setInfo( $name, $description = '', $category = '', $icon = '' ) {
+		self::$_info['name'] = $name;
+		self::$_info['description'] = $description;
+		self::$_info['category'] = $category;
+		self::$_info['icon'] = $icon;
 	}
 
 	public static function setParam( ShortcodeParameter $param ) {
-		$params[ $param->getName() ] = $param;
+		static::$_info['params'][ $param->getName() ] = $param;
 	}
+
+	abstract public static function mapShortcode();
 
 	/**
 	 * WP_Shortcode constructor.
 	 */
-	public static function __init__() {
+	public static function __StaticInit() {
 		self::__baseInit__();
 
-		if ( ! static::$reflectionClass->implementsInterface( \Tofandel\Core\Interfaces\WP_Shortcode::class ) ) {
-			return;
+		//if ( ! static::$reflectionClass->implementsInterface( \Tofandel\Core\Interfaces\WP_Shortcode::class ) ) {
+		//	return;
+		//}
+		global $pagenow;
+		if ( ( $pagenow == "post-new.php" || $pagenow == "post.php" || ( wp_doing_ajax() && strpos( 'vc_', $_REQUEST['action'] ) === 0 ) ) ) {
+			ShortcodeParameter::setDefaultAttributes( static::$default_attributes );
+			static::mapShortcode();
+			/*
+			add_action( 'vc_before_mapping', function () {
+				vc_map( static::$vc_params );
+			} );*/
 		}
 
-		static::$_name = static::$reflectionClass->getShortName();
-
-		foreach ( static::$atts as $att => $def ) {
-			if ( method_exists( static::class, $att ) ) {
-				static::class::$att( $att, $def );
-			}
-		}
-
-		new \Tofandel\Core\Objects\WP_Shortcode( static::$_name, [ static::class, 'shortcode' ], static::$atts );
+		new \Tofandel\Core\Objects\WP_Shortcode( static::getName(), [
+			static::class,
+			'shortcode'
+		], static::$default_attributes );
 	}
 
 	/**
@@ -80,16 +85,16 @@ trait WP_Mapped_Shortcode {
 	//abstract public function shortcode( $attributes, $content, $name );
 
 	/**
-	 * @return mixed
+	 *
 	 */
-	public function getName() {
-		return static::$_name;
+	public static function mapToVc() {
 	}
 
-	public function mapToVc() {
+	/**
+	 *
+	 */
+	public static function mapToDoc() {
+
 	}
 
-	public function mapToDoc() {
-
-	}
 }

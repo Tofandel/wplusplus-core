@@ -29,6 +29,7 @@ class ShortcodeParameter {
 	protected $type;
 	protected $default;
 	protected $options;
+	protected $category;
 
 	private $vc_mapping = array(
 		self::T_RAWHTML => 'textarea_raw_html',
@@ -55,12 +56,18 @@ class ShortcodeParameter {
 	const T_PAGE = 'page';
 	const T_POST = 'post';
 
+	private static $default_atts = array();
 
-	public function __construct( $name, $label, $type, $default = '' ) {
-		$this->name    = $name;
-		$this->label   = $label;
-		$this->type    = $type;
-		$this->default = $default;
+	public static function setDefaultAttributes( $atts ) {
+		static::$default_atts = $atts;
+	}
+
+	public function __construct( $name, $label, $type, $category = '' ) {
+		$this->name     = $name;
+		$this->label    = $label;
+		$this->type     = $type;
+		$this->category = $category;
+		$this->default  = isset( static::$default_atts[ $name ] ) ? static::$default_atts[ $name ] : '';
 	}
 
 	public function getName() {
@@ -77,6 +84,10 @@ class ShortcodeParameter {
 
 	public function setOptions( $options ) {
 		$this->options = $options;
+	}
+
+	public function setCategory( $category ) {
+		$this->category = $category;
 	}
 
 

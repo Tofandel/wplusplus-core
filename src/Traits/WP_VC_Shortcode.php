@@ -67,9 +67,6 @@ trait WP_VC_Shortcode {
 		'params'                    => array()
 	);
 
-	protected function __init() {
-	}
-
 	public static function initVCParams() {
 	}
 
@@ -94,9 +91,8 @@ trait WP_VC_Shortcode {
 		), static::$vc_params );
 	}
 
-	public static function __init__() {
-		self::__baseInit__();
-
+	public static function __StaticInit() {
+		static::__StaticInit__();
 		if ( ! static::$reflectionClass->implementsInterface( \Tofandel\Core\Interfaces\WP_VC_Shortcode::class ) ) {
 			return;
 		}

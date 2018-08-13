@@ -19,15 +19,14 @@ global $singletons;
 $singletons = array();
 
 trait Singleton {
-
 	/**
-	 * Returns the singleton instanced plugin.
+	 * Returns the singleton instanced class.
 	 *
 	 * @return object
 	 *
 	 * @throws \ReflectionException
 	 */
-	public static final function __init__() {
+	public static final function __StaticInit() {
 		global $singletons;
 
 		$class = new \ReflectionClass( static::class );
@@ -54,5 +53,4 @@ trait Singleton {
 
 		return $singletons;
 	}
-
 }

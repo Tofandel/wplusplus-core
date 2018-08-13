@@ -12,14 +12,28 @@
  * limitations under the License.
  */
 
-namespace Tofandel\Core\Traits;
+/**
+ * Created by PhpStorm.
+ * User: Adrien
+ * Date: 12/08/2018
+ * Time: 16:19
+ */
 
-trait StaticInitializable {
-	/**
-	 * Initializes a class
-	 *
-	 * @return object
-	 * @throws \ReflectionException
-	 */
-	abstract public static function __init__();
+namespace Tofandel\Core\Interfaces;
+
+use Tofandel\Core\Objects\ShortcodeParameter;
+
+
+/**
+ * Class WP_Shortcode
+ * @package Abstracts
+ *
+ * @author Adrien Foulon <tofandel@tukan.hu>
+ */
+interface WP_Mapped_Shortcode extends WP_Shortcode {
+	public static function mapShortcode();
+
+	public static function setInfo( $name, $description = '', $category = '', $icon = '' );
+
+	public static function setParam( ShortcodeParameter $param );
 }

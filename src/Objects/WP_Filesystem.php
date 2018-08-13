@@ -197,7 +197,7 @@ class WP_Filesystem {
 }
 
 try {
-	WP_Filesystem::__init__();
+	WP_Filesystem::__StaticInit();
 } catch ( \Exception $e ) {
 	error_log( $e->getMessage() );
 }

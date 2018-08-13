@@ -29,11 +29,6 @@ namespace Tofandel\Core\Interfaces;
  */
 interface WP_VC_Shortcode extends WP_Shortcode {
 	/**
-	 * @throws \ReflectionException
-	 */
-	public static function getName();
-
-	/**
 	 * Init the $vc_params static here
 	 */
 	public static function initVCParams();
@@ -41,5 +36,5 @@ interface WP_VC_Shortcode extends WP_Shortcode {
 	/**
 	 * You can do other things on init here as well
 	 */
-	public static function __init__();
+	public static function __StaticInit();
 }

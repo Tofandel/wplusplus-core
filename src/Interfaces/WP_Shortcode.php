@@ -29,7 +29,7 @@ interface WP_Shortcode {
 	/**
 	 * The shortcode initialisation function
 	 */
-	public static function __init__();
+	public static function __StaticInit();
 
 	/**
 	 * The shortcode logic function
@@ -41,4 +41,9 @@ interface WP_Shortcode {
 	 * @return string
 	 */
 	public static function shortcode( $atts, $content, $name );
+
+	/**
+	 * @return string
+	 */
+	public static function getName();
 }
