@@ -170,7 +170,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			 */
 			$LicenceManager = $this->getModule( LicenceManager::class );
 			//if ( $LicenceManager && $data = $LicenceManager->updateRequest() ) {
-				//TODO
+			//TODO
 			//}
 		}
 	}
@@ -572,6 +572,10 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		return $this->getSlug() . basename( $script );
 	}
 
+	public function getJsName( $script ) {
+		return str_replace( array( '-', '.' ), array( '_', '_' ), basename( $script ) );
+	}
+
 	/**
 	 * @param $js
 	 * @param array $require
@@ -600,12 +604,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 				$this->addAsyncDeferAttribute( $name, $async_defer );
 			}
 			if ( ! empty( $localize ) ) {
-				//TODO make the localize work if called multiple times TOP PRIORITY
-				wp_localize_script( $name, str_replace( '-', '_', $this->slug ), array(
-					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					$name     => $localize
-				) );
-				//wp_localize_script( $name, str_replace( '-', '_', $this->slug . '.' . str_replace( '.', '_', $name ) ), array_merge( array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ), $localize ) );
+				$this->localizeScript( $js, $localize );
 			}
 
 			return $name;
@@ -614,15 +613,44 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		return false;
 	}
 
+	public function localizeScript( $js, $localize ) {
+		global $wpp_localize_scripts;
+
+		if ( empty( $wpp_localize_scripts ) ) {
+			$wpp_localize_scripts = array();
+		}
+		if ( empty( $wpp_localize_scripts[ $this->slug ] ) ) {
+			$wpp_localize_scripts[ $this->slug ] = array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) );
+		}
+		$wpp_localize_scripts[ $this->slug ][ $this->getJsName( $js ) ] = $localize;
+
+		if ( ! wp_script_is( $this->slug, 'registered' ) ) {
+			//We register a non existing script with the slug of the plugin to localize it with the data of all scripts
+			wp_register_script( $this->slug, '' );
+		}
+		global $wp_scripts;
+		//We remove the previous script localization, not ideal but works for now
+		$wp_scripts->add_data( $this->slug, 'data', '' );
+		wp_localize_script( $this->slug, $this->getJsName( $this->slug ), $wpp_localize_scripts[ $this->slug ] );
+	}
+
 
 	public function addAsyncDeferAttribute( $handle, $async_defer = 'async' ) {
-		add_filter( 'script_loader_tag', function ( $tag, $hndl ) use ( $handle, $async_defer ) {
-			if ( $hndl !== $handle ) {
-				return $tag;
-			}
+		global $wpp_script_handles;
 
-			return str_replace( ' src', " $async_defer src", $tag );
-		}, 10, 2 );
+		if ( empty( $wpp_script_handles ) ) {
+			$wpp_script_handles = array();
+			add_filter( 'script_loader_tag', function ( $tag, $hndl ) {
+				global $wpp_script_handles;
+				if ( isset( $wpp_script_handles[ $hndl ] ) ) {
+					return str_replace( ' src', " $wpp_script_handles[$hndl] src", $tag );
+				}
+
+				return $tag;
+			}, 10, 2 );
+		}
+
+		$wpp_script_handles[ $handle ] = $async_defer;
 	}
 
 	/**
@@ -662,7 +690,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 			return false;
 		}
-		$name = $this->getHandleName( $css);
+		$name = $this->getHandleName( $css );
 		if ( ! wp_style_is( $name, 'registered' ) ) {
 			if ( $file = $this->searchFile( $css, 'css', true, 'css' ) ) {
 				wp_register_style( $name, $file, array(), $this->version, $media );

@@ -106,7 +106,8 @@ trait WP_VC_Shortcode {
 		}
 		global $pagenow;
 
-		if ( function_exists( 'vc_map' ) && ( $pagenow == "post-new.php" || $pagenow == "post.php" || ( wp_doing_ajax() && strpos( 'vc_', $_REQUEST['action'] ) === 0 ) ) ) {
+
+		if ( function_exists( 'vc_map' ) && ( $pagenow == "post-new.php" || $pagenow == "post.php" || ( ! empty( $_REQUEST['action'] ) && wp_doing_ajax() && strpos( $_REQUEST['action'], 'vc_' ) === 0 ) ) ) {
 			add_action( 'vc_before_mapping', function () {
 				static::_initVCParams();
 				vc_map( static::$vc_params );

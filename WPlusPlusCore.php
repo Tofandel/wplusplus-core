@@ -55,6 +55,8 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 		if ( wpp_is_plugin_active( 'js_composer/js_composer.php' ) ) {
 			$this->setSubModule( new VC_Integration( $this ) );
 		}
+		$this->registerScript( 'select2', array( 'jquery' ) );
+		$this->registerStyle( 'select2' );
 	}
 
 	public function menusAndSettings() {

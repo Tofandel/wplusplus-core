@@ -60,7 +60,8 @@ trait WP_Mapped_Shortcode {
 		//	return;
 		//}
 		global $pagenow;
-		if ( ( $pagenow == "post-new.php" || $pagenow == "post.php" || ( wp_doing_ajax() && strpos( 'vc_', $_REQUEST['action'] ) === 0 ) ) ) {
+
+		if ( ( $pagenow == "post-new.php" || $pagenow == "post.php" || ( ! empty( $_REQUEST['action'] ) && wp_doing_ajax() && strpos( $_REQUEST['action'], 'vc_' ) === 0 ) ) ) {
 			ShortcodeParameter::setDefaultAttributes( static::$default_attributes );
 			static::mapShortcode();
 			/*
