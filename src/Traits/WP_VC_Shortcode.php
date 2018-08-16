@@ -85,7 +85,6 @@ trait WP_VC_Shortcode {
 	}
 
 	public static function __StaticInit() {
-		static::__StaticInit__();
 		if ( ! static::$reflectionClass->implementsInterface( \Tofandel\Core\Interfaces\WP_VC_Shortcode::class ) ) {
 			return;
 		}

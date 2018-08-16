@@ -33,10 +33,10 @@ trait Initializable {
 		$class                   = new \ReflectionClass( static::class );
 		static::$reflectionClass = $class;
 		if ( ! isset( $static_initializables [ $class->getName() ] ) ) {
+			$static_initializables[ $class->getName() ] = $class;
 			if ( is_callable( [ static::class, '__StaticInit' ] ) ) {
 				static::__StaticInit();
 			}
-			$static_initializables[ $class->getName() ] = $class;
 		}
 	}
 }

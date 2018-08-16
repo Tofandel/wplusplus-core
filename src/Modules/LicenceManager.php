@@ -263,6 +263,9 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 	}
 
 	public function addSection( ReduxFramework $framework ) {
+		if ( empty( $this->buy_url ) ) {
+			return;
+		}
 		$url = parse_url( $this->buy_url );
 		global $WPlusPlusCore;
 		$framework->setSection( array(

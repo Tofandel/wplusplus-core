@@ -84,19 +84,27 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @param string[] $shortcodes array of class names
 	 */
 	public function setShortcodes( array $shortcodes ) {
-		$this->shortcodes = $shortcodes;
+		foreach ( $shortcodes as $shortcode ) {
+			$this->shortcodes[ $shortcode::getName() ] = $shortcode;
+		}
+	}
+
+	public function getShortcodes() {
+		return $this->shortcodes;
 	}
 
 	/**
-	 * @param string $shortcode class name
+	 * @param \Tofandel\Core\Traits\WP_Shortcode $shortcode class name
+	 *
+	 * @throws \ReflectionException
 	 */
 	public function setShortcode( $shortcode ) {
-		$this->shortcodes[ $shortcode ] = $shortcode;
+		$this->shortcodes[ $shortcode::getName() ] = $shortcode;
 	}
 
 	public function initShortcodes() {
 		foreach ( $this->shortcodes as $shortcode ) {
-			call_user_func( [ $shortcode, '__StaticInit' ] );
+			call_user_func( [ $shortcode, '__StaticInit__' ] );
 		}
 	}
 
@@ -295,6 +303,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 				add_action( 'init', array( $this, 'removeDemoModeLink' ) );
 			} else {
 				$GLOBALS[ $this->redux_opt_name ] = get_option( $this->redux_opt_name, array() );
+				add_action( 'plugins_loaded', function () {
+					$GLOBALS[ $this->redux_opt_name ] = get_option( $this->redux_opt_name, array() );
+				}, 11 );//We reset it after wpml to translate the options
 				do_action( 'redux_not_loaded' );
 				add_action( 'wp_enqueue_scripts', [ $this, 'enqueueReduxFonts' ], 999 );
 			}
