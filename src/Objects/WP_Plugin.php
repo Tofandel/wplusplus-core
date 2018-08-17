@@ -265,7 +265,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			$this->download_url = trim( $matches[1] );
 		}
 
-		if ( empty( $this->buy_url ) && $comment && preg_match( '#donate[-\s]?url[:\s]*([^\r\n]*)#i', $comment, $matches ) ) {
+		if ( empty( $this->buy_url ) && $comment && preg_match( '#donate[-\s]?link[:\s]*([^\r\n]*)#i', $comment, $matches ) ) {
 			$this->buy_url = trim( $matches[1] );
 		} elseif ( empty( $this->buy_url ) ) {
 			$this->buy_url = $this->download_url;
@@ -547,6 +547,33 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
+	 * @param string $name Handle name
+	 * @param string $js Filename (optional extension)
+	 * @param array $require
+	 * @param bool $localize
+	 * @param bool $in_footer
+	 * @param string $async_defer
+	 *
+	 * @return bool|string Handle name if registered false otherwise
+	 */
+	public function addExternalScript( $name, $js, $require = array(), $localize = false, $in_footer = false, $async_defer = 'async' ) {
+		if ( ! did_action( 'init' ) ) {
+			add_action( 'init', function () use ( $name, $js, $require, $localize, $in_footer ) {
+				$this->addExternalScript( $name, $js, $require, $localize, $in_footer );
+			} );
+
+			return false;
+		}
+		$name = $this->registerExternalScript( $name, $js, $require, $localize, $in_footer, $async_defer );
+
+		if ( $name ) {
+			wp_enqueue_script( $name );
+		}
+
+		return $name;
+	}
+
+	/**
 	 * @param string $js Filename (optional extension)
 	 * @param array $require
 	 * @param bool $localize
@@ -563,6 +590,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 			return false;
 		}
+		if ( did_action( 'wp_head' ) ) {
+			$in_footer = true;
+		}
+
+		if ( $in_footer ) {
+			$async_defer = '';
+		}
 		$name = $this->registerScript( $js, $require, $localize, $in_footer, $async_defer );
 
 		if ( $name ) {
@@ -573,7 +607,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	public function getHandleName( $script ) {
-		return $this->getSlug() . basename( $script );
+		return $this->getSlug() . '-' . basename( $script );
 	}
 
 	public function getJsName( $script ) {
@@ -581,23 +615,25 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * @param $js
+	 * @param string $name Handle name
+	 * @param string $js Name of the file without extension and js folder
 	 * @param array $require
-	 * @param bool $localize
+	 * @param bool|array $localize
 	 * @param bool $in_footer
 	 * @param string $async_defer
 	 *
 	 * @return bool|string Handle name if registered false otherwise
 	 */
-	public function registerScript( $js, $require = array(), $localize = false, $in_footer = false, $async_defer = 'async' ) {
+	public function registerExternalScript( $name, $js, $require = array(), $localize = false, $in_footer = false, $async_defer = 'async' ) {
 		if ( ! did_action( 'init' ) ) {
-			add_action( 'init', function () use ( $js, $require, $localize, $in_footer ) {
-				$this->registerScript( $js, $require, $localize, $in_footer );
+			//Poor performances so better to not use this massively
+			add_action( 'init', function () use ( $name, $js, $require, $localize, $in_footer ) {
+				$this->registerExternalScript( $name, $js, $require, $localize, $in_footer );
 			} );
 
 			return false;
 		}
-		$name = $this->getHandleName( $js );
+		$name = $this->getHandleName( $name );
 		if ( ! wp_script_is( $name, 'registered' ) ) {
 			if ( $file = $this->searchFile( $js, 'js', true, 'js' ) ) {
 				wp_register_script( $name, $file, $require, $this->version, $in_footer );
@@ -606,6 +642,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		if ( wp_script_is( $name, 'registered' ) ) {
 			if ( ! empty( $async_defer ) ) {
 				$this->addAsyncDeferAttribute( $name, $async_defer );
+			} else {
+				$this->removeAsyncDeferAttribute( $name );
 			}
 			if ( ! empty( $localize ) ) {
 				$this->localizeScript( $js, $localize );
@@ -615,6 +653,19 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param string $js Name of the file without extension and js folder
+	 * @param array $require
+	 * @param bool|array $localize
+	 * @param bool $in_footer
+	 * @param string $async_defer
+	 *
+	 * @return bool|string Handle name if registered false otherwise
+	 */
+	public function registerScript( $js, $require = array(), $localize = false, $in_footer = false, $async_defer = 'async' ) {
+		return $this->registerExternalScript( $js, $js, $require, $localize, $in_footer, $async_defer );
 	}
 
 	public function localizeScript( $js, $localize ) {
@@ -638,6 +689,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		wp_localize_script( $this->slug, $this->getJsName( $this->slug ), $wpp_localize_scripts[ $this->slug ] );
 	}
 
+	public function removeAsyncDeferAttribute( $handle ) {
+		global $wpp_script_handles;
+
+		if ( isset( $wpp_script_handles[ $handle ] ) ) {
+			unset( $wpp_script_handles[ $handle ] );
+		}
+	}
 
 	public function addAsyncDeferAttribute( $handle, $async_defer = 'async' ) {
 		global $wpp_script_handles;
@@ -687,14 +745,25 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @return bool|string Handle name if registered false otherwise
 	 */
 	public function registerStyle( $css, $media = 'all' ) {
+		return $this->registerExternalStyle( $css, $css, $media );
+	}
+
+	/**
+	 * @param string $name Handle name
+	 * @param string $css Filename (extension is optional)
+	 * @param string $media
+	 *
+	 * @return bool|string Handle name if registered false otherwise
+	 */
+	public function registerExternalStyle( $name, $css, $media = 'all' ) {
 		if ( ! did_action( 'init' ) ) {
-			add_action( 'init', function () use ( $css, $media ) {
-				$this->registerStyle( $css, $media );
+			add_action( 'init', function () use ( $name, $css, $media ) {
+				$this->registerExternalStyle( $name, $css, $media );
 			} );
 
 			return false;
 		}
-		$name = $this->getHandleName( $css );
+		$name = $this->getHandleName( $name );
 		if ( ! wp_style_is( $name, 'registered' ) ) {
 			if ( $file = $this->searchFile( $css, 'css', true, 'css' ) ) {
 				wp_register_style( $name, $file, array(), $this->version, $media );

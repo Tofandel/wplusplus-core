@@ -4575,7 +4575,7 @@
 			return CloseOnSelect;
 		});
 
-		S2.define('select2/i18n/en', [], function () {
+		S2.define('select2/select2-i18n/en', [], function () {
 			// English
 			return {
 				errorLoading: function () {

@@ -29,7 +29,7 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 		self::__parentConstruct( $parent );
 		$this->version    = $parent->getVersion();
 		$this->product_id = $parent->getProductID();
-		$this->api_url    = $parent->getDownloadUrl();
+		$this->api_url    = trailingslashit( wpp_get_domain_from_url( $parent->getBuyUrl(), true ) );
 		$this->buy_url    = $parent->getBuyUrl();
 		$this->instance   = str_replace( array( '/', 'https', 'http', ':' ), array( '' ), network_site_url() );
 
@@ -263,7 +263,7 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 	}
 
 	public function addSection( ReduxFramework $framework ) {
-		if ( empty( $this->buy_url ) ) {
+		if ( empty( $this->buy_url ) || $this->buy_url == trailingslashit( '' ) ) {
 			return;
 		}
 		$url = parse_url( $this->buy_url );

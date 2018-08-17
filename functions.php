@@ -15,25 +15,49 @@ function wpp_admin_notice( $text, $type = 'success' ) {
 	} );
 }
 
+
+function wpp_remove_domain_from_url( $url ) {
+	if ( preg_match( '#(?:https?:\/\/)?[^\/]*?(\/.*)#', $url, $matches ) ) {
+		return $matches[1];
+	}
+
+	return $url;
+}
+
+function wpp_get_domain_from_url( $url, $scheme = false ) {
+	if ( preg_match( '#(https?:\/\/)?([^\/]*?)\/.*#', $url, $matches ) ) {
+		return $scheme ? $matches[1] . $matches[2] : $matches[2];
+	}
+
+	return $url;
+}
+
 /**
- * @param WP_Post $post
+ * @param string $string
  * @param string|array $shortcode
  *
  * @return bool
  */
-function wpp_has_shortcode( $post, $shortcode ) {
+function wpp_has_shortcode( $string, $shortcode ) {
+	global $shortcode_tags;
+	$old = $shortcode_tags;
 	if ( is_array( $shortcode ) ) {
+		$shortcode_tags = array_flip( $shortcode );
 		foreach ( $shortcode as $sh ) {
-			if ( has_shortcode( $post->post_content, $sh ) ) {
+			if ( has_shortcode( $string, $sh ) ) {
+				$shortcode_tags = $old;
 				return true;
 			}
 		}
 	} else {
-		if ( has_shortcode( $post->post_content, $shortcode ) ) {
+		$shortcode_tags = array( $shortcode => '' );
+		if ( has_shortcode( $string, $shortcode ) ) {
+			$shortcode_tags = $old;
 			return true;
 		}
 	}
 
+	$shortcode_tags = $old;
 	return false;
 }
 
