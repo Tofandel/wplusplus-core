@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_options_object' ) ) {
+if ( ! class_exists( 'ReduxFramework_options_object', false ) ) {
 
 	/**
 	 * Main ReduxFramework_options_object class

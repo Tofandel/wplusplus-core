@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_spacing' ) ) {
+if ( ! class_exists( 'ReduxFramework_spacing', false ) ) {
 	class ReduxFramework_spacing {
 
 		/**

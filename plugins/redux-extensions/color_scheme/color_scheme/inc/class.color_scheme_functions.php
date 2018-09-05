@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 //print_r($GLOBALS['rdxIO']);
 
-if ( ! class_exists( 'ReduxColorSchemeFunctions' ) ) {
+if ( ! class_exists( 'ReduxColorSchemeFunctions', false ) ) {
 	class ReduxColorSchemeFunctions {
 
 		// public variables

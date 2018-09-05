@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_editor' ) ) {
+if ( ! class_exists( 'ReduxFramework_editor', false ) ) {
 
 	/**
 	 * Main ReduxFramework_editor class

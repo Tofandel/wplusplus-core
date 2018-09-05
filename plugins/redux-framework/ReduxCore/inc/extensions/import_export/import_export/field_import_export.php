@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_import_export' ) ) {
+if ( ! class_exists( 'ReduxFramework_import_export', false ) ) {
 
 	/**
 	 * Main ReduxFramework_import_export class

@@ -24,7 +24,7 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Plugin Name: W++ Core
  * Plugin URI: https://github.com/tofandel/wplusplus-core/
  * Description: A Wordpress Plugin acting as core for other of my plugins and including the Ultimate Redux Framework Bundle and OOP APIs to use it
- * Version: 1.8
+ * Version: 1.8.1
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
  * Text Domain: wppc
@@ -42,6 +42,11 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	protected $no_redux = true;
 
 	public function actionsAndFilters() {
+		add_action('site_transient_update_plugins', [$this, 'WPPBundledUpdate']);
+	}
+
+	public function WPPBundledUpdate() {
+
 	}
 
 	public function definitions() {
@@ -56,7 +61,7 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	}
 
 	public function upgrade( $last_version ) {
-		// Nothing yet
+		$this->copy( 'wplusplus-muloader.php.bak', self::MULOADER_DIR . '/wplusplus-muloader.php' );
 	}
 
 	public function activated() {

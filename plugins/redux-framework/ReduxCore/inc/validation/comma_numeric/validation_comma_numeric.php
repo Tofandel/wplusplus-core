@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'Redux_Validation_comma_numeric' ) ) {
+if ( ! class_exists( 'Redux_Validation_comma_numeric', false ) ) {
 	class Redux_Validation_comma_numeric {
 
 		/**

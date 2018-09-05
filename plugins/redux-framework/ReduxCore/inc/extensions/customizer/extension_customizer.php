@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_customizer' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_customizer', false ) ) {
 
 	/**
 	 * Main ReduxFramework customizer extension class
@@ -272,19 +272,19 @@ if ( ! class_exists( 'ReduxFramework_extension_customizer' ) ) {
 		// All sections, settings, and controls will be added here
 		public function _register_customizer_controls( $wp_customize ) {
 
-			if ( ! class_exists( 'Redux_Customizer_Section' ) ) {
+			if ( ! class_exists( 'Redux_Customizer_Section', false ) ) {
 				require_once dirname( __FILE__ ) . '/inc/customizer_section.php';
 				if ( method_exists( $wp_customize, 'register_section_type' ) ) {
 					$wp_customize->register_section_type( 'Redux_Customizer_Section' );
 				}
 			}
-			if ( ! class_exists( 'Redux_Customizer_Panel' ) ) {
+			if ( ! class_exists( 'Redux_Customizer_Panel', false ) ) {
 				require_once dirname( __FILE__ ) . '/inc/customizer_panel.php';
 				if ( method_exists( $wp_customize, 'register_panel_type' ) ) {
 					$wp_customize->register_panel_type( 'Redux_Customizer_Panel' );
 				}
 			}
-			if ( ! class_exists( 'Redux_Customizer_Control' ) ) {
+			if ( ! class_exists( 'Redux_Customizer_Control', false ) ) {
 				require_once dirname( __FILE__ ) . '/inc/customizer_control.php';
 			}
 
@@ -557,7 +557,7 @@ if ( ! class_exists( 'ReduxFramework_extension_customizer' ) ) {
 
 					do_action( 'redux/extension/customizer/control_init', $option );
 
-					if ( ! class_exists( $class_name ) ) {
+					if ( ! class_exists( $class_name, false ) ) {
 						continue;
 					}
 
@@ -568,7 +568,7 @@ if ( ! class_exists( 'ReduxFramework_extension_customizer' ) ) {
 						'type'            => 'redux-' . $option['type'],
 						'field'           => $option,
 						'ReduxFramework'  => $this->parent,
-						'active_callback' => ( isset( $option['required'] ) && class_exists( 'Redux_Customizer_Active_Callback' ) ) ? array(
+						'active_callback' => ( isset( $option['required'] ) && class_exists( 'Redux_Customizer_Active_Callback', false ) ) ? array(
 							'Redux_Customizer_Active_Callback',
 							'evaluate'
 						) : '__return_true',
@@ -759,7 +759,7 @@ if ( ! class_exists( 'ReduxFramework_extension_customizer' ) ) {
 						if ( isset( $field['type'] ) ) {
 							$field_class = 'ReduxFramework_' . $field['type'];
 
-							if ( ! class_exists( $field_class ) ) {
+							if ( ! class_exists( $field_class, false ) ) {
 								$class_file = apply_filters( 'redux-typeclass-load', $this->path . 'inc/fields/' . $field['type'] . '/field_' . $field['type'] . '.php', $field_class );
 								if ( $class_file ) {
 									/** @noinspection PhpIncludeInspection */
@@ -767,7 +767,7 @@ if ( ! class_exists( 'ReduxFramework_extension_customizer' ) ) {
 								}
 							}
 
-							if ( class_exists( $field_class ) && method_exists( $field_class, 'enqueue' ) ) {
+							if ( class_exists( $field_class, false ) && method_exists( $field_class, 'enqueue' ) ) {
 								$enqueue = new $field_class( '', '', $this );
 								$enqueue->enqueue();
 							}

@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_widget_areas' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_widget_areas', false ) ) {
 
 	class ReduxFramework_extension_widget_areas {
 

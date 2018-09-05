@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_Field_codemirror' ) ) {
+if ( ! class_exists( 'ReduxFramework_Field_codemirror', false ) ) {
 
 	/**
 	 * Main ReduxFramework_Field_codemirror class

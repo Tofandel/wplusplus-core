@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'Redux_Widget_Areas' ) ) {
+if ( ! class_exists( 'Redux_Widget_Areas', false ) ) {
 
 	/**
 	 * Main ReduxFramework customizer extension class

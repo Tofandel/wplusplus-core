@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'Redux' ) ) {
+if ( ! class_exists( 'Redux', false ) ) {
 
 	/**
 	 * Redux API Class
@@ -60,7 +60,7 @@ if ( ! class_exists( 'Redux' ) ) {
 		public static function loadExtensions( $ReduxFramework ) {
 			if ( $instanceExtensions = self::getExtensions( $ReduxFramework->args['opt_name'], "" ) ) {
 				foreach ( $instanceExtensions as $name => $extension ) {
-					if ( ! class_exists( $extension['class'] ) ) {
+					if ( ! class_exists( $extension['class'], false ) ) {
 						// In case you wanted override your override, hah.
 						$extension['path'] = apply_filters( 'redux/extension/' . $ReduxFramework->args['opt_name'] . '/' . $name, $extension['path'] );
 						if ( file_exists( $extension['path'] ) ) {
@@ -68,7 +68,7 @@ if ( ! class_exists( 'Redux' ) ) {
 						}
 					}
 					if ( ! isset( $ReduxFramework->extensions[ $name ] ) ) {
-						if ( class_exists( $extension['class'] ) ) {
+						if ( class_exists( $extension['class'], false ) ) {
 							$ReduxFramework->extensions[ $name ] = new $extension['class']( $ReduxFramework );
 							//if (isset($ReduxFramework->extensions[ $name ]->min_redux_version)) {
 							//var_dump($ReduxFramework->extensions[ $name ]->min_redux_version);
@@ -116,7 +116,7 @@ if ( ! class_exists( 'Redux' ) ) {
 
 			$args     = self::constructArgs( $opt_name );
 			$sections = self::constructSections( $opt_name );
-			if ( ! class_exists( 'ReduxFramework' ) ) {
+			if ( ! class_exists( 'ReduxFramework', false ) ) {
 				echo '<div id="message" class="error"><p>Redux Framework is <strong>not installed</strong>. Please install it.</p></div>';
 
 				return;
@@ -550,7 +550,7 @@ if ( ! class_exists( 'Redux' ) ) {
 				self::$extensions[ $name ][ $version ] = isset( self::$extensions[ $name ][ $version ] ) ? self::$extensions[ $name ][ $version ] : $class_file;
 
 				$api_check = str_replace( 'extension_' . $name, $name . '_api', $class_file );
-				if ( file_exists( $api_check ) && ! class_exists( 'Redux_' . ucfirst( $name ) ) ) {
+				if ( file_exists( $api_check ) && ! class_exists( 'Redux_' . ucfirst( $name, false ) ) ) {
 					include_once( $api_check );
 				}
 			}

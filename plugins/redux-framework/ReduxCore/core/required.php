@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'reduxCoreRequired' ) ) {
+if ( ! class_exists( 'reduxCoreRequired', false ) ) {
 	class reduxCoreRequired {
 		public $parent = null;
 

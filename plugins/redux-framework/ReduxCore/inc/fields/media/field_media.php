@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_media' ) ) {
+if ( ! class_exists( 'ReduxFramework_media', false ) ) {
 
 	/**
 	 * Main ReduxFramework_media class

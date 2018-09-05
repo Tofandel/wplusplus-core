@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'Redux_Validation_html_custom' ) ) {
+if ( ! class_exists( 'Redux_Validation_html_custom', false ) ) {
 	class Redux_Validation_html_custom {
 
 		/**

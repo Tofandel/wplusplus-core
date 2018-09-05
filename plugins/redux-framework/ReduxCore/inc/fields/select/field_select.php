@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_select' ) ) {
+if ( ! class_exists( 'ReduxFramework_select', false ) ) {
 	class ReduxFramework_select {
 
 		/**

@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_support_faq' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_support_faq', false ) ) {
 
 	/**
 	 * Main ReduxFramework support_faq extension class

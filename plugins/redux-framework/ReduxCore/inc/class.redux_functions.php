@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'Redux_Functions' ) ) {
+if ( ! class_exists( 'Redux_Functions', false ) ) {
 
 	/**
 	 * Redux Functions Class

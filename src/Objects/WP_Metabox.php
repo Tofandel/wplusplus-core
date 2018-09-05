@@ -50,13 +50,13 @@ class WP_Metabox {
 		if ( ! is_object( $post ) && isset( $_REQUEST['post'] ) ) {
 			$post = get_post( intval( $_REQUEST['post'] ) );
 		}
+
 		if ( ! is_admin()
 		     || ! ( ( ( ( $pagenow == "post-new.php" || $pagenow == "post.php" ) && isset( $_REQUEST['post_type'] ) && in_array( $_REQUEST['post_type'], $post_types ) )
 		              || ( $pagenow == "post.php" && ( ! empty( $post ) && in_array( $post->post_type, $post_types ) ) ) ) || wp_doing_ajax() )
 		     || ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'heartbeat' ) ) {
 			return;
 		}
-
 		$this->opt_name = $opt_name;
 		$this->id       = $id;
 		$this->title    = $title;

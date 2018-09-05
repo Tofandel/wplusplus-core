@@ -56,3 +56,5 @@ composer.phar
 vendor/**/.git
 vendor/**/.editorconfig
 /admin/redux-extensions/shortcodes/
+plugins/redux-extensions-examples
+plugins/redux-dev-master

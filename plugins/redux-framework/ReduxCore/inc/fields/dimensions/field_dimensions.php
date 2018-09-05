@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_dimensions' ) ) {
+if ( ! class_exists( 'ReduxFramework_dimensions', false ) ) {
 	class ReduxFramework_dimensions {
 
 		/**

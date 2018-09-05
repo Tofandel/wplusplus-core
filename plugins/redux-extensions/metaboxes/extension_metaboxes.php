@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_metaboxes' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 	/**
 	 * Main ReduxFramework customizer extension class

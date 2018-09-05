@@ -297,17 +297,30 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			if ( is_admin() && ! wp_doing_ajax() ||
 			     ( wp_doing_ajax() && isset ( $_REQUEST['action'] ) &&
 			       ( $_REQUEST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_REQUEST['action'], 'redux' ) === 0 ) ) ) {
-				$this->_reduxConfig();
-				do_action( 'redux_loaded' );
+				$module = new ReduxFramework( $this );
+				$this->setSubModule( $module );
+				add_action( 'plugins_loaded', function () {
+					$module = $this->getModule( ReduxFramework::class );
+					/**
+					 * @var ReduxFramework $module
+					 */
+					$this->reduxInit( $module );
+				} );
+				do_action( 'wpp_redux_' . $this->redux_opt_name . '_config', $module );
 				add_action( 'admin_init', [ $this, 'checkCompat' ] );
 				add_action( 'init', array( $this, 'removeDemoModeLink' ) );
 			} else {
+				//We define it before in case some dummy used the option before plugins_loaded
 				$GLOBALS[ $this->redux_opt_name ] = get_option( $this->redux_opt_name, array() );
+				//We reset it after wpml to make sure the options are translated
 				add_action( 'plugins_loaded', function () {
 					$GLOBALS[ $this->redux_opt_name ] = get_option( $this->redux_opt_name, array() );
-				}, 11 );//We reset it after wpml to translate the options
-				do_action( 'redux_not_loaded' );
+				}, 11 );
 				add_action( 'wp_enqueue_scripts', [ $this, 'enqueueReduxFonts' ], 999 );
+
+				if ( ! class_exists( \Redux::class, false ) && ! did_action( 'redux_not_loaded' ) ) {
+					do_action( 'redux_not_loaded' );
+				}
 			}
 		}
 
@@ -990,7 +1003,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	protected function _reduxConfig() {
 		$module = new ReduxFramework( $this );
 		$this->setSubModule( $module );
-		$this->reduxInit( $module );
+		add_action( 'plugins_loaded', function () {
+			$module = $this->getModule( ReduxFramework::class );
+			/**
+			 * @var ReduxFramework $module
+			 */
+			$this->reduxInit( $module );
+		} );
 		do_action( 'wpp_redux_' . $this->redux_opt_name . '_config', $module );
 	}
 

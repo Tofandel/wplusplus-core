@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'reduxCoreEnqueue' ) ) {
+if ( ! class_exists( 'reduxCoreEnqueue', false ) ) {
 	class reduxCoreEnqueue {
 		public $parent = null;
 
@@ -310,7 +310,7 @@ if ( ! class_exists( 'reduxCoreEnqueue' ) ) {
 				 */
 				$class_file = apply_filters( "redux/{$this->parent->args['opt_name']}/field/class/{$field['type']}", ReduxFramework::$_dir . "inc/fields/{$field['type']}/field_{$field['type']}.php", $field );
 				if ( $class_file ) {
-					if ( ! class_exists( $field_class ) ) {
+					if ( ! class_exists( $field_class, false ) ) {
 						if ( file_exists( $class_file ) ) {
 							require_once $class_file;
 						}
@@ -325,7 +325,7 @@ if ( ! class_exists( 'reduxCoreEnqueue' ) ) {
 						$theField = new $field_class( $field, $this->parent->options[ $field['id'] ], $this->parent );
 
 						// Move dev_mode check to a new if/then block
-						if ( ! wp_script_is( 'redux-field-' . $field['type'] . '-js', 'enqueued' ) && class_exists( $field_class ) && method_exists( $field_class, 'enqueue' ) ) {
+						if ( ! wp_script_is( 'redux-field-' . $field['type'] . '-js', 'enqueued' ) && class_exists( $field_class, false ) && method_exists( $field_class, 'enqueue' ) ) {
 							$theField->enqueue();
 						}
 

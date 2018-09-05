@@ -1,5 +1,5 @@
 <?php
-if ( ! class_exists( 'Redux_Validation_color_rgba' ) ) {
+if ( ! class_exists( 'Redux_Validation_color_rgba', false ) ) {
 	class Redux_Validation_color_rgba {
 
 		/**

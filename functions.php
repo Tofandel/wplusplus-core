@@ -845,13 +845,14 @@ function wpp_slugify( $string, $slashes = true ) {
 /**
  * Order a multidimensional array from a subelement set specified as a path "foo.bar.orderValue"
  *
- * @param $array
- * @param $path
+ * @param array $array
+ * @param string $path
+ * @param bool $keep_keys
  *
  * @return array
  * @throws Exception
  */
-function wpp_order_by( $array, $path ) {
+function wpp_order_by( $array, $path, $keep_keys = false ) {
 	if ( empty( $array ) ) {
 		return array();
 	}
@@ -861,7 +862,7 @@ function wpp_order_by( $array, $path ) {
 	$path = explode( '.', $path );
 	$c    = count( $path );
 	// Sort the multidimensional array
-	usort( $array, function ( $a, $b ) use ( $path, $c ) {
+	($keep_keys ? 'uasort' : 'usort')( $array, function ( $a, $b ) use ( $path, $c ) {
 		$v1 = $a;
 		for ( $i = 0; $i < $c; $i ++ ) {
 			$k = $path[ $i ];
@@ -892,8 +893,8 @@ function wpp_order_by( $array, $path ) {
  *
  * If multiple elements exist with the same value they will be grouped and merged recursively (the scalar elements will become indexed array)
  *
- * @param $array
- * @param $path
+ * @param array $array
+ * @param string $path
  *
  * @return array
  * @throws Exception

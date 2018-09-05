@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_section' ) ) {
+if ( ! class_exists( 'ReduxFramework_section', false ) ) {
 
 	/**
 	 * Main ReduxFramework_heading class

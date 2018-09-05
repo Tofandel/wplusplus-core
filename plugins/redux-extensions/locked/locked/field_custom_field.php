@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_custom_field' ) ) {
+if ( ! class_exists( 'ReduxFramework_custom_field', false ) ) {
 
 	/**
 	 * Main ReduxFramework_custom_field class

@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_sorter' ) ) {
+if ( ! class_exists( 'ReduxFramework_sorter', false ) ) {
 	class ReduxFramework_sorter {
 
 		/**

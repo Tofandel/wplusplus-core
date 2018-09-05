@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_palette' ) ) {
+if ( ! class_exists( 'ReduxFramework_palette', false ) ) {
 	class ReduxFramework_palette {
 
 		/**

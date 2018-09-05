@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_multi_text' ) ) {
+if ( ! class_exists( 'ReduxFramework_multi_text', false ) ) {
 
 	/**
 	 * Main ReduxFramework_multi_text class

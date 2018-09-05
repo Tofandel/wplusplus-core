@@ -5,7 +5,7 @@
  * For full documentation, please visit: http://docs.reduxframework.com/
  */
 
-if ( ! class_exists( 'Redux' ) ) {
+if ( ! class_exists( 'Redux', false) ) {
 	return;
 }
 

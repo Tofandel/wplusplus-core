@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'Redux_CDN' ) ) {
+if ( ! class_exists( 'Redux_CDN', false ) ) {
 	class Redux_CDN {
 		static public $_parent;
 		static private $_set;
@@ -61,7 +61,7 @@ if ( ! class_exists( 'Redux_CDN' ) ) {
 				$cdn_response = @wp_remote_get( $prefix . $src_cdn );
 
 				if ( is_wp_error( $cdn_response ) || wp_remote_retrieve_response_code( $cdn_response ) != '200' ) {
-					if ( class_exists( 'Redux_VendorURL' ) ) {
+					if ( class_exists( 'Redux_VendorURL', false ) ) {
 						$src = Redux_VendorURL::get_url( $handle );
 
 						if ( $register ) {
@@ -102,7 +102,7 @@ if ( ! class_exists( 'Redux_CDN' ) ) {
 		}
 
 		private static function _vendor_plugin( $register = true, $handle, $src_cdn, $deps, $ver, $footer_or_media, $is_script = true ) {
-			if ( class_exists( 'Redux_VendorURL' ) ) {
+			if ( class_exists( 'Redux_VendorURL', false ) ) {
 				$src = Redux_VendorURL::get_url( $handle );
 
 				if ( $register ) {

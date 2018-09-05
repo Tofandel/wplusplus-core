@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_textarea' ) ) {
+if ( ! class_exists( 'ReduxFramework_textarea', false ) ) {
 	class ReduxFramework_textarea {
 
 		/**

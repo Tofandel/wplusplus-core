@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_ace_editor' ) ) {
+if ( ! class_exists( 'ReduxFramework_ace_editor', false ) ) {
 	class ReduxFramework_ace_editor {
 
 		/**

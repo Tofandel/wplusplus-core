@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_radio' ) ) {
+if ( ! class_exists( 'ReduxFramework_radio', false ) ) {
 	class ReduxFramework_radio {
 
 		/**

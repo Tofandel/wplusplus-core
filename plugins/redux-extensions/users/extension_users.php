@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_users' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_users', false ) ) {
 
 	/**
 	 * Main ReduxFramework customizer extension class

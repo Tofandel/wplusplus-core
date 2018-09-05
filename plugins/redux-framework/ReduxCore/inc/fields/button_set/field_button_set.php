@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_button_set' ) ) {
+if ( ! class_exists( 'ReduxFramework_button_set', false ) ) {
 
 	/**
 	 * Main ReduxFramework_button_set class

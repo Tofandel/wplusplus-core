@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_background' ) ) {
+if ( ! class_exists( 'ReduxFramework_background', false ) ) {
 
 	/**
 	 * Main ReduxFramework_background class

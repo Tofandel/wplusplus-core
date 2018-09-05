@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_color_gradient' ) ) {
+if ( ! class_exists( 'ReduxFramework_color_gradient', false ) ) {
 
 	/**
 	 * Main ReduxFramework_color_gradient class

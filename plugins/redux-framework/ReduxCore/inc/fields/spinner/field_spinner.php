@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_spinner' ) ) {
+if ( ! class_exists( 'ReduxFramework_spinner', false ) ) {
 	class ReduxFramework_spinner {
 
 		/**

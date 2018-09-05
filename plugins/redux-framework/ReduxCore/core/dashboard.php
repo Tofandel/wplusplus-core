@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'reduxDashboardWidget' ) ) {
+if ( ! class_exists( 'reduxDashboardWidget', false ) ) {
 	class reduxDashboardWidget {
 
 		public function __construct( $parent ) {

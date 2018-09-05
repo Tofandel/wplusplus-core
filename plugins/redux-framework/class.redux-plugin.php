@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFrameworkPlugin' ) ) {
+if ( ! class_exists( 'ReduxFrameworkPlugin', false ) ) {
 
 	/**
 	 * Main ReduxFrameworkPlugin class

@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'Redux_VendorURL' ) ) {
+if ( ! class_exists( 'Redux_VendorURL', false ) ) {
 	class Redux_VendorURL {
 		static public $url;
 		static public $dir;

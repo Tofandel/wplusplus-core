@@ -86,7 +86,7 @@ class TIVWP_DM_Controller {
 	 */
 	private static function _setup_plugin_composer() {
 
-		if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
+		if ( ! class_exists( 'TGM_Plugin_Activation', false ) ) {
 			/**
 			 * @author    Thomas Griffin <thomas@thomasgriffinmedia.com>
 			 * @author    Gary Jones <gamajo@gamajo.com>

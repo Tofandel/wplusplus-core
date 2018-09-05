@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'reduxNewsflash' ) ) {
+if ( ! class_exists( 'reduxNewsflash', false ) ) {
 	class reduxNewsflash {
 		private $parent = null;
 		private $notice_data = '';

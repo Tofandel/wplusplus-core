@@ -1,5 +1,5 @@
 <?php
-if ( !class_exists('Puc_v4p4_Vcs_Api') ):
+if ( !class_exists('Puc_v4p4_Vcs_Api', false) ):
 
 	abstract class Puc_v4p4_Vcs_Api {
 		protected $tagNameProperty = 'name';

@@ -3,7 +3,7 @@
 /**
  * @package Redux_Tracking
  */
-if ( ! class_exists( 'ReduxFramework' ) ) {
+if ( ! class_exists( 'ReduxFramework', false ) ) {
 	return;
 }
 
@@ -13,7 +13,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
  * NOTE: this functionality is opt-in. Disabling the tracking in the settings or saying no when asked will cause
  * this file to not even be loaded.
  */
-if ( ! class_exists( 'Redux_Tracking' ) ) {
+if ( ! class_exists( 'Redux_Tracking', false ) ) {
 
 	/**
 	 * Class Redux_Tracking

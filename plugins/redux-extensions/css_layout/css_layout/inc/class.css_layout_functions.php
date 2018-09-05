@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxCssLayoutFunctions' ) ) {
+if ( ! class_exists( 'ReduxCssLayoutFunctions', false ) ) {
 	class ReduxCssLayoutFunctions {
 		public static $_field_id = '';
 		public static $units = array();

@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'Redux_Validation_date' ) ) {
+if ( ! class_exists( 'Redux_Validation_date', false ) ) {
 	class Redux_Validation_date {
 
 		/**

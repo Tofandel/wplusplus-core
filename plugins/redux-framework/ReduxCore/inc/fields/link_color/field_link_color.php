@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_link_color' ) ) {
+if ( ! class_exists( 'ReduxFramework_link_color', false ) ) {
 
 	/**
 	 * Main ReduxFramework_link_color class

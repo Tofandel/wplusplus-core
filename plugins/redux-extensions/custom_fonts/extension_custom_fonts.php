@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_custom_fonts' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_custom_fonts', false ) ) {
 	/**
 	 * Main ReduxFramework custom_fonts extension class
 	 *

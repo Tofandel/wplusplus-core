@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_color_scheme' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_color_scheme', false ) ) {
 
 
 	/**

@@ -4,7 +4,7 @@
  * Plugin Name: W++ Core MuLoader
  * Plugin URI: https://github.com/tofandel/wplusplus-core
  * Description: The must use plugin loader for W++ Core to load it before anything else
- * Version: 1.5
+ * Version: 1.6
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
  */
@@ -21,6 +21,7 @@ foreach ($plugins as $file => $plugin) {
 	if (strpos($plugin, 'WPlusPlusCore.php') !== false) {
 		//We load wplusplus core if it's active to load it early, the file is already checked for existence
         require_once ($file);
+        unset($plugins[$file]);
 	    break;
 	}
 }
@@ -28,6 +29,5 @@ foreach ($plugins as $file => $plugin) {
 	if (strpos($plugin, 'wplusplus') !== false || strpos($plugin, 'WPlusPlus') !== false) {
 		//We load other wplusplus plugins
 		require_once ($file);
-		break;
 	}
 }

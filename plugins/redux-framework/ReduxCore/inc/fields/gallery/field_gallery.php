@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_gallery' ) ) {
+if ( ! class_exists( 'ReduxFramework_gallery', false ) ) {
 
 	/**
 	 * Main ReduxFramework_gallery class

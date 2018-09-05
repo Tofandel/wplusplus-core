@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'reduxCorePanel' ) ) {
+if ( ! class_exists( 'reduxCorePanel', false ) ) {
 	/**
 	 * Class reduxCorePanel
 	 */

@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'Redux_Customizer_Control' ) ) {
+if ( ! class_exists( 'Redux_Customizer_Control', false ) ) {
 	class Redux_Customizer_Control extends WP_Customize_Control {
 
 		public function render() {

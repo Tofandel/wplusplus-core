@@ -33,18 +33,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFrameworkInstances' ) ) {
+if ( ! class_exists( 'ReduxFrameworkInstances', false ) ) {
 	// Instance Container
 	require_once dirname( __FILE__ ) . '/inc/class.redux_instances.php';
 	require_once dirname( __FILE__ ) . '/inc/lib.redux_instances.php';
 }
 
-if ( class_exists( 'ReduxFrameworkInstances' ) ) {
+if ( class_exists( 'ReduxFrameworkInstances', false ) ) {
 	add_action( 'redux/init', 'ReduxFrameworkInstances::get_instance' );
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework' ) ) {
+if ( ! class_exists( 'ReduxFramework', false ) ) {
 
 	// Redux CDN class
 	require_once dirname( __FILE__ ) . '/inc/class.redux_cdn.php';
@@ -1326,7 +1326,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 			}
 
 			// Check if the Airplane Mode plugin is installed
-			if ( class_exists( 'Airplane_Mode_Core' ) ) {
+			if ( class_exists( 'Airplane_Mode_Core', false ) ) {
 				$airplane = Airplane_Mode_Core::getInstance();
 				if ( method_exists( $airplane, 'enabled' ) ) {
 					if ( $airplane->enabled() ) {
@@ -1625,7 +1625,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 					foreach ( $section['fields'] as $fieldk => $field ) {
 						if ( isset ( $field['type'] ) && $field['type'] != "callback" ) {
 							$field_class = "ReduxFramework_{$field['type']}";
-							if ( ! class_exists( $field_class ) ) {
+							if ( ! class_exists( $field_class, false ) ) {
 
 								if ( ! isset ( $field['compiler'] ) ) {
 									$field['compiler'] = "";
@@ -1640,13 +1640,13 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 								 */
 								$class_file = apply_filters( "redux/{$this->args['opt_name']}/field/class/{$field['type']}", self::$_dir . "inc/fields/{$field['type']}/field_{$field['type']}.php", $field );
 
-								if ( $class_file && file_exists( $class_file ) && ! class_exists( $field_class ) ) {
+								if ( $class_file && file_exists( $class_file ) && ! class_exists( $field_class, false ) ) {
 									/** @noinspection PhpIncludeInspection */
 									require_once $class_file;
 								}
 							}
 
-							if ( ! empty ( $this->options[ $field['id'] ] ) && class_exists( $field_class ) && method_exists( $field_class, 'output' ) && $this->_can_output_css( $field ) ) {
+							if ( ! empty ( $this->options[ $field['id'] ] ) && class_exists( $field_class, false ) && method_exists( $field_class, 'output' ) && $this->_can_output_css( $field ) ) {
 								$field = apply_filters( "redux/field/{$this->args['opt_name']}/output_css", $field );
 
 								if ( ! empty ( $field['output'] ) && ! is_array( $field['output'] ) ) {
@@ -2773,7 +2773,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 				return;
 			}
 
-			if ( defined( 'WP_CACHE' ) && WP_CACHE && class_exists( 'W3_ObjectCache' ) && function_exists( 'w3_instance' ) ) {
+			if ( defined( 'WP_CACHE' ) && WP_CACHE && class_exists( 'W3_ObjectCache', false ) && function_exists( 'w3_instance' ) ) {
 				//echo "here";
 				$w3_inst = w3_instance( 'W3_ObjectCache' );
 				$w3      = $w3_inst->instance();
@@ -3021,7 +3021,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 						if ( isset ( $field['validate'] ) ) {
 							$validate = 'Redux_Validation_' . $field['validate'];
 
-							if ( ! class_exists( $validate ) ) {
+							if ( ! class_exists( $validate, false ) ) {
 								/**
 								 * filter 'redux-validateclass-load'
 								 *
@@ -3047,7 +3047,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 								}
 							}
 
-							if ( class_exists( $validate ) ) {
+							if ( class_exists( $validate, false ) ) {
 
 								//!DOVY - DB saving stuff. Is this right?
 								if ( empty ( $options[ $field['id'] ] ) ) {
@@ -3405,7 +3405,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 
 				$field_class = "ReduxFramework_{$field['type']}";
 
-				if ( ! class_exists( $field_class ) ) {
+				if ( ! class_exists( $field_class, false ) ) {
 					//                    $class_file = apply_filters( 'redux/field/class/'.$field['type'], self::$_dir . 'inc/fields/' . $field['type'] . '/field_' . $field['type'] . '.php', $field ); // REMOVE
 					/**
 					 * filter 'redux/{opt_name}/field/class/{field.type}'
@@ -3422,7 +3422,7 @@ if ( ! class_exists( 'ReduxFramework' ) ) {
 					}
 				}
 
-				if ( class_exists( $field_class ) ) {
+				if ( class_exists( $field_class, false ) ) {
 					$value = isset ( $this->options[ $field['id'] ] ) ? $this->options[ $field['id'] ] : '';
 
 					if ( $v != null ) {

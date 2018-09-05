@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	return;
 }
 
-if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
+if ( ! class_exists( 'TGM_Plugin_Activation', false ) ) {
 
 	/**
 	 * Automatic plugin installation and activation library.
@@ -2213,7 +2213,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
-if ( ! class_exists( 'TGMPA_List_Table' ) ) {
+if ( ! class_exists( 'TGMPA_List_Table', false ) ) {
 
 	/**
 	 * List table class for handling plugins.
@@ -3162,7 +3162,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 }
 
 
-if ( ! class_exists( 'TGM_Bulk_Installer' ) ) {
+if ( ! class_exists( 'TGM_Bulk_Installer', false ) ) {
 
 	/**
 	 * Hack: Prevent TGMPA v2.4.1- bulk installer class from being loaded if 2.4.1- is loaded after 2.5+.
@@ -3175,7 +3175,7 @@ if ( ! class_exists( 'TGM_Bulk_Installer' ) ) {
 	class TGM_Bulk_Installer {
 	}
 }
-if ( ! class_exists( 'TGM_Bulk_Installer_Skin' ) ) {
+if ( ! class_exists( 'TGM_Bulk_Installer_Skin', false ) ) {
 
 	/**
 	 * Hack: Prevent TGMPA v2.4.1- bulk installer skin class from being loaded if 2.4.1- is loaded after 2.5+.
@@ -3218,7 +3218,7 @@ if ( ! function_exists( 'tgmpa_load_bulk_installer' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 			}
 
-			if ( ! class_exists( 'TGMPA_Bulk_Installer' ) ) {
+			if ( ! class_exists( 'TGMPA_Bulk_Installer', false ) ) {
 
 				/**
 				 * Installer class to handle bulk plugin installations.
@@ -3551,7 +3551,7 @@ if ( ! function_exists( 'tgmpa_load_bulk_installer' ) ) {
 				}
 			}
 
-			if ( ! class_exists( 'TGMPA_Bulk_Installer_Skin' ) ) {
+			if ( ! class_exists( 'TGMPA_Bulk_Installer_Skin', false ) ) {
 
 				/**
 				 * Installer skin to set strings for the bulk plugin installations..
@@ -3788,7 +3788,7 @@ if ( ! function_exists( 'tgmpa_load_bulk_installer' ) ) {
 	}
 }
 
-if ( ! class_exists( 'TGMPA_Utils' ) ) {
+if ( ! class_exists( 'TGMPA_Utils', false ) ) {
 
 	/**
 	 * Generic utilities for TGMPA.

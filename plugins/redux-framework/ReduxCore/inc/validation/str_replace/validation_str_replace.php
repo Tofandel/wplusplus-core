@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'Redux_Validation_str_replace' ) ) {
+if ( ! class_exists( 'Redux_Validation_str_replace', false ) ) {
 	class Redux_Validation_str_replace {
 
 		/**

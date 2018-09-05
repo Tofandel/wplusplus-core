@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'Redux_Helpers' ) ) {
+if ( ! class_exists( 'Redux_Helpers', false ) ) {
 
 	/**
 	 * Redux Helpers Class
@@ -190,7 +190,7 @@ if ( ! class_exists( 'Redux_Helpers' ) ) {
 //                if ( function_exists( 'mysqli_get_server_info' ) ) {
 //                    $link = mysqli_connect() or die( "Error " . mysqli_error( $link ) );
 //                    $data['environment']['mysql'] = mysqli_get_server_info( $link );
-//                } else if ( class_exists( 'PDO' ) && method_exists( 'PDO', 'getAttribute' ) ) {
+//                } else if ( class_exists( 'PDO', false) && method_exists( 'PDO', 'getAttribute' ) ) {
 //                    $data['environment']['mysql'] = PDO::getAttribute( PDO::ATTR_SERVER_VERSION );
 //                } else {
 //                    $data['environment']['mysql'] = mysql_get_server_info();
@@ -423,7 +423,7 @@ if ( ! class_exists( 'Redux_Helpers' ) ) {
 
 			$sysinfo['wp_lang'] = get_locale();
 
-			if ( ! class_exists( 'Browser' ) ) {
+			if ( ! class_exists( 'Browser', false ) ) {
 				require_once ReduxFramework::$_dir . 'inc/browser.php';
 			}
 
@@ -465,12 +465,12 @@ if ( ! class_exists( 'Redux_Helpers' ) ) {
 			}
 
 			//$sysinfo['soap_client'] = 'false';
-			//if ( class_exists( 'SoapClient' ) ) {
+			//if ( class_exists( 'SoapClient', false) ) {
 			//    $sysinfo['soap_client'] = 'true';
 			//}
 			//
 			//$sysinfo['dom_document'] = 'false';
-			//if ( class_exists( 'DOMDocument' ) ) {
+			//if ( class_exists( 'DOMDocument', false) ) {
 			//    $sysinfo['dom_document'] = 'true';
 			//}
 

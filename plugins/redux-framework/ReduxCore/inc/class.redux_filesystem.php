@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'Redux_Filesystem' ) ) {
+if ( ! class_exists( 'Redux_Filesystem', false ) ) {
 	class Redux_Filesystem {
 
 		/**

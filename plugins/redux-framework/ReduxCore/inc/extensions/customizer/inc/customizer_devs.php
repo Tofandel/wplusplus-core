@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'Redux_Customizer_Control_rAds' ) && ! class_exists( 'Redux_Customizer_section_rAds' ) ) {
+if ( ! class_exists( 'Redux_Customizer_Control_rAds', false ) && ! class_exists( 'Redux_Customizer_section_rAds', false ) ) {
 	/**
 	 * Customizer section representing widget area (sidebar).
 	 *

@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_slider' ) ) {
+if ( ! class_exists( 'ReduxFramework_slider', false ) ) {
 	class ReduxFramework_slider {
 
 		/**

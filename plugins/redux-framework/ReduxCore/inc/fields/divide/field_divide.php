@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_divide' ) ) {
+if ( ! class_exists( 'ReduxFramework_divide', false ) ) {
 
 	/**
 	 * Main ReduxFramework_divide class

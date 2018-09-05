@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'Redux_Validation_unique_slug' ) ) {
+if ( ! class_exists( 'Redux_Validation_unique_slug', false ) ) {
 	class Redux_Validation_unique_slug {
 
 		/**

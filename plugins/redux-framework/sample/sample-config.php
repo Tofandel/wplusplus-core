@@ -4,7 +4,7 @@
  * For full documentation, please visit: http://docs.reduxframework.com/
  */
 
-if ( ! class_exists( 'Redux' ) ) {
+if ( ! class_exists( 'Redux', false) ) {
 	return;
 }
 
@@ -2378,7 +2378,7 @@ if ( ! function_exists( 'change_defaults' ) ) {
 if ( ! function_exists( 'remove_demo' ) ) {
 	function remove_demo() {
 		// Used to hide the demo mode link from the plugin page. Only used when Redux is a plugin.
-		if ( class_exists( 'ReduxFrameworkPlugin' ) ) {
+		if ( class_exists( 'ReduxFrameworkPlugin', false) ) {
 			remove_filter( 'plugin_row_meta', array(
 				ReduxFrameworkPlugin::instance(),
 				'plugin_metalinks'

@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'Redux_Admin_Notices' ) ) {
+if ( ! class_exists( 'Redux_Admin_Notices', false ) ) {
 
 	/**
 	 * Redux API Class

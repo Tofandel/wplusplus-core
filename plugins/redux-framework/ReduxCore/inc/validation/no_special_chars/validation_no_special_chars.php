@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'Redux_Validation_no_special_chars' ) ) {
+if ( ! class_exists( 'Redux_Validation_no_special_chars', false ) ) {
 	class Redux_Validation_no_special_chars {
 
 		/**

@@ -28,7 +28,7 @@
  * - ReduxFramework_typography
  */
 
-if ( ! class_exists( 'ReduxFramework_typography' ) ) {
+if ( ! class_exists( 'ReduxFramework_typography', false ) ) {
 	class ReduxFramework_typography {
 
 		private $std_fonts = array(

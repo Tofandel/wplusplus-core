@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_switch' ) ) {
+if ( ! class_exists( 'ReduxFramework_switch', false ) ) {
 	class ReduxFramework_switch {
 
 		/**

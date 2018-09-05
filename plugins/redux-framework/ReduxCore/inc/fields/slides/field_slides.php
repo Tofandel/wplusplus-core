@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_slides' ) ) {
+if ( ! class_exists( 'ReduxFramework_slides', false ) ) {
 
 	/**
 	 * Main ReduxFramework_slides class

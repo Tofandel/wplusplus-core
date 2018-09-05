@@ -16,7 +16,7 @@
  * @author  Dovy <dovy@redux.io>
  */
 // Don't duplicate me!
-if ( ! class_exists( 'Redux_ThemeCheck' ) ) {
+if ( ! class_exists( 'Redux_ThemeCheck', false ) ) {
 	class Redux_ThemeCheck {
 
 		/**
@@ -66,7 +66,7 @@ if ( ! class_exists( 'Redux_ThemeCheck' ) ) {
 		 */
 		private function __construct() {
 
-			if ( ! class_exists( 'ThemeCheckMain' ) ) {
+			if ( ! class_exists( 'ThemeCheckMain', false ) ) {
 				return;
 			}
 

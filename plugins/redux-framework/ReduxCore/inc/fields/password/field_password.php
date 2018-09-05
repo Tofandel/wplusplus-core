@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_password' ) ) {
+if ( ! class_exists( 'ReduxFramework_password', false ) ) {
 	class ReduxFramework_password {
 
 		/**

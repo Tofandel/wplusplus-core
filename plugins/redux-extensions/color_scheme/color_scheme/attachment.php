@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'ReduxColorSchemeImport' ) ) {
+if ( ! class_exists( 'ReduxColorSchemeImport', false ) ) {
 	class ReduxColorSchemeImport {
 
 		// Private variables

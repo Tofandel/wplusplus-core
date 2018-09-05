@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'ReduxFramework_select_image' ) ) {
+if ( ! class_exists( 'ReduxFramework_select_image', false ) ) {
 	class ReduxFramework_select_image {
 
 		/**
