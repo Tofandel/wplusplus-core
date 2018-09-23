@@ -4,12 +4,21 @@
  * Plugin Name: W++ Core MuLoader
  * Plugin URI: https://github.com/tofandel/wplusplus-core
  * Description: The must use plugin loader for W++ Core to load it before anything else
- * Version: 1.6
+ * Version: 1.7
  * Author: Adrien Foulon <tofandel@tukan.hu>
  * Author URI: https://tukan.fr/a-propos/#adrien-foulon
  */
 
 defined('WP_PLUGIN_DIR') or die('WP_PLUGIN_DIR not defined');
+
+if ($file = get_transient('wpp_reactivate_core')) {
+    if (!function_exists('activate_plugin')) {
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+	delete_transient('wpp_reactivate_core');
+	//Only try once
+	activate_plugin($file);
+}
 
 $plugins = array();
 $tmp_plugins = wp_get_active_and_valid_plugins();

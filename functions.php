@@ -7,124 +7,164 @@
 
 //namespace Tofandel;
 
-function wpp_admin_notice( $text, $type = 'success' ) {
-	add_action( 'admin_notices', function () use ( $text, $type ) {
-		echo "<div class='notice notice-$type is-dismissible'>
+if ( ! function_exists( 'wpp_admin_notice' ) ) {
+	/**
+	 * @param $text
+	 * @param string $type
+	 */
+	function wpp_admin_notice( $text, $type = 'success' ) {
+		add_action( 'admin_notices', function () use ( $text, $type ) {
+			echo "<div class='notice notice-$type is-dismissible'>
 			<p>$text</p>
 		</div>";
-	} );
-}
-
-
-function wpp_remove_domain_from_url( $url ) {
-	if ( preg_match( '#(?:https?:\/\/)?[^\/]*?(\/.*)#', $url, $matches ) ) {
-		return $matches[1];
+		} );
 	}
-
-	return $url;
 }
 
-function wpp_get_domain_from_url( $url, $scheme = false ) {
-	if ( preg_match( '#(https?:\/\/)?([^\/]*?)\/.*#', $url, $matches ) ) {
-		return $scheme ? $matches[1] . $matches[2] : $matches[2];
+if ( ! function_exists( 'wpp_remove_domain_from_url' ) ) {
+	/**
+	 * @param $url
+	 *
+	 * @return mixed
+	 */
+	function wpp_remove_domain_from_url( $url ) {
+		if ( preg_match( '#(?:https?:\/\/)?[^\/]*?(\/.*)#', $url, $matches ) ) {
+			return $matches[1];
+		}
+
+		return $url;
 	}
-
-	return $url;
 }
 
-/**
- * @param string $string
- * @param string|array $shortcode
- *
- * @return bool
- */
-function wpp_has_shortcode( $string, $shortcode ) {
-	global $shortcode_tags;
-	$old = $shortcode_tags;
-	if ( is_array( $shortcode ) ) {
-		$shortcode_tags = array_flip( $shortcode );
-		foreach ( $shortcode as $sh ) {
-			if ( has_shortcode( $string, $sh ) ) {
+if ( ! function_exists( 'wpp_get_domain_from_url' ) ) {
+	/**
+	 * @param $url
+	 * @param bool $scheme
+	 *
+	 * @return string
+	 */
+	function wpp_get_domain_from_url( $url, $scheme = false ) {
+		if ( preg_match( '#(https?:\/\/)?([^\/]*?)\/.*#', $url, $matches ) ) {
+			return $scheme ? $matches[1] . $matches[2] : $matches[2];
+		}
+
+		return $url;
+	}
+}
+
+if ( ! function_exists( 'wpp_has_shortcode' ) ) {
+	/**
+	 * @param string $string
+	 * @param string|array $shortcode
+	 *
+	 * @return bool
+	 */
+	function wpp_has_shortcode( $string, $shortcode ) {
+		global $shortcode_tags;
+		$old = $shortcode_tags;
+		if ( is_array( $shortcode ) ) {
+			$shortcode_tags = array_flip( $shortcode );
+			foreach ( $shortcode as $sh ) {
+				if ( has_shortcode( $string, $sh ) ) {
+					$shortcode_tags = $old;
+
+					return true;
+				}
+			}
+		} else {
+			$shortcode_tags = array( $shortcode => '' );
+			if ( has_shortcode( $string, $shortcode ) ) {
 				$shortcode_tags = $old;
+
 				return true;
 			}
 		}
-	} else {
-		$shortcode_tags = array( $shortcode => '' );
-		if ( has_shortcode( $string, $shortcode ) ) {
-			$shortcode_tags = $old;
-			return true;
-		}
-	}
 
-	$shortcode_tags = $old;
-	return false;
+		$shortcode_tags = $old;
+
+		return false;
+	}
 }
 
-/**
- * @param string $string The string to slugifiy
- * @param bool $prepend Can be (and should) be used as a vendor name to separate slugs
- *
- * @return string
- */
-function wpp_unique_slug( $string, $prepend = false ) {
-	static $slugs = array();
+if ( ! function_exists( 'wpp_unique_slug' ) ) {
+	/**
+	 * @param string $string The string to slugifiy
+	 * @param bool $prepend Can be (and should) be used as a vendor name to separate slugs
+	 *
+	 * @param array $other_slugs
+	 *
+	 * @return string
+	 */
+	function wpp_unique_slug( $string, $prepend = false, $other_slugs = array() ) {
+		static $slugs = array();
 
-	$string = ( $prepend ? wpp_slugify( $prepend ) . '-' : '' ) . wpp_slugify( $string );
-	if ( ! in_array( $string, $slugs ) ) {
-		$slugs[] = $string;
+		$slugs = array_unique( array_merge( $slugs, $other_slugs ) );
 
-		return $string;
+		$string = ( $prepend ? wpp_slugify( $prepend ) . '-' : '' ) . wpp_slugify( $string );
+		if ( ! in_array( $string, $slugs ) ) {
+			$slugs[] = $string;
+
+			return $string;
+		}
+		/** @noinspection PhpStatementHasEmptyBodyInspection */
+		for ( $i = 2; in_array( $string . $i, $slugs ); $i ++ ) {
+			;
+		}
+		$slugs[] = $string . $i;
+
+		return $string . $i;
 	}
-	/** @noinspection PhpStatementHasEmptyBodyInspection */
-	for ( $i = 2; in_array( $string . $i, $slugs ); $i ++ ) {
-		;
-	}
-	$slugs[] = $string . $i;
-
-	return $string . $i;
 }
 
-function wpp_get_editable_users( $args = array() ) {
-	static $users;
-	if ( ! isset( $users ) ) {
-		$roles = get_editable_roles();
+if ( ! function_exists( 'wpp_get_editable_users' ) ) {
+	/**
+	 * @param array $args
+	 *
+	 * @return array|mixed
+	 */
+	function wpp_get_editable_users( $args = array() ) {
+		static $users;
+		if ( ! isset( $users ) ) {
+			$roles = get_editable_roles();
 
-		$args = array_merge( $args, array( 'role__in' => array_keys( $roles ) ) );
+			$args = array_merge( $args, array( 'role__in' => array_keys( $roles ) ) );
 
-		$args = wpp_apply_filters( 'wpp_get_editable_users_args', $args );
-		if ( empty( $args['role__in'] ) ) {
-			$args['include'] = array_merge( wp_get_users_with_no_role(), array( get_current_user_id() ) );
+			$args = wpp_apply_filters( 'wpp_get_editable_users_args', $args );
+			if ( empty( $args['role__in'] ) ) {
+				$args['include'] = array_merge( wp_get_users_with_no_role(), array( get_current_user_id() ) );
+			}
+
+			$users_t = get_users( $args );
+
+			$users = array();
+			foreach ( $users_t as $user ) {
+				$users[ $user->ID ] = $user;
+			}
+			$user  = wp_get_current_user();
+			$users = array_replace( array( $user->ID => $user ), $users );
+
+			$users = wpp_apply_filters( 'wpp_get_editable_users', $users );
 		}
 
-		$users_t = get_users( $args );
-
-		$users = array();
-		foreach ( $users_t as $user ) {
-			$users[ $user->ID ] = $user;
-		}
-		$user  = wp_get_current_user();
-		$users = array_replace( array( $user->ID => $user ), $users );
-
-		$users = wpp_apply_filters( 'wpp_get_editable_users', $users );
+		return $users;
 	}
-
-	return $users;
 }
 
-/**
- * @param $filter
- * @param $value
- *
- * @return mixed
- */
-function wpp_apply_filters( $filter, $value ) {
-	if ( ! has_filter( $filter ) ) {
-		return $value;
-	} else {
-		$args = func_get_args();
+if ( ! function_exists( 'wpp_apply_filter' ) ) {
+	/**
+	 * @param $filter
+	 * @param $value
+	 *
+	 * @return mixed
+	 */
+	function wpp_apply_filters( $filter, $value ) {
+		if ( ! has_filter( $filter ) ) {
+			return $value;
+		} else {
+			$args = func_get_args();
 
-		return call_user_func_array( 'apply_filters', $args );
+			return call_user_func_array( 'apply_filters', $args );
+		}
 	}
 }
 
@@ -513,493 +553,521 @@ if ( ! function_exists( 'delete_expired_object_transients' ) ) {
 	}
 }
 
-/**
- * Edit user settings based on contents of $_POST
- *
- * Used on user-edit.php and profile.php to manage and process user options, passwords etc.
- *
- * @since 2.0.0
- *
- * @param int $user_id Optional. User ID.
- *
- * @return int|WP_Error user id of the updated user
- */
-function wpp_edit_user( $user_id = 0 ) {
-	$wp_roles = wp_roles();
-	$user     = new stdClass;
-	if ( $user_id ) {
-		$update           = true;
-		$user->ID         = (int) $user_id;
-		$userdata         = get_userdata( $user_id );
-		$user->user_login = wp_slash( $userdata->user_login );
-	} else {
-		$update = false;
-	}
-
-	if ( ! $update && isset( $_POST['user_login'] ) ) {
-		$user->user_login = sanitize_user( $_POST['user_login'], true );
-	}
-
-	$pass1 = $pass2 = '';
-	if ( isset( $_POST['pass1'] ) ) {
-		$pass1 = $_POST['pass1'];
-	}
-	if ( isset( $_POST['pass2'] ) ) {
-		$pass2 = $_POST['pass2'];
-	}
-
-	$errors = new WP_Error();
-	if ( isset( $_POST['role'] ) ) {
-		$new_role       = sanitize_text_field( $_POST['role'] );
-		$potential_role = isset( $wp_roles->role_objects[ $new_role ] ) ? $wp_roles->role_objects[ $new_role ] : false;
-		// Don't let anyone with 'edit_users' (admins) edit their own role to something without it.
-		// Multisite super admins can freely edit their blog roles -- they possess all caps.
-		if ( ( is_multisite() && current_user_can( 'manage_sites' ) ) || $user_id != get_current_user_id() || ( $potential_role && $potential_role->has_cap( 'edit_users' ) ) ) {
-			$user->role = $new_role;
+if ( ! function_exists( 'wpp_edit_user' ) ) {
+	/**
+	 * Edit user settings based on contents of $_POST
+	 *
+	 * Used on user-edit.php and profile.php to manage and process user options, passwords etc.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param int $user_id Optional. User ID.
+	 *
+	 * @return int|WP_Error user id of the updated user
+	 */
+	function wpp_edit_user( $user_id = 0 ) {
+		$wp_roles = wp_roles();
+		$user     = new stdClass;
+		if ( $user_id ) {
+			$update           = true;
+			$user->ID         = (int) $user_id;
+			$userdata         = get_userdata( $user_id );
+			$user->user_login = wp_slash( $userdata->user_login );
+		} else {
+			$update = false;
 		}
 
-		// If the new role isn't editable by the logged-in user die with error
-		$editable_roles = get_editable_roles();
-		if ( ! empty( $new_role ) && empty( $editable_roles[ $new_role ] ) ) {
-			$errors->add( 'role', __( 'Sorry, you are not allowed to give users that role.' ) );
+		if ( ! $update && isset( $_POST['user_login'] ) ) {
+			$user->user_login = sanitize_user( $_POST['user_login'], true );
+		}
 
+		$pass1 = $pass2 = '';
+		if ( isset( $_POST['pass1'] ) ) {
+			$pass1 = $_POST['pass1'];
+		}
+		if ( isset( $_POST['pass2'] ) ) {
+			$pass2 = $_POST['pass2'];
+		}
+
+		$errors = new WP_Error();
+		if ( isset( $_POST['role'] ) ) {
+			$new_role       = sanitize_text_field( $_POST['role'] );
+			$potential_role = isset( $wp_roles->role_objects[ $new_role ] ) ? $wp_roles->role_objects[ $new_role ] : false;
+			// Don't let anyone with 'edit_users' (admins) edit their own role to something without it.
+			// Multisite super admins can freely edit their blog roles -- they possess all caps.
+			if ( ( is_multisite() && current_user_can( 'manage_sites' ) ) || $user_id != get_current_user_id() || ( $potential_role && $potential_role->has_cap( 'edit_users' ) ) ) {
+				$user->role = $new_role;
+			}
+
+			// If the new role isn't editable by the logged-in user die with error
+			$editable_roles = get_editable_roles();
+			if ( ! empty( $new_role ) && empty( $editable_roles[ $new_role ] ) ) {
+				$errors->add( 'role', __( 'Sorry, you are not allowed to give users that role.' ) );
+
+				return $errors;
+			}
+		}
+
+		if ( isset( $_POST['email'] ) ) {
+			$user->user_email = sanitize_text_field( wp_unslash( $_POST['email'] ) );
+		}
+		if ( isset( $_POST['url'] ) ) {
+			if ( empty ( $_POST['url'] ) || $_POST['url'] == 'http://' ) {
+				$user->user_url = '';
+			} else {
+				$user->user_url = esc_url_raw( $_POST['url'] );
+				$protocols      = implode( '|', array_map( 'preg_quote', wp_allowed_protocols() ) );
+				$user->user_url = preg_match( '/^(' . $protocols . '):/is', $user->user_url ) ? $user->user_url : 'http://' . $user->user_url;
+			}
+		}
+		if ( isset( $_POST['first_name'] ) ) {
+			$user->first_name = sanitize_text_field( $_POST['first_name'] );
+		}
+		if ( isset( $_POST['last_name'] ) ) {
+			$user->last_name = sanitize_text_field( $_POST['last_name'] );
+		}
+		if ( isset( $_POST['nickname'] ) ) {
+			$user->nickname = sanitize_text_field( $_POST['nickname'] );
+		}
+		if ( isset( $_POST['display_name'] ) ) {
+			$user->display_name = sanitize_text_field( $_POST['display_name'] );
+		}
+
+		if ( isset( $_POST['description'] ) ) {
+			$user->description = trim( $_POST['description'] );
+		}
+
+		foreach ( wp_get_user_contact_methods( $user ) as $method => $name ) {
+			if ( isset( $_POST[ $method ] ) ) {
+				$user->$method = sanitize_text_field( $_POST[ $method ] );
+			}
+		}
+
+		if ( $update ) {
+			$user->rich_editing         = isset( $_POST['rich_editing'] ) && 'false' === $_POST['rich_editing'] ? 'false' : 'true';
+			$user->syntax_highlighting  = isset( $_POST['syntax_highlighting'] ) && 'false' === $_POST['syntax_highlighting'] ? 'false' : 'true';
+			$user->admin_color          = isset( $_POST['admin_color'] ) ? sanitize_text_field( $_POST['admin_color'] ) : 'fresh';
+			$user->show_admin_bar_front = isset( $_POST['admin_bar_front'] ) ? 'true' : 'false';
+			$user->locale               = '';
+
+			if ( isset( $_POST['locale'] ) ) {
+				$locale = sanitize_text_field( $_POST['locale'] );
+				if ( 'site-default' === $locale ) {
+					$locale = '';
+				} elseif ( '' === $locale ) {
+					$locale = 'en_US';
+				} elseif ( ! in_array( $locale, get_available_languages(), true ) ) {
+					$locale = '';
+				}
+
+				$user->locale = $locale;
+			}
+		}
+
+		$user->comment_shortcuts = isset( $_POST['comment_shortcuts'] ) && 'true' == $_POST['comment_shortcuts'] ? 'true' : '';
+
+		$user->use_ssl = 0;
+		if ( ! empty( $_POST['use_ssl'] ) ) {
+			$user->use_ssl = 1;
+		}
+
+
+		/* checking that username has been typed */
+		if ( $user->user_login == '' ) {
+			$errors->add( 'user_login', __( '<strong>ERROR</strong>: Please enter a username.' ) );
+		}
+
+		/* checking that nickname has been typed */
+		if ( $update && empty( $user->nickname ) ) {
+			$errors->add( 'nickname', __( '<strong>ERROR</strong>: Please enter a nickname.' ) );
+		}
+
+		/**
+		 * Fires before the password and confirm password fields are checked for congruity.
+		 *
+		 * @since 1.5.1
+		 *
+		 * @param string $user_login The username.
+		 * @param string $pass1 The password (passed by reference).
+		 * @param string $pass2 The confirmed password (passed by reference).
+		 */
+		do_action_ref_array( 'check_passwords', array( $user->user_login, &$pass1, &$pass2 ) );
+
+		// Check for blank password when adding a user.
+		if ( ! $update && empty( $pass1 ) ) {
+			$errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter a password.' ), array( 'form-field' => 'pass1' ) );
+		}
+
+		// Check for "\" in password.
+		if ( false !== strpos( wp_unslash( $pass1 ), "\\" ) ) {
+			$errors->add( 'pass', __( '<strong>ERROR</strong>: Passwords may not contain the character "\\".' ), array( 'form-field' => 'pass1' ) );
+		}
+
+		// Checking the password has been typed twice the same.
+		if ( ( $update || ! empty( $pass1 ) ) && $pass1 != $pass2 ) {
+			$errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter the same password in both password fields.' ), array( 'form-field' => 'pass1' ) );
+		}
+
+		if ( ! empty( $pass1 ) ) {
+			$user->user_pass = $pass1;
+		}
+
+		if ( ! $update && isset( $_POST['user_login'] ) && ! validate_username( $_POST['user_login'] ) ) {
+			$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.' ) );
+		}
+
+		if ( ! $update && username_exists( $user->user_login ) ) {
+			$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is already registered. Please choose another one.' ) );
+		}
+
+		/** This filter is documented in wp-includes/user.php */
+		$illegal_logins = (array) apply_filters( 'illegal_user_logins', array() );
+
+		if ( in_array( strtolower( $user->user_login ), array_map( 'strtolower', $illegal_logins ) ) ) {
+			$errors->add( 'invalid_username', __( '<strong>ERROR</strong>: Sorry, that username is not allowed.' ) );
+		}
+
+		/* checking email address */
+		if ( empty( $user->user_email ) ) {
+			$errors->add( 'empty_email', __( '<strong>ERROR</strong>: Please enter an email address.' ), array( 'form-field' => 'email' ) );
+		} elseif ( ! is_email( $user->user_email ) ) {
+			$errors->add( 'invalid_email', __( '<strong>ERROR</strong>: The email address isn&#8217;t correct.' ), array( 'form-field' => 'email' ) );
+		} elseif ( ( $owner_id = email_exists( $user->user_email ) ) && ( ! $update || ( $owner_id != $user->ID ) ) ) {
+			$errors->add( 'email_exists', __( '<strong>ERROR</strong>: This email is already registered, please choose another one.' ), array( 'form-field' => 'email' ) );
+		}
+
+		/**
+		 * Fires before user profile update errors are returned.
+		 *
+		 * @since 2.8.0
+		 *
+		 * @param WP_Error $errors WP_Error object (passed by reference).
+		 * @param bool $update Whether this is a user update.
+		 * @param stdClass $user User object (passed by reference).
+		 */
+		do_action_ref_array( 'user_profile_update_errors', array( &$errors, $update, &$user ) );
+
+		if ( $errors->get_error_codes() ) {
 			return $errors;
 		}
-	}
 
-	if ( isset( $_POST['email'] ) ) {
-		$user->user_email = sanitize_text_field( wp_unslash( $_POST['email'] ) );
-	}
-	if ( isset( $_POST['url'] ) ) {
-		if ( empty ( $_POST['url'] ) || $_POST['url'] == 'http://' ) {
-			$user->user_url = '';
+		if ( $update ) {
+			$user_id = wp_update_user( $user );
 		} else {
-			$user->user_url = esc_url_raw( $_POST['url'] );
-			$protocols      = implode( '|', array_map( 'preg_quote', wp_allowed_protocols() ) );
-			$user->user_url = preg_match( '/^(' . $protocols . '):/is', $user->user_url ) ? $user->user_url : 'http://' . $user->user_url;
-		}
-	}
-	if ( isset( $_POST['first_name'] ) ) {
-		$user->first_name = sanitize_text_field( $_POST['first_name'] );
-	}
-	if ( isset( $_POST['last_name'] ) ) {
-		$user->last_name = sanitize_text_field( $_POST['last_name'] );
-	}
-	if ( isset( $_POST['nickname'] ) ) {
-		$user->nickname = sanitize_text_field( $_POST['nickname'] );
-	}
-	if ( isset( $_POST['display_name'] ) ) {
-		$user->display_name = sanitize_text_field( $_POST['display_name'] );
-	}
+			$user_id = wp_insert_user( $user );
+			$notify  = isset( $_POST['send_user_notification'] ) ? 'user' : '';
 
-	if ( isset( $_POST['description'] ) ) {
-		$user->description = trim( $_POST['description'] );
-	}
-
-	foreach ( wp_get_user_contact_methods( $user ) as $method => $name ) {
-		if ( isset( $_POST[ $method ] ) ) {
-			$user->$method = sanitize_text_field( $_POST[ $method ] );
-		}
-	}
-
-	if ( $update ) {
-		$user->rich_editing         = isset( $_POST['rich_editing'] ) && 'false' === $_POST['rich_editing'] ? 'false' : 'true';
-		$user->syntax_highlighting  = isset( $_POST['syntax_highlighting'] ) && 'false' === $_POST['syntax_highlighting'] ? 'false' : 'true';
-		$user->admin_color          = isset( $_POST['admin_color'] ) ? sanitize_text_field( $_POST['admin_color'] ) : 'fresh';
-		$user->show_admin_bar_front = isset( $_POST['admin_bar_front'] ) ? 'true' : 'false';
-		$user->locale               = '';
-
-		if ( isset( $_POST['locale'] ) ) {
-			$locale = sanitize_text_field( $_POST['locale'] );
-			if ( 'site-default' === $locale ) {
-				$locale = '';
-			} elseif ( '' === $locale ) {
-				$locale = 'en_US';
-			} elseif ( ! in_array( $locale, get_available_languages(), true ) ) {
-				$locale = '';
+			if ( ! empty( $notify ) ) {
+				/**
+				 * Fires after a new user has been created.
+				 *
+				 * @since 4.4.0
+				 *
+				 * @param int $user_id ID of the newly created user.
+				 * @param string $notify Type of notification that should happen. See wp_send_new_user_notifications()
+				 *                        for more information on possible values.
+				 */
+				do_action( 'edit_user_created_user', $user_id, $notify );
 			}
-
-			$user->locale = $locale;
 		}
+
+		return $user_id;
 	}
+}
 
-	$user->comment_shortcuts = isset( $_POST['comment_shortcuts'] ) && 'true' == $_POST['comment_shortcuts'] ? 'true' : '';
 
-	$user->use_ssl = 0;
-	if ( ! empty( $_POST['use_ssl'] ) ) {
-		$user->use_ssl = 1;
+if ( ! function_exists( 'wpp_is_float' ) ) {
+	function wpp_is_float( $val ) {
+		if ( ! is_scalar( $val ) ) {
+			return false;
+		}
+
+		return is_float( $val + 0 );
 	}
+}
 
+if ( ! function_exists( 'wpp_is_integer' ) ) {
+	function wpp_is_integer( $val ) {
+		if ( ! is_scalar( $val ) || is_bool( $val ) ) {
+			return false;
+		}
 
-	/* checking that username has been typed */
-	if ( $user->user_login == '' ) {
-		$errors->add( 'user_login', __( '<strong>ERROR</strong>: Please enter a username.' ) );
+		return is_float( $val ) ? false : preg_match( '~^((?:\+|-)?[0-9]+)$~', $val );
 	}
+}
 
-	/* checking that nickname has been typed */
-	if ( $update && empty( $user->nickname ) ) {
-		$errors->add( 'nickname', __( '<strong>ERROR</strong>: Please enter a nickname.' ) );
+
+if ( ! function_exists( 'wpp_is_plugin_active' ) ) {
+	function wpp_is_plugin_active( $plugin ) {
+		return in_array( $plugin, (array) get_option( 'active_plugins', array() ) ) || wpp_is_plugin_active_for_network( $plugin );
 	}
+}
 
+if ( ! function_exists( 'wpp_is_plugin_active_for_network' ) ) {
 	/**
-	 * Fires before the password and confirm password fields are checked for congruity.
+	 * Check whether the plugin is active for the entire network.
 	 *
-	 * @since 1.5.1
+	 * Only plugins installed in the plugins/ folder can be active.
 	 *
-	 * @param string $user_login The username.
-	 * @param string $pass1 The password (passed by reference).
-	 * @param string $pass2 The confirmed password (passed by reference).
+	 * Plugins in the mu-plugins/ folder can't be "activated," so this function will
+	 * return false for those plugins.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $plugin Path to the main plugin file from plugins directory.
+	 *
+	 * @return bool True, if active for the network, otherwise false.
 	 */
-	do_action_ref_array( 'check_passwords', array( $user->user_login, &$pass1, &$pass2 ) );
+	function wpp_is_plugin_active_for_network( $plugin ) {
+		if ( ! is_multisite() ) {
+			return false;
+		}
 
-	// Check for blank password when adding a user.
-	if ( ! $update && empty( $pass1 ) ) {
-		$errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter a password.' ), array( 'form-field' => 'pass1' ) );
+		$plugins = get_site_option( 'active_sitewide_plugins' );
+		if ( isset( $plugins[ $plugin ] ) ) {
+			return true;
+		}
+
+		return false;
 	}
+}
 
-	// Check for "\" in password.
-	if ( false !== strpos( wp_unslash( $pass1 ), "\\" ) ) {
-		$errors->add( 'pass', __( '<strong>ERROR</strong>: Passwords may not contain the character "\\".' ), array( 'form-field' => 'pass1' ) );
-	}
-
-	// Checking the password has been typed twice the same.
-	if ( ( $update || ! empty( $pass1 ) ) && $pass1 != $pass2 ) {
-		$errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter the same password in both password fields.' ), array( 'form-field' => 'pass1' ) );
-	}
-
-	if ( ! empty( $pass1 ) ) {
-		$user->user_pass = $pass1;
-	}
-
-	if ( ! $update && isset( $_POST['user_login'] ) && ! validate_username( $_POST['user_login'] ) ) {
-		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.' ) );
-	}
-
-	if ( ! $update && username_exists( $user->user_login ) ) {
-		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is already registered. Please choose another one.' ) );
-	}
-
-	/** This filter is documented in wp-includes/user.php */
-	$illegal_logins = (array) apply_filters( 'illegal_user_logins', array() );
-
-	if ( in_array( strtolower( $user->user_login ), array_map( 'strtolower', $illegal_logins ) ) ) {
-		$errors->add( 'invalid_username', __( '<strong>ERROR</strong>: Sorry, that username is not allowed.' ) );
-	}
-
-	/* checking email address */
-	if ( empty( $user->user_email ) ) {
-		$errors->add( 'empty_email', __( '<strong>ERROR</strong>: Please enter an email address.' ), array( 'form-field' => 'email' ) );
-	} elseif ( ! is_email( $user->user_email ) ) {
-		$errors->add( 'invalid_email', __( '<strong>ERROR</strong>: The email address isn&#8217;t correct.' ), array( 'form-field' => 'email' ) );
-	} elseif ( ( $owner_id = email_exists( $user->user_email ) ) && ( ! $update || ( $owner_id != $user->ID ) ) ) {
-		$errors->add( 'email_exists', __( '<strong>ERROR</strong>: This email is already registered, please choose another one.' ), array( 'form-field' => 'email' ) );
-	}
-
+if ( ! function_exists( 'wpp_slugify' ) ) {
 	/**
-	 * Fires before user profile update errors are returned.
+	 * @param $string
+	 * @param bool $slashes
 	 *
-	 * @since 2.8.0
-	 *
-	 * @param WP_Error $errors WP_Error object (passed by reference).
-	 * @param bool $update Whether this is a user update.
-	 * @param stdClass $user User object (passed by reference).
+	 * @return mixed|null|string|string[]
 	 */
-	do_action_ref_array( 'user_profile_update_errors', array( &$errors, $update, &$user ) );
-
-	if ( $errors->get_error_codes() ) {
-		return $errors;
-	}
-
-	if ( $update ) {
-		$user_id = wp_update_user( $user );
-	} else {
-		$user_id = wp_insert_user( $user );
-		$notify  = isset( $_POST['send_user_notification'] ) ? 'user' : '';
-
-		if ( ! empty( $notify ) ) {
-			/**
-			 * Fires after a new user has been created.
-			 *
-			 * @since 4.4.0
-			 *
-			 * @param int $user_id ID of the newly created user.
-			 * @param string $notify Type of notification that should happen. See wp_send_new_user_notifications()
-			 *                        for more information on possible values.
-			 */
-			do_action( 'edit_user_created_user', $user_id, $notify );
+	function wpp_slugify( $string, $slashes = true ) {
+		//Lower case everything
+		$string         = mb_strtolower( $string );
+		$normalizeChars = array(
+			'š' => 's',
+			'ž' => 'z',
+			'à' => 'a',
+			'á' => 'a',
+			'â' => 'a',
+			'ã' => 'a',
+			'ä' => 'a',
+			'å' => 'a',
+			'æ' => 'ae',
+			'ç' => 'c',
+			'è' => 'e',
+			'é' => 'e',
+			'ê' => 'e',
+			'ë' => 'e',
+			'ì' => 'i',
+			'í' => 'i',
+			'î' => 'i',
+			'ï' => 'i',
+			'ð' => 'o',
+			'ñ' => 'n',
+			'ń' => 'n',
+			'ò' => 'o',
+			'ó' => 'o',
+			'ô' => 'o',
+			'õ' => 'o',
+			'ö' => 'o',
+			'ø' => 'o',
+			'ù' => 'u',
+			'ú' => 'u',
+			'û' => 'u',
+			'ü' => 'u',
+			'ý' => 'y',
+			'þ' => 'b',
+			'ÿ' => 'y',
+			'ƒ' => 'f',
+			'ă' => 'a',
+			'ș' => 's',
+			'ț' => 't',
+			'œ' => 'oe',
+			'+' => 'plus',
+			' ' => '-',
+		);
+		if ( $slashes ) {
+			$normalizeChars['/'] = '-';
 		}
-	}
+		$string = strtr( $string, $normalizeChars );
+		//Make alphanumeric (removes all other characters)
+		$string = preg_replace( "/[^a-z0-9_" . ( $slashes ? '' : '\/' ) . "-]/", "", $string );
+		//Clean up multiple dashes or whitespaces
+		$string = preg_replace( "/[\s-]+/", "-", $string );
+		//Convert whitespaces and underscore to dash
+		//$string = preg_replace( "/[\s_]/", "-", $string );
 
-	return $user_id;
+		return $string;
+	}
 }
 
-function wpp_is_float( $val ) {
-	if ( ! is_scalar( $val ) ) {
-		return false;
-	}
-
-	return is_float( $val + 0 );
-}
-
-function wpp_is_integer( $val ) {
-	if ( ! is_scalar( $val ) || is_bool( $val ) ) {
-		return false;
-	}
-
-	return is_float( $val ) ? false : preg_match( '~^((?:\+|-)?[0-9]+)$~', $val );
-}
-
-
-function wpp_is_plugin_active( $plugin ) {
-	return in_array( $plugin, (array) get_option( 'active_plugins', array() ) ) || wpp_is_plugin_active_for_network( $plugin );
-}
-
-/**
- * Check whether the plugin is active for the entire network.
- *
- * Only plugins installed in the plugins/ folder can be active.
- *
- * Plugins in the mu-plugins/ folder can't be "activated," so this function will
- * return false for those plugins.
- *
- * @since 3.0.0
- *
- * @param string $plugin Path to the main plugin file from plugins directory.
- *
- * @return bool True, if active for the network, otherwise false.
- */
-function wpp_is_plugin_active_for_network( $plugin ) {
-	if ( ! is_multisite() ) {
-		return false;
-	}
-
-	$plugins = get_site_option( 'active_sitewide_plugins' );
-	if ( isset( $plugins[ $plugin ] ) ) {
-		return true;
-	}
-
-	return false;
-}
-
-function wpp_slugify( $string, $slashes = true ) {
-	//Lower case everything
-	$string         = mb_strtolower( $string );
-	$normalizeChars = array(
-		'š' => 's',
-		'ž' => 'z',
-		'à' => 'a',
-		'á' => 'a',
-		'â' => 'a',
-		'ã' => 'a',
-		'ä' => 'a',
-		'å' => 'a',
-		'æ' => 'ae',
-		'ç' => 'c',
-		'è' => 'e',
-		'é' => 'e',
-		'ê' => 'e',
-		'ë' => 'e',
-		'ì' => 'i',
-		'í' => 'i',
-		'î' => 'i',
-		'ï' => 'i',
-		'ð' => 'o',
-		'ñ' => 'n',
-		'ń' => 'n',
-		'ò' => 'o',
-		'ó' => 'o',
-		'ô' => 'o',
-		'õ' => 'o',
-		'ö' => 'o',
-		'ø' => 'o',
-		'ù' => 'u',
-		'ú' => 'u',
-		'û' => 'u',
-		'ü' => 'u',
-		'ý' => 'y',
-		'þ' => 'b',
-		'ÿ' => 'y',
-		'ƒ' => 'f',
-		'ă' => 'a',
-		'ș' => 's',
-		'ț' => 't',
-		'œ' => 'oe',
-		'+' => 'plus',
-		' ' => '-',
-	);
-	if ( $slashes ) {
-		$normalizeChars['/'] = '-';
-	}
-	$string = strtr( $string, $normalizeChars );
-	//Make alphanumeric (removes all other characters)
-	$string = preg_replace( "/[^a-z0-9_" . ( $slashes ? '' : '\/' ) . "-]/", "", $string );
-	//Clean up multiple dashes or whitespaces
-	$string = preg_replace( "/[\s-]+/", "-", $string );
-	//Convert whitespaces and underscore to dash
-	//$string = preg_replace( "/[\s_]/", "-", $string );
-
-	return $string;
-}
-
-
-/**
- * Order a multidimensional array from a subelement set specified as a path "foo.bar.orderValue"
- *
- * @param array $array
- * @param string $path
- * @param bool $keep_keys
- *
- * @return array
- * @throws Exception
- */
-function wpp_order_by( $array, $path, $keep_keys = false ) {
-	if ( empty( $array ) ) {
-		return array();
-	}
-	if ( ! is_array( $array ) ) {
-		throw new \Exception( 'The "orderBy" filter can only be used on array (' . gettype( $array ) . ' given)' );
-	}
-	$path = explode( '.', $path );
-	$c    = count( $path );
-	// Sort the multidimensional array
-	($keep_keys ? 'uasort' : 'usort')( $array, function ( $a, $b ) use ( $path, $c ) {
-		$v1 = $a;
-		for ( $i = 0; $i < $c; $i ++ ) {
-			$k = $path[ $i ];
-			if ( isset( $v1[ $k ] ) ) {
-				$v1 = $v1[ $k ];
-			} else {
-				$v1 = '0';
+if ( ! function_exists( 'wpp_order_by' ) ) {
+	/**
+	 * Order a multidimensional array from a subelement set specified as a path "foo.bar.orderValue"
+	 *
+	 * @param array $array
+	 * @param string $path
+	 * @param bool $keep_keys
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	function wpp_order_by( $array, $path, $keep_keys = false ) {
+		if ( empty( $array ) ) {
+			return array();
+		}
+		if ( ! is_array( $array ) ) {
+			throw new \Exception( 'The "orderBy" filter can only be used on array (' . gettype( $array ) . ' given)' );
+		}
+		$path = explode( '.', $path );
+		$c    = count( $path );
+		// Sort the multidimensional array
+		( $keep_keys ? 'uasort' : 'usort' )( $array, function ( $a, $b ) use ( $path, $c ) {
+			$v1 = $a;
+			for ( $i = 0; $i < $c; $i ++ ) {
+				$k = $path[ $i ];
+				if ( isset( $v1[ $k ] ) ) {
+					$v1 = $v1[ $k ];
+				} else {
+					$v1 = '0';
+				}
 			}
+			$v2 = $b;
+			for ( $i = 0; $i < $c; $i ++ ) {
+				$k = $path[ $i ];
+				if ( isset( $v2[ $k ] ) ) {
+					$v2 = $v2[ $k ];
+				} else {
+					$v2 = '0';
+				}
+			}
+
+			return $v1 > $v2;
+		} );
+
+		return $array;
+	}
+}
+
+if ( ! function_exists( 'wpp_group_by' ) ) {
+	/**
+	 * Groups a multidimensional array from a subelement set specified as a path "foo.bar.groupValue"
+	 *
+	 * If multiple elements exist with the same value they will be grouped and merged recursively (the scalar elements will become indexed array)
+	 *
+	 * @param array $array
+	 * @param string $path
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	function wpp_group_by( $array, $path ) {
+		if ( empty( $array ) ) {
+			return array();
 		}
-		$v2 = $b;
-		for ( $i = 0; $i < $c; $i ++ ) {
-			$k = $path[ $i ];
-			if ( isset( $v2[ $k ] ) ) {
-				$v2 = $v2[ $k ];
+		if ( ! is_array( $array ) ) {
+			throw new \Exception( 'The "groupBy" filter can only be used on array (' . gettype( $array ) . ' given)' );
+		}
+		$new_array = array();
+		$path      = explode( '.', $path );
+		$c         = count( $path );
+		foreach ( $array as $a ) {
+			$v = $a;
+			for ( $i = 0; $i < $c; $i ++ ) {
+				$k = $path[ $i ];
+				if ( isset( $v[ $k ] ) ) {
+					$v = $v[ $k ];
+				} else {
+					$v = '0';
+				}
+			}
+			if ( ! is_scalar( $v ) ) {
+				throw new \Exception( 'The path for "groupBy" must be final and so return a scalar (eg: string, int..)' );
+			}
+			if ( ! empty( $new_array[ $v ] ) ) {
+				$new_array[ $v ] = array_merge_recursive( $new_array[ $v ], $a );
 			} else {
-				$v2 = '0';
+				$new_array[ $v ] = $a;
 			}
 		}
 
-		return $v1 > $v2;
-	} );
-
-	return $array;
+		return $new_array;
+	}
 }
 
-/**
- * Groups a multidimensional array from a subelement set specified as a path "foo.bar.groupValue"
- *
- * If multiple elements exist with the same value they will be grouped and merged recursively (the scalar elements will become indexed array)
- *
- * @param array $array
- * @param string $path
- *
- * @return array
- * @throws Exception
- */
-function wpp_group_by( $array, $path ) {
-	if ( empty( $array ) ) {
-		return array();
-	}
-	if ( ! is_array( $array ) ) {
-		throw new \Exception( 'The "groupBy" filter can only be used on array (' . gettype( $array ) . ' given)' );
-	}
-	$new_array = array();
-	$path      = explode( '.', $path );
-	$c         = count( $path );
-	foreach ( $array as $a ) {
-		$v = $a;
-		for ( $i = 0; $i < $c; $i ++ ) {
-			$k = $path[ $i ];
-			if ( isset( $v[ $k ] ) ) {
-				$v = $v[ $k ];
+if ( ! function_exists( 'wpp_remove_empty_elements' ) ) {
+	/**
+	 * Recursive remove empty elements from array
+	 *
+	 * @param array
+	 *
+	 * @return array
+	 */
+	function wpp_remove_empty_elements( $array ) {
+		foreach ( (array) $array as $key => $value ) {
+			if ( is_array( $value ) ) {
+				if ( empty( $value ) ) {
+					unset( $array[ $key ] );
+				} else {
+					$array[ $key ] = wpp_remove_empty_elements( $value );
+				}
 			} else {
-				$v = '0';
+				if ( empty( $value ) ) {
+					unset( $array[ $key ] );
+				}
 			}
 		}
-		if ( ! is_scalar( $v ) ) {
-			throw new \Exception( 'The path for "groupBy" must be final and so return a scalar (eg: string, int..)' );
-		}
-		if ( ! empty( $new_array[ $v ] ) ) {
-			$new_array[ $v ] = array_merge_recursive( $new_array[ $v ], $a );
+
+		return $array;
+	}
+}
+
+if ( ! function_exists( 'wpp_timezone_offset' ) ) {
+	/**
+	 * Get timezone offset in seconds.
+	 *
+	 * @return float
+	 */
+	function wpp_timezone_offset() {
+		$timezone = get_option( 'timezone_string' );
+
+		if ( $timezone ) {
+			$timezone_object = new DateTimeZone( $timezone );
+
+			return $timezone_object->getOffset( new DateTime( 'now' ) );
 		} else {
-			$new_array[ $v ] = $a;
+			return floatval( get_option( 'gmt_offset', 0 ) ) * HOUR_IN_SECONDS;
 		}
 	}
-
-	return $new_array;
 }
 
-/**
- * Recursive remove empty elements from array
- *
- * @param array
- *
- * @return array
- */
-function wpp_remove_empty_elements( $array ) {
-	foreach ( (array) $array as $key => $value ) {
-		if ( is_array( $value ) ) {
-			if ( empty( $value ) ) {
-				unset( $array[ $key ] );
-			} else {
-				$array[ $key ] = wpp_remove_empty_elements( $value );
-			}
+
+if ( ! function_exists( 'wpp_string_to_timestamp' ) ) {
+	/**
+	 * Convert mysql datetime to PHP timestamp, forcing UTC. Wrapper for strtotime.
+	 *
+	 * @param  string $time_string Time string.
+	 * @param  int|null $from_timestamp Timestamp to convert from.
+	 *
+	 * @return int
+	 */
+	function wpp_string_to_timestamp( $time_string, $from_timestamp = null ) {
+		$original_timezone = date_default_timezone_get();
+
+		// @codingStandardsIgnoreStart
+		date_default_timezone_set( 'UTC' );
+
+		if ( null === $from_timestamp ) {
+			$next_timestamp = strtotime( $time_string );
 		} else {
-			if ( empty( $value ) ) {
-				unset( $array[ $key ] );
-			}
+			$next_timestamp = strtotime( $time_string, $from_timestamp );
 		}
+
+		date_default_timezone_set( $original_timezone );
+
+		// @codingStandardsIgnoreEnd
+
+		return $next_timestamp;
 	}
-
-	return $array;
-}
-
-
-/**
- * Get timezone offset in seconds.
- *
- * @return float
- */
-function wpp_timezone_offset() {
-	$timezone = get_option( 'timezone_string' );
-
-	if ( $timezone ) {
-		$timezone_object = new DateTimeZone( $timezone );
-
-		return $timezone_object->getOffset( new DateTime( 'now' ) );
-	} else {
-		return floatval( get_option( 'gmt_offset', 0 ) ) * HOUR_IN_SECONDS;
-	}
-}
-
-/**
- * Convert mysql datetime to PHP timestamp, forcing UTC. Wrapper for strtotime.
- *
- * @param  string $time_string Time string.
- * @param  int|null $from_timestamp Timestamp to convert from.
- *
- * @return int
- */
-function wpp_string_to_timestamp( $time_string, $from_timestamp = null ) {
-	$original_timezone = date_default_timezone_get();
-
-	// @codingStandardsIgnoreStart
-	date_default_timezone_set( 'UTC' );
-
-	if ( null === $from_timestamp ) {
-		$next_timestamp = strtotime( $time_string );
-	} else {
-		$next_timestamp = strtotime( $time_string, $from_timestamp );
-	}
-
-	date_default_timezone_set( $original_timezone );
-
-	// @codingStandardsIgnoreEnd
-
-	return $next_timestamp;
 }
 
 if ( ! function_exists( 'wp_timezone_string' ) ) {
@@ -1048,22 +1116,25 @@ if ( ! function_exists( 'wp_timezone_string' ) ) {
 	}
 }
 
-/**
- * Wrapper for wpp_doing_it_wrong.
- *
- * @param string $function Function used.
- * @param string $message Message to log.
- * @param string $version Version the message was added in.
- */
-function wpp_doing_it_wrong( $function, $message, $version ) {
-	// @codingStandardsIgnoreStart
-	$message .= ' Backtrace: ' . wp_debug_backtrace_summary();
 
-	if ( wp_doing_ajax() ) {
-		do_action( 'doing_it_wrong_run', $function, $message, $version );
-		error_log( "{$function} was called incorrectly. {$message}. This message was added in version {$version}." );
-	} else {
-		_doing_it_wrong( $function, $message, $version );
+if ( ! function_exists( 'wpp_doing_it_wrong' ) ) {
+	/**
+	 * Wrapper for wpp_doing_it_wrong.
+	 *
+	 * @param string $function Function used.
+	 * @param string $message Message to log.
+	 * @param string $version Version the message was added in.
+	 */
+	function wpp_doing_it_wrong( $function, $message, $version ) {
+		// @codingStandardsIgnoreStart
+		$message .= ' Backtrace: ' . wp_debug_backtrace_summary();
+
+		if ( wp_doing_ajax() ) {
+			do_action( 'doing_it_wrong_run', $function, $message, $version );
+			error_log( "{$function} was called incorrectly. {$message}. This message was added in version {$version}." );
+		} else {
+			_doing_it_wrong( $function, $message, $version );
+		}
+		// @codingStandardsIgnoreEnd
 	}
-	// @codingStandardsIgnoreEnd
 }

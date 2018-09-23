@@ -176,6 +176,10 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		}
 	}
 
+	public function getPluginFile() {
+		return plugin_basename( $this->getFile() );
+	}
+
 	public function getFile() {
 		return $this->file;
 	}
@@ -195,6 +199,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @throws \ReflectionException
 	 */
 	public function __construct() {
+		static::InitFromConstructor( $this );
 		$this->init();
 
 		$this->initUpdateChecker();
@@ -297,18 +302,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			if ( is_admin() && ! wp_doing_ajax() ||
 			     ( wp_doing_ajax() && isset ( $_REQUEST['action'] ) &&
 			       ( $_REQUEST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_REQUEST['action'], 'redux' ) === 0 ) ) ) {
-				$module = new ReduxFramework( $this );
-				$this->setSubModule( $module );
-				add_action( 'plugins_loaded', function () {
-					$module = $this->getModule( ReduxFramework::class );
-					/**
-					 * @var ReduxFramework $module
-					 */
-					$this->reduxInit( $module );
-				} );
-				do_action( 'wpp_redux_' . $this->redux_opt_name . '_config', $module );
+				add_action( 'plugins_loaded', [ $this, '_reduxConfig' ] );
 				add_action( 'admin_init', [ $this, 'checkCompat' ] );
-				add_action( 'init', array( $this, 'removeDemoModeLink' ) );
+				add_action( 'init', [ $this, 'removeDemoModeLink' ] );
 			} else {
 				//We define it before in case some dummy used the option before plugins_loaded
 				$GLOBALS[ $this->redux_opt_name ] = get_option( $this->redux_opt_name, array() );
@@ -1000,16 +996,14 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	public function reduxInit( ReduxFramework $framework ) {
 	}
 
-	protected function _reduxConfig() {
+	public function _reduxConfig() {
 		$module = new ReduxFramework( $this );
 		$this->setSubModule( $module );
-		add_action( 'plugins_loaded', function () {
-			$module = $this->getModule( ReduxFramework::class );
-			/**
-			 * @var ReduxFramework $module
-			 */
-			$this->reduxInit( $module );
-		} );
+		$module = $this->getModule( ReduxFramework::class );
+		/**
+		 * @var ReduxFramework $module
+		 */
+		$this->reduxInit( $module );
 		do_action( 'wpp_redux_' . $this->redux_opt_name . '_config', $module );
 	}
 

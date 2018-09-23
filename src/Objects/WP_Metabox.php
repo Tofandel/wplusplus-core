@@ -57,6 +57,11 @@ class WP_Metabox {
 		     || ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'heartbeat' ) ) {
 			return;
 		}
+
+		if ( ! class_exists( 'Redux_Metaboxes' ) ) {
+			global $WPlusPlusCore;
+			require_once $WPlusPlusCore->file( 'plugins/redux-extensions/metaboxes/metaboxes_api.php' );
+		}
 		$this->opt_name = $opt_name;
 		$this->id       = $id;
 		$this->title    = $title;

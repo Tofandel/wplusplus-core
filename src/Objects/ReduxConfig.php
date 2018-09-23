@@ -48,7 +48,6 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 	}
 
 	public static function mu_hide_redux_plugin( $plugins ) {
-		// let's hide akismet
 		if ( in_array( self::$redux_loc, array_keys( $plugins ) ) ) {
 			unset( $plugins[ self::$redux_loc ] );
 		}

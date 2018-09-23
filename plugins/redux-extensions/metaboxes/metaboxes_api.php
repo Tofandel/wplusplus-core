@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'Redux_Metaboxes' ) ) {
+if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 
 	/**
 	 * Redux Metaboxes API Class
