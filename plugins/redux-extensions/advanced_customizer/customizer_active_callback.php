@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'Redux_Customizer_Active_Callback' ) ) {
+if ( ! class_exists( 'Redux_Customizer_Active_Callback', false ) ) {
 	/**
 	 * Callback class for use with the "required" argument
 	 */

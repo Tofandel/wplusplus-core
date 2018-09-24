@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'Redux_Taxonomy' ) ) {
+if ( ! class_exists( 'Redux_Taxonomy', false ) ) {
 
 	/**
 	 * Redux Taxonomy API Class

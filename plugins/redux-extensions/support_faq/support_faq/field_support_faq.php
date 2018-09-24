@@ -185,12 +185,18 @@ if ( ! class_exists( 'ReduxFramework_support_faq', false ) ) {
 		 * @return        void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
 
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			wp_enqueue_script(
 				'support-faq-js',
 				$this->extension_url . 'field_support_faq.js',
 				array( 'jquery', 'jquery-ui-core', 'jquery-ui-accordion' ),
-				time(), /* ...off would be nice! */
+				ReduxFramework_extension_support_faq::$version,
 				true
 			);
 
@@ -201,13 +207,13 @@ if ( ! class_exists( 'ReduxFramework_support_faq', false ) ) {
 					$this->extension_url . 'field_support_faq.css',
 					$this->extension_dir,
 					array(),
-					time()
+					ReduxFramework_extension_support_faq::$version,
 				);
 			} else {
 				wp_enqueue_style(
 					'redux-field-support-faq-css',
 					$this->extension_url . 'field_support_faq.css',
-					time(),
+					ReduxFramework_extension_support_faq::$version,
 					true
 				);
 			}

@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_google_maps' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_google_maps', false ) ) {
 	class ReduxFramework_extension_google_maps {
 
 		static $version = "1.0.0";

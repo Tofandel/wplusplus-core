@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'reduxSocialProfilesDefaults' ) ) {
+if ( ! class_exists( 'reduxSocialProfilesDefaults', false ) ) {
 
 	class reduxSocialProfilesDefaults {
 

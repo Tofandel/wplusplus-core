@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_datetime' ) ) {
+if ( ! class_exists( 'ReduxFramework_datetime', false ) ) {
 
 	/**
 	 * Main ReduxFramework_datetime class
@@ -247,9 +247,13 @@ if ( ! class_exists( 'ReduxFramework_datetime' ) ) {
 		 * @return        void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
 
-			$extension = ReduxFramework_extension_datetime::getInstance();
-
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			$min = Redux_Functions::isMin();
 
 			wp_enqueue_script(
@@ -286,7 +290,7 @@ if ( ! class_exists( 'ReduxFramework_datetime' ) ) {
 				'redux-field-datetime-css',
 				$this->extension_url . 'field_datetime.css',
 				array(),
-				time(),
+				ReduxFramework_extension_repeater::$version,
 				'all'
 			);
 		}

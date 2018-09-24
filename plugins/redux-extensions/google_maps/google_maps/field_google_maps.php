@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_google_maps' ) ) {
+if ( ! class_exists( 'ReduxFramework_google_maps', false ) ) {
 
 	/**
 	 * Main ReduxFramework_google_maps class
@@ -363,8 +363,13 @@ if ( ! class_exists( 'ReduxFramework_google_maps' ) ) {
 		 * @return      void
 		 */
 		public function enqueue() {
-			$extension = ReduxFramework_extension_google_maps::getInstance();
+			static $enqueued = false;
 
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			$min = Redux_Functions::isMin();
 
 			$api_key = '';
@@ -376,7 +381,7 @@ if ( ! class_exists( 'ReduxFramework_google_maps' ) ) {
 				'redux-field-google_maps-api',
 				'//maps.googleapis.com/maps/api/js?v=' . $this->field['map_version'] . $api_key . '&signed_in=false&libraries=places',
 				array( 'jquery' ),
-				time(),
+				ReduxFramework_extension_google_maps::$version,
 				true
 			);
 
@@ -384,7 +389,7 @@ if ( ! class_exists( 'ReduxFramework_google_maps' ) ) {
 				'redux-field-google_maps',
 				$this->extension_url . 'field_google_maps' . $min . '.js',
 				array( 'jquery', 'redux-js', 'redux-field-google_maps-api' ),
-				time(),
+				ReduxFramework_extension_google_maps::$version,
 				true
 			);
 
@@ -392,7 +397,7 @@ if ( ! class_exists( 'ReduxFramework_google_maps' ) ) {
 				'redux-field-google_maps',
 				$this->extension_url . 'field_google_maps.css',
 				array(),
-				time(),
+				ReduxFramework_extension_google_maps::$version,
 				'all'
 			);
 		}

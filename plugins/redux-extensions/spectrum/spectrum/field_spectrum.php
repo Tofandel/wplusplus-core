@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_spectrum' ) ) {
+if ( ! class_exists( 'ReduxFramework_spectrum', false ) ) {
 
 	/**
 	 * Main ReduxFramework_spectrum class
@@ -230,9 +230,13 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 		 * @return      void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
 
-			$extension = ReduxFramework_extension_spectrum::getInstance();
-
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			// Set up min files for dev_mode = false.
 			$min = Redux_Functions::isMin();
 
@@ -241,7 +245,7 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 				'redux-spectrum-js',
 				$this->extension_url . 'vendor/redux-spectrum' . $min . '.js',
 				array( 'jquery' ),
-				time(),
+				ReduxFramework_extension_spectrum::$version,
 				true
 			);
 
@@ -249,7 +253,8 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 			wp_enqueue_style(
 				'redux-spectrum-css',
 				$this->extension_url . 'vendor/redux-spectrum.css',
-				time(),
+				null,
+				ReduxFramework_extension_spectrum::$version,
 				true
 			);
 
@@ -258,7 +263,7 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 				'redux-field-spectrum-js',
 				$this->extension_url . 'field_spectrum' . $min . '.js',
 				array( 'jquery', 'redux-spectrum-js' ),
-				time(),
+				ReduxFramework_extension_spectrum::$version,
 				true
 			);
 
@@ -270,13 +275,14 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 					$this->extension_url . 'field_spectrum.css',
 					$this->extension_dir,
 					array(),
-					time()
+					ReduxFramework_extension_spectrum::$version
 				);
 			} else {
 				wp_enqueue_style(
 					'redux-field-spectrum-css',
 					$this->extension_url . 'field_spectrum.css',
-					time(),
+					null,
+					ReduxFramework_extension_spectrum::$version,
 					true
 				);
 			}
@@ -294,7 +300,8 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 					wp_enqueue_style(
 						'redux-spectrum-class-css',
 						Redux_Helpers::cleanFilePath( get_stylesheet_directory_uri() ) . '/redux-spectrum.css',
-						time(),
+						null,
+						ReduxFramework_extension_spectrum::$version,
 						true
 					);
 				}

@@ -84,7 +84,7 @@ if ( ! class_exists( 'ReduxFramework_extension_search', false ) ) {
 					apply_filters( "redux/search/{$this->parent->args['opt_name']}/enqueue/redux-extension-search-css", $this->_extension_url . 'extension_search.css' ),
 					apply_filters( "redux/search/{$this->parent->args['opt_name']}/enqueue/redux-extension-search-scss", $this->_extension_dir ),
 					array(),
-					time(),
+					ReduxFramework_extension_search::$version,
 					'all'
 				);
 			} else {
@@ -99,7 +99,7 @@ if ( ! class_exists( 'ReduxFramework_extension_search', false ) ) {
 					'redux-extension-search-css',
 					apply_filters( "redux/search/{$this->parent->args['opt_name']}/enqueue/redux-extension-search-css", $this->_extension_url . 'extension_search.css' ),
 					array(),
-					time(),
+					ReduxFramework_extension_search::$version,
 					'all'
 				);
 			}

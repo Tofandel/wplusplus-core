@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( ! class_exists( 'ReduxColorSchemeCustomizer' ) ) {
+if ( ! class_exists( 'ReduxColorSchemeCustomizer', false ) ) {
 
 	class ReduxColorSchemeCustomizer {
 
@@ -86,7 +86,7 @@ if ( ! class_exists( 'ReduxColorSchemeCustomizer' ) ) {
 				'redux-cs-customizer',
 				$this->extension_url . 'color_scheme/js/cs-customizer' . $min . '.js',
 				array( 'jquery' ),
-				time(),
+				ReduxFramework_extension_spectrum::$version,
 				true
 			);
 
@@ -159,6 +159,13 @@ if ( class_exists( 'WP_Customize_Control' ) ) {
 			}
 
 			public function enqueue() {
+				static $enqueued = false;
+
+				//Don't enqueue more than once
+				if ( $enqueued ) {
+					return;
+				}
+				$enqueued = true;
 				$min = Redux_Functions::isMin();
 				$url = ReduxFramework_extension_color_scheme::getExtURL();
 
@@ -166,14 +173,15 @@ if ( class_exists( 'WP_Customize_Control' ) ) {
 					'redux-spectrum-js',
 					$url . 'color_scheme/vendor/spectrum' . $min . '.js',
 					array( 'jquery' ),
-					time(),
+					ReduxFramework_extension_spectrum::$version,
 					true
 				);
 
 				wp_enqueue_style(
 					'redux-spectrum-css',
 					$url . 'color_scheme/vendor/spectrum.css',
-					time(),
+					null,
+					ReduxFramework_extension_spectrum::$version,
 					true
 				);
 

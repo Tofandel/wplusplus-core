@@ -92,21 +92,26 @@ if ( ! class_exists( 'ReduxFramework_custom_field', false ) ) {
 		 * @return      void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
 
-			$extension = ReduxFramework_extension_custom_field::getInstance();
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 
 			wp_enqueue_script(
 				'redux-field-icon-select-js',
 				$this->extension_url . 'field_custom_field.js',
 				array( 'jquery' ),
-				time(),
+				ReduxFramework_extension_locked::$version,
 				true
 			);
 
 			wp_enqueue_style(
 				'redux-field-icon-select-css',
 				$this->extension_url . 'field_custom_field.css',
-				time(),
+				ReduxFramework_extension_locked::$version,
 				true
 			);
 

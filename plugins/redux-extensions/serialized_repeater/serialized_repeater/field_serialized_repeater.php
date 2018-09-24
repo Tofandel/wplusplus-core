@@ -62,7 +62,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_serialized_repeater' ) ) {
+if ( ! class_exists( 'ReduxFramework_serialized_repeater', false ) ) {
 
 	/**
 	 * Main ReduxFramework_css_layout class
@@ -551,8 +551,13 @@ if ( ! class_exists( 'ReduxFramework_serialized_repeater' ) ) {
 		 * @return      void
 		 */
 		public function enqueue() {
-			// e( __METHOD__ );
-			$extension = ReduxFramework_extension_serialized_repeater::getInstance();
+			static $enqueued = false;
+
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 
 			// Set up min files for dev_mode = false.
 			$min = Redux_Functions::isMin();
@@ -568,7 +573,7 @@ if ( ! class_exists( 'ReduxFramework_serialized_repeater' ) ) {
 					'wp-color-picker',
 					'redux-js'
 				),
-				'1.0.0',
+				ReduxFramework_extension_serialized_repeater::$version,
 				true
 			);
 
@@ -576,7 +581,7 @@ if ( ! class_exists( 'ReduxFramework_serialized_repeater' ) ) {
 				'redux-field-serialized-repeater-css',
 				apply_filters( "redux/serialized_repeater/{$this->parent->args['opt_name']}/enqueue/redux-field-serialized-repeater-css", $this->extension_url . 'field_serialized_repeater.css' ),
 				array(),
-				'1.0.0',
+				ReduxFramework_extension_serialized_repeater::$version,
 				'all'
 			);
 		}

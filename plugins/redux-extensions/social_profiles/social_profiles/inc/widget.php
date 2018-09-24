@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-if ( ! class_exists( 'reduxLoadSocialWidget' ) ) {
+if ( ! class_exists( 'reduxLoadSocialWidget', false ) ) {
 	class reduxLoadSocialWidget {
 		public $field_id = '';
 		public $parent = null;

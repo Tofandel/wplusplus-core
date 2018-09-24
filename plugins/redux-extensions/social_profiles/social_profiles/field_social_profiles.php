@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_social_profiles' ) ) {
+if ( ! class_exists( 'ReduxFramework_social_profiles', false ) ) {
 
 	/**
 	 * Main ReduxFramework_spectrum class
@@ -322,8 +322,15 @@ if ( ! class_exists( 'ReduxFramework_social_profiles' ) ) {
 		 * @return      void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
 
-			$extension = ReduxFramework_extension_social_profiles::getInstance();
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
+
+			//$extension = ReduxFramework_extension_social_profiles::getInstance();
 
 			// Set up min files for dev_mode = false.
 			$min = Redux_Functions::isMin();
@@ -333,7 +340,7 @@ if ( ! class_exists( 'ReduxFramework_social_profiles' ) ) {
 				'font-awesome',
 				$this->extension_url . 'vendor/font-awesome' . $min . '.css',
 				array(),
-				time(),
+				ReduxFramework_extension_social_profiles::$version,
 				'all'
 			);
 
@@ -342,7 +349,7 @@ if ( ! class_exists( 'ReduxFramework_social_profiles' ) ) {
 				'redux-field-social-profiles-js',
 				$this->extension_url . 'js/field_social_profiles' . $min . '.js',
 				array( 'jquery', 'jquery-ui-sortable', 'redux-spectrum-js' ),
-				time(),
+				ReduxFramework_extension_social_profiles::$version,
 				true
 			);
 
@@ -357,7 +364,7 @@ if ( ! class_exists( 'ReduxFramework_social_profiles' ) ) {
 				'redux-field-social-profiles-css',
 				$this->extension_url . 'css/field_social_profiles.css',
 				array( 'redux-spectrum-css' ),
-				time(),
+				ReduxFramework_extension_social_profiles::$version,
 				'all'
 			);
 		}

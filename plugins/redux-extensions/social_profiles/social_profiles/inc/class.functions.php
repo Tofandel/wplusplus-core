@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'reduxSocialProfilesFunctions' ) ) {
+if ( ! class_exists( 'reduxSocialProfilesFunctions', false ) ) {
 
 	class reduxSocialProfilesFunctions {
 		static public $_parent;

@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_shortcodes' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_shortcodes', false ) ) {
 
 	class ReduxFramework_extension_shortcodes {
 

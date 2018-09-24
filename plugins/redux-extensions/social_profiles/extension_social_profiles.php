@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_social_profiles' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_social_profiles', false ) ) {
 
 
 	/**
@@ -266,7 +266,7 @@ if ( ! class_exists( 'ReduxFramework_extension_social_profiles' ) ) {
 				'font-awesome',
 				$this->extension_url . 'social_profiles/vendor/font-awesome' . $min . '.css',
 				array(),
-				time()
+				ReduxFramework_extension_social_profiles::$version
 			);
 
 			// Field CSS
@@ -274,7 +274,7 @@ if ( ! class_exists( 'ReduxFramework_extension_social_profiles' ) ) {
 				'redux-field-social-profiles-frontend-css',
 				$this->extension_url . 'social_profiles/css/field_social_profiles_frontend.css',
 				array(),
-				time()
+				ReduxFramework_extension_social_profiles::$version
 			);
 		}
 

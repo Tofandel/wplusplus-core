@@ -335,7 +335,13 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 		 * @return      void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
 
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued  = true;
 			$extension = ReduxFramework_extension_color_scheme::getInstance();
 
 			// Set up min files for dev_mode = false.
@@ -346,7 +352,7 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 				'redux-ocupload',
 				$this->extension_url . 'vendor/jquery.ocupload' . $min . '.js',
 				array( 'jquery' ),
-				time(),
+				ReduxFramework_extension_custom_fonts::$version,
 				true
 			);
 
@@ -355,7 +361,7 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 				'redux-blockUI',
 				$this->extension_url . 'vendor/jquery.blockUI' . $min . '.js',
 				array( 'jquery' ),
-				time(),
+				ReduxFramework_extension_custom_fonts::$version,
 				true
 			);
 
@@ -364,7 +370,7 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 				'redux-field-color_scheme-js',
 				$this->extension_url . 'field_color_scheme' . $min . '.js',
 				array( 'jquery', 'redux-spectrum-js', 'select2-js' ),
-				time(),
+				ReduxFramework_extension_custom_fonts::$version,
 				true
 			);
 
@@ -373,7 +379,7 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 				'redux-field-color_scheme-css',
 				$this->extension_url . 'field_color_scheme.css',
 				array( 'redux-spectrum-css', 'select2-css' ),
-				time(),
+				ReduxFramework_extension_custom_fonts::$version,
 				'all'
 			);
 
@@ -385,7 +391,7 @@ Auto generated on ' . date( 'l jS \of F Y h:i:s A' ) . ' */
 						'redux-color_scheme-class-css',
 						Redux_Helpers::cleanFilePath( get_stylesheet_directory_uri() ) . '/redux-color-schemes.css',
 						array(),
-						time(),
+						ReduxFramework_extension_custom_fonts::$version,
 						'all'
 					);
 				}

@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'Redux_Shortcodes' ) ) :
+if ( ! class_exists( 'Redux_Shortcodes', false ) ) {
 
 	/**
 	 * Redux Framework shortcode extension class. Takes the common Wordpress functions `wp_get_theme()` and `bloginfo()` and a few other functions and makes them accessible via shortcodes. Below you will find a table for the possible shortcodes and their values.
@@ -254,5 +254,4 @@ if ( ! class_exists( 'Redux_Shortcodes' ) ) :
 		}
 
 	} // class
-
-endif;
+}

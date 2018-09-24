@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_action_button' ) ) {
+if ( ! class_exists( 'ReduxFramework_action_button', false ) ) {
 
 	/**
 	 * Main ReduxFramework_action_button class
@@ -111,6 +111,13 @@ HTML;
 		 * @return      void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
+
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			// Set up min files for dev_mode = false.
 			$min = Redux_Functions::isMin();
 
@@ -119,7 +126,7 @@ HTML;
 				'redux-field-action-button-js',
 				apply_filters( "redux/action_button/{$this->parent->args['opt_name']}/enqueue/redux-field-action-button-js", $this->extension_url . 'field_action_button' . $min . '.js' ),
 				array( 'jquery', 'redux-js' ),
-				time(),
+				ReduxFramework_extension_action_button::$version,
 				true
 			);
 			wp_localize_script(

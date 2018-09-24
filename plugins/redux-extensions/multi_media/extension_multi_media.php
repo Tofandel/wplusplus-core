@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_multi_media' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_multi_media', false ) ) {
 
 
 	/**
@@ -46,7 +46,6 @@ if ( ! class_exists( 'ReduxFramework_extension_multi_media' ) ) {
 		public static $theInstance;
 		public static $ext_url;
 		public $field_id = '';
-		private $class_css = '';
 
 		/**
 		 * Class Constructor. Defines the args for the extions class
@@ -59,9 +58,6 @@ if ( ! class_exists( 'ReduxFramework_extension_multi_media' ) ) {
 		 * @return      void
 		 */
 		public function __construct( $parent ) {
-
-			$redux_ver = ReduxFramework::$_version;
-
 			// Set parent object
 			$this->parent = $parent;
 

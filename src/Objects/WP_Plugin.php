@@ -46,6 +46,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	protected $product_id = '';
 	protected $no_redux = false;
 
+	protected $requirement_message = '';
+	protected $required_plugins = array();
+
 	/**
 	 * @var SubModule[]
 	 */
@@ -200,11 +203,46 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 */
 	public function __construct() {
 		static::InitFromConstructor( $this );
+
 		$this->init();
 
 		$this->initUpdateChecker();
 
 		$this->setup();
+	}
+
+	public function checkRequirements() {
+		if ( version_compare( phpversion(), $this->required_php_version, '<' ) ) {
+			$this->requirement_message = sprintf( esc_html__( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, $this->required_php_version, PHP_VERSION );
+			$this->_deactivatePlugin();
+
+			return;
+		}
+		add_action( 'plugins_loaded', function () {
+			foreach ( $this->required_plugins as $key => $plugin ) {
+				if ( ! class_exists( $plugin ) && ! is_plugin_active( $plugin ) ) {
+					$this->requirement_message = sprintf( esc_html__( '%1$s requires %2$s to work!', $this->text_domain ), $this->name, is_int( $key ) ? $plugin : $key );
+					$this->_deactivatePlugin();
+
+					return;
+				}
+			}
+		} );
+	}
+
+	private function _deactivatePlugin() {
+		if ( is_plugin_active( $this->getPluginFile() ) ) {
+			deactivate_plugins( $this->getPluginFile() );
+			add_action( 'admin_notices', array( $this, 'disabled_notice' ) );
+			if ( isset( $_GET['activate'] ) ) {
+				unset( $_GET['activate'] );
+			}
+		}
+	}
+
+
+	public function disabled_notice() {
+		echo '<strong>' . $this->requirement_message . '</strong>';
 	}
 
 	/**
@@ -222,6 +260,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		$comment = $this->class->getDocComment();
 
 		$this->extractFromComment( $comment );
+
+		$this->checkRequirements();
 
 		if ( ! isset( $this->redux_opt_name ) ) {
 			$this->redux_opt_name = strtolower( $this->class->getShortName() ) . '_options';
@@ -303,7 +343,6 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			     ( wp_doing_ajax() && isset ( $_REQUEST['action'] ) &&
 			       ( $_REQUEST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_REQUEST['action'], 'redux' ) === 0 ) ) ) {
 				add_action( 'plugins_loaded', [ $this, '_reduxConfig' ] );
-				add_action( 'admin_init', [ $this, 'checkCompat' ] );
 				add_action( 'init', [ $this, 'removeDemoModeLink' ] );
 			} else {
 				//We define it before in case some dummy used the option before plugins_loaded
@@ -801,45 +840,11 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		call_user_func( 'load_' . ( $this->is_muplugin ? 'mu' : '' ) . 'plugin_textdomain', $this->text_domain, false, dirname( plugin_basename( $this->file ) ) . '/languages/' );
 	}
 
-	public function checkCompat() {
-		if ( ! $this->checkCompatibility() ) {
-			if ( is_plugin_active( $this->file ) ) {
-				deactivate_plugins( $this->file );
-				add_action( 'admin_notices', array( $this, 'disabled_notice' ) );
-				if ( isset( $_GET['activate'] ) ) {
-					unset( $_GET['activate'] );
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Check that the required version of php is installed before activating the plugin
-	 *
-	 * @return bool
-	 */
-	public function checkCompatibility() {
-		if ( version_compare( phpversion(), $this->required_php_version, '<' ) ) {
-			return false;
-		}
-
-		return true;
-	}
-
-	public function disabled_notice() {
-		echo '<strong>' . sprintf( esc_html__( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, $this->required_php_version, PHP_VERSION ) . '</strong>';
-	}
 
 	/**
 	 * Called function on plugin activation
 	 */
 	public function activated() {
-		if ( ! $this->checkCompatibility() ) {
-			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( sprintf( __( '%1$s requires PHP %2$s or higher! (Current version is %3$s)', $this->text_domain ), $this->name, $this->required_php_version, PHP_VERSION ) );
-		}
-
 		foreach ( $this->modules as $module ) {
 			$module->activated();
 		}

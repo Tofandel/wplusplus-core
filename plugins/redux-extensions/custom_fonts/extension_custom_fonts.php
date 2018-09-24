@@ -214,7 +214,7 @@ if ( ! class_exists( 'ReduxFramework_extension_custom_fonts', false ) ) {
 					'redux-custom-fonts-css',
 					$this->upload_url . 'fonts.css',
 					array(),
-					time(),
+					ReduxFramework_extension_custom_fonts::$version,
 					'all'
 				);
 

@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_serialized_repeater' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_serialized_repeater', false ) ) {
 	/**
 	 * Main ReduxFramework css_layout extension class  <--- really?  - kp
 	 *

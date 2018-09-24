@@ -282,7 +282,7 @@ if ( ! class_exists( 'Redux_Widget_Areas', false ) ) {
 				'redux-widget_areas-js',
 				$this->extension_url . 'assets/js/widget_areas.js',
 				array( 'jquery' ),
-				time(),
+				ReduxFramework_extension_widget_areas::$version,
 				true
 			);
 
@@ -295,7 +295,7 @@ if ( ! class_exists( 'Redux_Widget_Areas', false ) ) {
 			wp_enqueue_style(
 				'redux-widget_areas-css',
 				$this->extension_url . 'assets/css/widget_areas.css',
-				time(),
+				ReduxFramework_extension_widget_areas::$version,
 				true
 			);
 			//}
@@ -322,7 +322,7 @@ if ( ! class_exists( 'Redux_Widget_Areas', false ) ) {
 //            wp_enqueue_style(
 //                'redux-widget_areas-css', 
 //                $this->extension_url.'assets/css/widget_areas.css', 
-//                time(),
+//			ReduxFramework_extension_widget_areas::$version,
 //                true
 //            );
 

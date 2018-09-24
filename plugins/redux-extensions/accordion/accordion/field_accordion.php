@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_accordion' ) ) {
+if ( ! class_exists( 'ReduxFramework_accordion', false ) ) {
 
 	/**
 	 * Main ReduxFramework_multi_media class
@@ -130,8 +130,13 @@ if ( ! class_exists( 'ReduxFramework_accordion' ) ) {
 		 * @return      void
 		 */
 		public function enqueue() {
-			$extension = ReduxFramework_extension_accordion::getInstance();
+			static $enqueued = false;
 
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			// Set up min files for dev_mode = false.
 			$min = Redux_Functions::isMin();
 
@@ -140,7 +145,7 @@ if ( ! class_exists( 'ReduxFramework_accordion' ) ) {
 				'redux-field-accordion-js',
 				$this->extension_url . 'field_accordion' . $min . '.js',
 				array( 'jquery', 'redux-js' ),
-				time(),
+				ReduxFramework_extension_accordion::$version,
 				true
 			);
 
@@ -148,7 +153,7 @@ if ( ! class_exists( 'ReduxFramework_accordion' ) ) {
 			wp_enqueue_style(
 				'redux-field-accordion-css',
 				$this->extension_url . 'field_accordion.css',
-				time(),
+				ReduxFramework_extension_accordion::$version,
 				true
 			);
 		}

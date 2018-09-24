@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_js_button' ) ) {
+if ( ! class_exists( 'ReduxFramework_js_button', false ) ) {
 
 	/**
 	 * Main ReduxFramework_js_button class
@@ -101,7 +101,13 @@ HTML;
 		 * @return      void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
 
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			// Make sure script data exists first
 			if ( isset( $this->field['script'] ) && ! empty( $this->field['script'] ) ) {
 
@@ -145,7 +151,7 @@ HTML;
 				'redux-field-js-button-js',
 				apply_filters( "redux/js_button/{$this->parent->args['opt_name']}/enqueue/redux-field-js-button-js", $this->extension_url . 'field_js_button' . $min . '.js' ),
 				array( 'jquery', 'redux-js' ),
-				time(),
+				ReduxFramework_extension_js_button::$version,
 				true
 			);
 		}

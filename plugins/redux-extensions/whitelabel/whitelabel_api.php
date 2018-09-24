@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'Redux_Whitelabel' ) ) {
+if ( ! class_exists( 'Redux_Whitelabel', false ) ) {
 
 	/**
 	 * ReduxWhiteLabel Class
@@ -128,11 +128,10 @@ if ( ! class_exists( 'Redux_Whitelabel' ) ) {
 			if ( ! wp_script_is( 'redux-fix-deactivates', 'done' ) ) {
 				?>
 				<script>
-					jQuery(document).ready(
-						function () {
-							var $href = jQuery('.real-redux-plugin').attr('href');
+					jQuery(document).ready(function ($) {
+						var $href = $('.real-redux-plugin').attr('href');
 							//console.log( $href );
-							jQuery(".fake-redux-plugin").each(
+						$(".fake-redux-plugin").each(
 								function (index) {
 									jQuery(this).attr('href', $href);
 									console.log('Done');
@@ -140,10 +139,6 @@ if ( ! class_exists( 'Redux_Whitelabel' ) ) {
 							);
 						}
 					);
-
-					//$classes .= " real-redux-plugin";
-					//} else {
-					//    $classes .= " fake-redux-plugin";
 				</script>
 				<?php
 				global $wp_scripts;

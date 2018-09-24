@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_datetime' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_datetime', false ) ) {
 
 	/**
 	 * Main ReduxFramework icon_select extension class

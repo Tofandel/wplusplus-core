@@ -110,11 +110,18 @@ if ( ! class_exists( 'ReduxFramework_Field_codemirror', false ) ) {
 		 * @since ReduxFramework 0.0.4
 		 */
 		function enqueue() {
+			static $enqueued = false;
+
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			// loading base stylesheets
 			wp_enqueue_style(
 				'codemirror-css',
 				$this->extension_url . 'lib/codemirror.css',
-				time(),
+				ReduxFramework_extension_codemirror::$version,
 				true
 			);
 
@@ -128,17 +135,22 @@ if ( ! class_exists( 'ReduxFramework_Field_codemirror', false ) ) {
 				}
 			}
 			if ( ! isset( $this->field['editor_options']["theme"] ) || ! in_array( $this->field['editor_options']["theme"], $codemirror_themes ) ) {
-				wp_enqueue_style( 'codemirror-editor-theme', $this->extension_url . 'theme/' . $this->defaults['editor_options']['theme'] . '.css', time(), true );
+				wp_enqueue_style( 'codemirror-editor-theme', $this->extension_url . 'theme/' . $this->defaults['editor_options']['theme'] . '.css',
+					ReduxFramework_extension_codemirror::$version, true );
 			} else {
-				wp_enqueue_style( 'codemirror-editor-theme', $this->extension_url . 'theme/' . $this->field['editor_options']['theme'] . '.css', time(), true );
+				wp_enqueue_style( 'codemirror-editor-theme', $this->extension_url . 'theme/' . $this->field['editor_options']['theme'] . '.css',
+					ReduxFramework_extension_codemirror::$version, true );
 			}
 
 			// enqueuing the field stylesheet at last to enable user override
-			wp_enqueue_style( 'codemirror-editor-css', $this->extension_url . 'field_codemirror.css', time(), true );
+			wp_enqueue_style( 'codemirror-editor-css', $this->extension_url . 'field_codemirror.css',
+				ReduxFramework_extension_codemirror::$version, true );
 
 			// loading base scripts
-			wp_enqueue_script( 'codemirror-editor-js', $this->extension_url . 'field_codemirror.js', null, time(), true );
-			wp_enqueue_script( 'codemirror-js', $this->extension_url . 'lib/codemirror.js', null, time(), true );
+			wp_enqueue_script( 'codemirror-editor-js', $this->extension_url . 'field_codemirror.js', null,
+				ReduxFramework_extension_codemirror::$version, true );
+			wp_enqueue_script( 'codemirror-js', $this->extension_url . 'lib/codemirror.js', null,
+				ReduxFramework_extension_codemirror::$version, true );
 
 
 			// loading addon scripts
@@ -232,7 +244,8 @@ if ( ! class_exists( 'ReduxFramework_Field_codemirror', false ) ) {
 		 * @since CodeMirror_extension 1.0.0
 		 */
 		function _enqueue_remote( $slug, $remote_url ) {
-			wp_enqueue_script( 'codemirror-remote-' . $slug . 'js', $remote_url, null, time(), true );
+			wp_enqueue_script( 'codemirror-remote-' . $slug . 'js', $remote_url, null,
+				ReduxFramework_extension_codemirror::$version, true );
 		}// _enqueue_remote
 
 		/**
@@ -242,7 +255,8 @@ if ( ! class_exists( 'ReduxFramework_Field_codemirror', false ) ) {
 		 * @since CodeMirror_extension 1.0.0
 		 */
 		function _enqueue_mode( $mode ) {
-			wp_enqueue_script( 'codemirror-mode-' . $mode . 'js', $this->extension_url . 'mode/' . $mode . '/' . $mode . '.js', null, time(), true );
+			wp_enqueue_script( 'codemirror-mode-' . $mode . 'js', $this->extension_url . 'mode/' . $mode . '/' . $mode . '.js', null,
+				ReduxFramework_extension_codemirror::$version, true );
 		}// _enqueue_mode
 
 		/**
@@ -257,12 +271,15 @@ if ( ! class_exists( 'ReduxFramework_Field_codemirror', false ) ) {
 			if ( $available_lint_found == false ) {
 				$available_lint_found = true;
 				// enqueue lint script and stylesheet.
-				wp_enqueue_style( 'codemirror-editor-lint-css', $this->extension_url . 'addon/lint/lint.css', time(), true );
-				wp_enqueue_script( 'codemirror-editor-lint-js', $this->extension_url . 'addon/lint/lint.js', null, time(), true );
+				wp_enqueue_style( 'codemirror-editor-lint-css', $this->extension_url . 'addon/lint/lint.css',
+					ReduxFramework_extension_codemirror::$version, true );
+				wp_enqueue_script( 'codemirror-editor-lint-js', $this->extension_url . 'addon/lint/lint.js', null,
+					ReduxFramework_extension_codemirror::$version, true );
 			}
 
 			// enqueue lint script.
-			wp_enqueue_script( 'codemirror-editor-lint-' . $mode . '-js', $this->extension_url . 'addon/lint/' . $mode . '-lint.js', null, time(), true );
+			wp_enqueue_script( 'codemirror-editor-lint-' . $mode . '-js', $this->extension_url . 'addon/lint/' . $mode . '-lint.js', null,
+				ReduxFramework_extension_codemirror::$version, true );
 
 		}// _enqueue_lint
 
@@ -278,12 +295,15 @@ if ( ! class_exists( 'ReduxFramework_Field_codemirror', false ) ) {
 			if ( $available_hint_found == false ) {
 				$available_hint_found = true;
 				// enqueue hint script and stylesheet.
-				wp_enqueue_style( 'codemirror-editor-hint-css', $this->extension_url . 'addon/hint/show-hint.css', time(), true );
-				wp_enqueue_script( 'codemirror-editor-hint-js', $this->extension_url . 'addon/hint/show-hint.js', null, time(), true );
+				wp_enqueue_style( 'codemirror-editor-hint-css', $this->extension_url . 'addon/hint/show-hint.css',
+					ReduxFramework_extension_codemirror::$version, true );
+				wp_enqueue_script( 'codemirror-editor-hint-js', $this->extension_url . 'addon/hint/show-hint.js', null,
+					ReduxFramework_extension_codemirror::$version, true );
 			}
 
 			// enqueue hint script.
-			wp_enqueue_script( 'codemirror-editor-hint-' . $mode . '-js', $this->extension_url . 'addon/hint/' . $mode . '-hint.js', null, time(), true );
+			wp_enqueue_script( 'codemirror-editor-hint-' . $mode . '-js', $this->extension_url . 'addon/hint/' . $mode . '-hint.js', null,
+				ReduxFramework_extension_codemirror::$version, true );
 
 		}// _enqueue_hint
 
@@ -328,7 +348,8 @@ if ( ! class_exists( 'ReduxFramework_Field_codemirror', false ) ) {
 				     is_array( $this->addons[ $addon ]["css"] )
 				) {
 					foreach ( $this->addons[ $addon ]["css"] as $index => $addon_stylesheet ) {
-						wp_enqueue_style( 'codemirror-editor-' . $addon . '-' . $index . '-css', $this->extension_url . $addon_stylesheet, time(), true );
+						wp_enqueue_style( 'codemirror-editor-' . $addon . '-' . $index . '-css', $this->extension_url . $addon_stylesheet,
+							ReduxFramework_extension_codemirror::$version, true );
 					}
 				}
 
@@ -338,13 +359,15 @@ if ( ! class_exists( 'ReduxFramework_Field_codemirror', false ) ) {
 						wp_enqueue_script(
 							'codemirror-addon-' . $addon . 'js',
 							$this->extension_url . $this->addons[ $addon ]["file"],
-							null, time(), true );
+							null,
+							ReduxFramework_extension_codemirror::$version, true );
 					} else {
 						foreach ( $this->addons[ $addon ]["file"] as $addon_file_index => $addon_file ) {
 							wp_enqueue_script(
 								'codemirror-addon-' . $addon . '-' . $addon_file_index . 'js',
 								$this->extension_url . $addon_file,
-								null, time(), true );
+								null,
+								ReduxFramework_extension_codemirror::$version, true );
 						}
 					}
 				}

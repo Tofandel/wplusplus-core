@@ -516,8 +516,13 @@ if ( ! class_exists( 'ReduxFramework_css_layout', false ) ) {
 		 * @return      void
 		 */
 		public function enqueue() {
-			$extension = ReduxFramework_extension_css_layout::getInstance();
+			static $enqueued = false;
 
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			// Set up min files for dev_mode = false.
 			$min = Redux_Functions::isMin();
 
@@ -526,7 +531,7 @@ if ( ! class_exists( 'ReduxFramework_css_layout', false ) ) {
 				'redux-field-css_layout-js',
 				$this->extension_url . 'field_css_layout' . $min . '.js',
 				array( 'jquery', 'wp-color-picker', 'select2-js' ),
-				time(),
+				ReduxFramework_extension_css_layout::$version,
 				true
 			);
 
@@ -536,7 +541,7 @@ if ( ! class_exists( 'ReduxFramework_css_layout', false ) ) {
 				'redux-color-picker-css',
 				ReduxFramework::$_url . 'assets/css/color-picker/color-picker.css',
 				array( 'wp-color-picker' ),
-				time(),
+				ReduxFramework_extension_css_layout::$version,
 				'all'
 			);
 
@@ -544,7 +549,7 @@ if ( ! class_exists( 'ReduxFramework_css_layout', false ) ) {
 				'redux-field-css_layout-css',
 				$this->extension_url . 'field_css_layout.css',
 				array(),
-				time(),
+				ReduxFramework_extension_css_layout::$version,
 				'all'
 			);
 		}

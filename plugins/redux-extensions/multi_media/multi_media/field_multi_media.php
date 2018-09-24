@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_multi_media' ) ) {
+if ( ! class_exists( 'ReduxFramework_multi_media', false ) ) {
 
 	/**
 	 * Main ReduxFramework_multi_media class
@@ -35,6 +35,9 @@ if ( ! class_exists( 'ReduxFramework_multi_media' ) ) {
 		 * @return      void
 		 */
 		public function __construct( $field = array(), $value = '', $parent ) {
+			if ( ! class_exists( ReduxFramework_extension_multi_media::class ) ) {
+				require_once __DIR__ . '../extension_multi_media.php';
+			}
 
 			// Set required variables
 			$this->parent = $parent;
@@ -108,7 +111,7 @@ if ( ! class_exists( 'ReduxFramework_multi_media' ) ) {
 			// primary container
 			echo
 				'<div
-                class="redux-multi-media-container' . $this->field['class'] . '"
+                class="redux-multi-media-container' . ( ! empty( $this->field['class'] ) ? ' ' . $this->field['class'] : '' ) . '"
                 id="' . $field_id . '"
                 data-max-file-upload="' . $max_file_count . '"
                 data-id="' . $field_id . '"' .
@@ -123,7 +126,7 @@ if ( ! class_exists( 'ReduxFramework_multi_media' ) ) {
 			// Hidden inout for file(s).
 			echo
 				'<input
-                name="' . $this->field['name'] . $this->field['name_suffix'] . '"
+                name="' . $this->field['name'] . ( ! empty( $this->field['name_suffix'] ) ? $this->field['name_suffix'] : '' ) . '"
                 id="' . $field_id . '-multi-media"
                 class="redux_upload_file redux_upload_list"
                 type="hidden"
@@ -271,6 +274,13 @@ if ( ! class_exists( 'ReduxFramework_multi_media' ) ) {
 		 * @return      void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
+
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			//$extension = ReduxFramework_extension_multi_media::getInstance();
 
 			// Get labels for localization
@@ -297,7 +307,7 @@ if ( ! class_exists( 'ReduxFramework_multi_media' ) ) {
 				'redux-field-multi-media-js',
 				$this->extension_url . 'field_multi_media' . $min . '.js',
 				array( 'jquery' ),
-				time(),
+				ReduxFramework_extension_multi_media::$version,
 				true
 			);
 
@@ -309,13 +319,14 @@ if ( ! class_exists( 'ReduxFramework_multi_media' ) ) {
 					$this->extension_url . 'field_multi_media.css',
 					$this->extension_dir,
 					array(),
-					time()
+					ReduxFramework_extension_multi_media::$version
 				);
 			} else {
 				wp_enqueue_style(
 					'redux-field-multi-media-css',
 					$this->extension_url . 'field_multi_media.css',
-					time(),
+					array(),
+					ReduxFramework_extension_multi_media::$version,
 					true
 				);
 			}

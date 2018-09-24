@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_repeater' ) ) {
+if ( ! class_exists( 'ReduxFramework_repeater', false ) ) {
 
 	/**
 	 * Main ReduxFramework_css_layout class
@@ -275,6 +275,13 @@ if ( ! class_exists( 'ReduxFramework_repeater' ) ) {
 		 * @return      void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
+
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 
 			// Set up min files for dev_mode = false.
 			$min = Redux_Functions::isMin();
@@ -290,7 +297,7 @@ if ( ! class_exists( 'ReduxFramework_repeater' ) ) {
 					'wp-color-picker',
 					'redux-js'
 				),
-				time(),
+				ReduxFramework_extension_repeater::$version,
 				true
 			);
 
@@ -299,7 +306,7 @@ if ( ! class_exists( 'ReduxFramework_repeater' ) ) {
 				'redux-field-repeater-css',
 				apply_filters( "redux/repeater/{$this->parent->args['opt_name']}/enqueue/redux-field-repeater-css", $this->extension_url . 'field_repeater.css' ),
 				array(),
-				time(),
+				ReduxFramework_extension_repeater::$version,
 				'all'
 			);
 		}

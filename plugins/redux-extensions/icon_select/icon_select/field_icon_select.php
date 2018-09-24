@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_icon_select' ) ) {
+if ( ! class_exists( 'ReduxFramework_icon_select', false ) ) {
 
 	/**
 	 * Main ReduxFramework_icon_select class
@@ -162,7 +162,13 @@ if ( ! class_exists( 'ReduxFramework_icon_select' ) ) {
 		 * @return      void
 		 */
 		public function enqueue() {
-			$extension = ReduxFramework_extension_icon_select::getInstance();
+			static $enqueued = false;
+
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 
 			$min = Redux_Functions::isMin();
 
@@ -170,7 +176,7 @@ if ( ! class_exists( 'ReduxFramework_icon_select' ) ) {
 				'redux-field-icon-select-js',
 				$this->extension_url . 'field_icon_select' . $min . '.js',
 				array( 'jquery' ),
-				time(),
+				ReduxFramework_extension_icon_select::$version,
 				true
 			);
 
@@ -181,13 +187,13 @@ if ( ! class_exists( 'ReduxFramework_icon_select' ) ) {
 					$this->extension_url . 'field_icon_select.css',
 					$this->extension_dir,
 					array(),
-					time()
+					ReduxFramework_extension_icon_select::$version
 				);
 			} else {
 				wp_enqueue_style(
 					'redux-field-icon-select-css',
 					$this->extension_url . 'field_icon_select.css',
-					time(),
+					ReduxFramework_extension_icon_select::$version,
 					true
 				);
 			}
@@ -197,7 +203,7 @@ if ( ! class_exists( 'ReduxFramework_icon_select' ) ) {
 					$this->field['id'] . '-webfont',
 					$this->stylesheet_url,
 					array(),
-					time(),
+					ReduxFramework_extension_icon_select::$version,
 					'all'
 				);
 
@@ -221,7 +227,7 @@ if ( ! class_exists( 'ReduxFramework_icon_select' ) ) {
 					'redux-' . $this->field['selector'] . '-webfont',
 					$this->stylesheet_url,
 					array(),
-					time(),
+					ReduxFramework_extension_icon_select::$version,
 					'all'
 				);
 			}

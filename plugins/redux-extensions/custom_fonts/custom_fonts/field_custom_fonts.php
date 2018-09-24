@@ -164,14 +164,20 @@ if ( ! class_exists( 'ReduxFramework_custom_fonts', false ) ) {
 		 * @return      void
 		 */
 		public function enqueue() {
+			static $enqueued = false;
 
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
 			$min = Redux_Functions::isMin();
 
 			wp_enqueue_script(
 				'redux-blockUI',
 				$this->extension_url . '/jquery.blockUI' . $min . '.js',
 				array( 'jquery' ),
-				time(),
+				ReduxFramework_extension_custom_fonts::$version,
 				true
 			);
 
@@ -179,7 +185,7 @@ if ( ! class_exists( 'ReduxFramework_custom_fonts', false ) ) {
 				'redux-field-custom_fonts-js',
 				$this->extension_url . '/field_custom_fonts' . $min . '.js',
 				array( 'jquery', 'redux-blockUI' ),
-				time(),
+				ReduxFramework_extension_custom_fonts::$version,
 				true
 			);
 
@@ -198,7 +204,7 @@ if ( ! class_exists( 'ReduxFramework_custom_fonts', false ) ) {
 				'redux-field-custom_fonts-css',
 				$this->extension_url . 'field_custom_fonts.css',
 				array(),
-				time(),
+				ReduxFramework_extension_custom_fonts::$version,
 				'all'
 			);
 
@@ -209,7 +215,7 @@ if ( ! class_exists( 'ReduxFramework_custom_fonts', false ) ) {
 					'redux-custom_fonts-css',
 					$class->upload_url . "fonts.css",
 					array(),
-					time(),
+					ReduxFramework_extension_custom_fonts::$version,
 					'all'
 				);
 			}

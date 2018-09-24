@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once( 'customizer_active_callback.php' );
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_extension_advanced_customizer' ) ) {
+if ( ! class_exists( 'ReduxFramework_extension_advanced_customizer', false ) ) {
 
 	/**
 	 * Main ReduxFramework customizer extension class

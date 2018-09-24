@@ -108,6 +108,14 @@ if ( ! class_exists( 'ReduxFramework_extension_locked', false ) ) {
 		}
 
 		public function enqueue() {
+			static $enqueued = false;
+
+			//Don't enqueue more than once
+			if ( $enqueued ) {
+				return;
+			}
+			$enqueued = true;
+
 			wp_enqueue_style(
 				'redux-locked-css',
 				$this->_extension_url . 'extension_locked.css',
