@@ -101,6 +101,8 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	 * @throws \ReflectionException
 	 */
 	public function WPPBundledUpgrade( $upgrader, $info = array() ) {
+		//Todo: We should also probably upgrade all other plugins as they might break as well,
+		// even though it should become less and less frequent as the plugin matures and will try to keep backward compatibility
 		if ( $info['action'] == 'update' && $info['type'] == 'plugin' && $this->searchPlugins( $info['plugins'] ) ) {
 			$plugin  = $this->getPluginFile();
 			$current = get_site_transient( 'update_plugins' );

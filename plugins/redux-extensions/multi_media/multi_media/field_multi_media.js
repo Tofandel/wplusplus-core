@@ -22,7 +22,7 @@
 
 		// If no selector is passed, grab one from the HTML
 		if (!selector) {
-			selector = $(document).find(".redux-group-tab:visible").find('.redux-container-multi_media:visible');
+			selector = $(document).find(".redux-multi-media-container");
 		}
 
 		// Enum instances of our object
@@ -33,10 +33,6 @@
 
 				if (!el.hasClass('redux-field-container')) {
 					parent = el.parents('.redux-field-container:first');
-				}
-
-				if (parent.is(":hidden")) { // Skip hidden fields
-					return;
 				}
 
 				if (parent.hasClass('redux-field-init')) {
@@ -207,11 +203,11 @@
 			}
 		});
 
+		var doChange;
 		// When an image is selected, run a callback.
 		frame.on('select', function () {
 
 			var addCount = 0;
-			var doChange;
 
 			// Grab the selected attachment.
 			var selection = frame.state().get('selection');
@@ -329,7 +325,7 @@
 				$formfield.siblings('.redux_media_status').slideDown().append(this);
 			});
 
-			// Close mefia frame
+			// Close media frame
 			frame.close();
 
 			// Prompt for save changes, if necessary

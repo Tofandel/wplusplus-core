@@ -37,7 +37,10 @@ if ( ! class_exists( 'ReduxFramework_support_faq', false ) ) {
 		 *
 		 * @since         1.0.0
 		 * @access        public
-		 * @return        void
+		 *
+		 * @param array $field
+		 * @param string $value
+		 * @param $parent
 		 */
 		function __construct( $field = array(), $value = '', $parent ) {
 
@@ -207,12 +210,13 @@ if ( ! class_exists( 'ReduxFramework_support_faq', false ) ) {
 					$this->extension_url . 'field_support_faq.css',
 					$this->extension_dir,
 					array(),
-					ReduxFramework_extension_support_faq::$version,
+					ReduxFramework_extension_support_faq::$version
 				);
 			} else {
 				wp_enqueue_style(
 					'redux-field-support-faq-css',
 					$this->extension_url . 'field_support_faq.css',
+					array(),
 					ReduxFramework_extension_support_faq::$version,
 					true
 				);
