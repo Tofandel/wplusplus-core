@@ -47,14 +47,17 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 		//Then we can hide the core and make it update with the latest version when this other plugin is updating/
 		add_action( 'upgrader_process_complete', [ $this, 'WPPBundledUpgrade' ], 10, 2 );
 		//add_action( 'site_transient_update_plugins', [ $this, 'WPPBundledUpdate' ] );
-		//add_action( 'pre_current_active_plugins', [ $this, 'maybe_hide_plugin' ] );
-		//add_filter( 'all_plugins', [ $this, 'multisite_maybe_hide_plugin' ] );
+		add_action( 'pre_current_active_plugins', [ $this, 'maybe_hide_plugin' ] );
+		add_filter( 'all_plugins', [ $this, 'multisite_maybe_hide_plugin' ] );
 	}
 
 
 	public function multisite_maybe_hide_plugin( $plugins ) {
 		if ( count( self::getSingletons() ) > 1 ) {
-			unset( $plugins[ $this->getPluginFile() ] );
+			$updates = get_transient( 'update_plugins' );
+			if ( ! isset( $updates->response[ $this->getPluginFile() ] ) ) {
+				unset( $plugins[ $this->getPluginFile() ] );
+			}
 		}
 
 		return $plugins;
@@ -63,7 +66,10 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	public function maybe_hide_plugin() {
 		global $wp_list_table;
 		if ( count( self::getSingletons() ) > 1 && isset( $wp_list_table->items[ $this->getPluginFile() ] ) ) {
-			unset( $wp_list_table->items[ $this->getPluginFile() ] );
+			$updates = get_transient( 'update_plugins' );
+			if ( ! isset( $updates->response[ $this->getPluginFile() ] ) ) {
+				unset( $wp_list_table->items[ $this->getPluginFile() ] );
+			}
 		}
 	}
 
