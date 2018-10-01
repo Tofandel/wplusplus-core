@@ -776,11 +776,16 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 					continue;
 				}
 
+				if ( isset( $box['permissions'] ) && ! empty( $box['permissions'] ) && ! ReduxFramework::current_user_can( $box['permissions'] ) ) {
+					continue;
+				}
+
 				// Save users from themselves
 				if ( isset( $box['position'] ) && ! in_array( strtolower( $box['position'] ), array(
 						'normal',
 						'advanced',
-						'side'
+						'side',
+						'woocommerce'
 					) )
 				) {
 					unset( $box['position'] );
@@ -790,7 +795,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 						'high',
 						'core',
 						'default',
-						'low'
+						'low',
 					) )
 				) {
 					unset( $box['priority'] );
@@ -846,15 +851,42 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 								'add_box_hide_class'
 							) );
 						}
+						if ( $box['position'] != 'woocommerce' ) {
 
-						add_meta_box( 'redux-' . $this->parent->args['opt_name'] . '-metabox-' . $box['id'], $title, array(
-							$this,
-							'generate_boxes'
-						), $posttype, $box['position'], $box['priority'], $args );
+							add_meta_box( $this->get_box_id( $box ), $title, array(
+								$this,
+								'generate_boxes'
+							), $posttype, $box['position'], $box['priority'], $args );
+						} else {
+							add_filter( 'woocommerce_product_data_tabs', function ( $product_data_tabs ) use ( $box ) {
+								$classes = array();
+								foreach ( (array) $box['product_types'] as $type ) {
+									$classes[] = 'show_if_' . $type;
+								}
+								//Todo priority
+								$product_data_tabs[ $this->get_box_id( $box ) ] = array(
+									'label'    => $box['title'],
+									'target'   => $this->get_box_id( $box ),
+									'class'    => $classes,
+									'priority' => $box['priority']
+								);
+
+								return $product_data_tabs;
+							} );
+							add_action( 'woocommerce_product_data_panels', function () use ( $box ) {
+								echo "<div id='{$this->get_box_id($box)}' class='panel woocommerce_options_panel'>";
+								$this->render_box( $box );
+								echo "</div>";
+							} );
+						}
 					}
 				}
 			}
 		} // add_meta_boxes()
+
+		public function get_box_id( $box ) {
+			return 'redux-' . $this->parent->args['opt_name'] . '-metabox-' . $box['id'];
+		}
 
 		function _field_default( $field_id ) {
 			if ( ! isset( $this->parent->options_defaults ) ) {
@@ -964,23 +996,15 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 			return $def_val;
 		}
 
-		function generate_boxes( $post, $metabox ) {
-			if ( isset( $metabox['args']['permissions'] ) && ! empty( $metabox['args']['permissions'] ) && ! ReduxFramework::current_user_can( $metabox['args']['permissions'] ) ) {
-				return;
-			}
-
-			$sections = $metabox['args']['sections'];
-
-			wp_nonce_field( 'redux_metaboxes_meta_nonce', 'redux_metaboxes_meta_nonce' );
-
+		public function render_box( $metabox ) {
 			wp_dequeue_script( 'json-view-js' );
 
-			$sidebar = true;
-
+			$sidebar  = true;
+			$sections = $metabox['args']['sections'];
 			if ( $metabox['args']['position'] == "side" || count( $sections ) == 1 || ( isset( $metabox['args']['sidebar'] ) && $metabox['args']['sidebar'] === false ) ) {
 				$sidebar = false; // Show the section dividers or not
 			}
-
+			wp_nonce_field( 'redux_metaboxes_meta_nonce', 'redux_metaboxes_meta_nonce' );
 			?>
 			<input type="hidden" id="currentSection"
 				   name="<?php echo esc_attr( $this->parent->args['opt_name'] ); ?>[redux-metabox-section]" value=""/>
@@ -1026,8 +1050,6 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 				<div class="redux-main">
 					<?php
-					$updateLocalize = false;
-
 					foreach ( $sections as $sKey => $section ) {
 						if ( isset( $section['permissions'] ) && ! empty( $section['permissions'] ) && ! ReduxFramework::current_user_can( $section['permissions'] ) ) {
 							continue;
@@ -1111,6 +1133,10 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 				<div class="clear"></div>
 			</div>
 			<?php
+		}
+
+		function generate_boxes( $post, $metabox ) {
+			$this->render_box( $metabox );
 		} // generate_boxes()
 
 		/**
@@ -1202,7 +1228,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 				}
 
 				//if ( $save && ! isset( $this->parent_options[ $key ] ) && isset( $this->parent_defaults[ $key ] ) && $this->parent_defaults[ $key ] == $value ) {
-					//$save = false;
+				//$save = false;
 				//}
 
 				if ( $save ) {

@@ -78,7 +78,11 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 			}
 			foreach ( self::$boxes as $opt_name => $theBoxes ) {
 				if ( ! self::$init[ $opt_name ] ) {
-					add_filter( 'redux/metaboxes/' . $opt_name . '/boxes', [ self::class, 'f' ] );
+					add_filter( 'redux/metaboxes/' . $opt_name . '/boxes', function ( $boxes ) use ( $opt_name, $theBoxes ) {
+						$boxes[ $opt_name ] = $theBoxes;
+
+						return $boxes;
+					} );
 				}
 			}
 			self::$hasRun = true;

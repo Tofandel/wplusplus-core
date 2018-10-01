@@ -75,6 +75,11 @@ class ReduxFramework implements SubModule {
 		return $this->metabox;
 	}
 
+	public function setWCMetabox( $id, $title, $product_types ) {
+		$this->assertReduxLoaded();
+		$this->metabox = new WC_Metabox( $this->opt_name, $id, $title, $product_types );
+	}
+
 	/**
 	 * @param array $sections Array of box sections for redux
 	 *

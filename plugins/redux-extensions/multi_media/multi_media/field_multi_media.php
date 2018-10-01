@@ -294,7 +294,7 @@ if ( ! class_exists( 'ReduxFramework_multi_media', false ) ) {
 			$max_warn       = isset( $this->field['labels']['max_limit'] ) ? $this->field['labels']['max_limit'] : __( 'Maximum upload limit of %s reached/exceeded.', 'redux-framework' );
 
 			// Set up min files for dev_mode = false.
-			$min = Redux_Functions::isMin();
+			$min = ''; //Redux_Functions::isMin();
 
 			if ( function_exists( 'wp_enqueue_media' ) ) {
 				wp_enqueue_media();

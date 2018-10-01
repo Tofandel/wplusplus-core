@@ -12,6 +12,7 @@
 	redux.field_objects.multi_media.mainID = '';
 
 	var l10n;
+	var frame;
 
 	/*******************************************************************************
 	 * init Function
@@ -32,7 +33,7 @@
 				var parent = el;
 
 				if (!el.hasClass('redux-field-container')) {
-					parent = el.parents('.redux-field-container:first');
+					parent = el.closest('.redux-field-container');
 				}
 
 				if (parent.hasClass('redux-field-init')) {
@@ -42,16 +43,16 @@
 				}
 
 				// Handle clicking up the upload button
-				el.find('.redux_remove_file_button').unbind('click').on(
-					'click', function (event) {
-						redux.field_objects.multi_media.removeFile(event, $(this).parents('fieldset.redux-field:first'), $(this));
+				el.unbind('click', '.redux_remove_file_button').on(
+					'click', '.redux_remove_file_button', function (event) {
+						redux.field_objects.multi_media.removeFile(event, $(this).closest('fieldset.redux-field'), $(this));
 					}
 				);
 
 				// Handle clicking of the delete icon
-				el.find('.redux_upload_button').unbind().on(
+				el.find('.redux_upload_button').unbind('click').on(
 					'click', function (event) {
-						redux.field_objects.multi_media.addFile(event, $(this).parents('fieldset.redux-field:first'), $(this));
+						redux.field_objects.multi_media.addFile(event, $(this).closest('fieldset.redux-field'), $(this));
 					}
 				);
 
@@ -103,23 +104,23 @@
 	redux.field_objects.multi_media.removeErrMsgs = function () {
 
 		// Enumerate and remove existing 'file exists' messages
-		$('#' + redux.field_objects.multi_media.mainID + ' .attach_list li.redux-file-exists').each(function (idx, li) {
+		$('.redux-container-multi_media .attach_list li.redux-file-exists').each(function (idx, li) {
 			$(li).remove();
 		});
 
 		// Enumerate and remove existing 'max upload' messages
-		$('#' + redux.field_objects.multi_media.mainID + ' .attach_list li.redux-max-limit').each(function (idx, li) {
+		$('.redux-container-multi_media .attach_list li.redux-max-limit').each(function (idx, li) {
 			$(li).remove();
 		});
 	};
 
 
 	// Checks for duplicate after file selection
-	redux.field_objects.multi_media.selExists = function (item) {
+	redux.field_objects.multi_media.selExists = function (item, selector) {
 		var val = false;
 
 		// Enumerate existing files
-		$('#' + redux.field_objects.multi_media.mainID + ' .attach_list li').each(function (idx, li) {
+		$(selector).find('.attach_list li').each(function (idx, li) {
 
 			// Check for duplicate based on ID
 			var len = $(li).find('input#filelist-' + item);
@@ -146,7 +147,6 @@
 		event.preventDefault();
 
 		// Variables
-		var frame;
 		var libFilter;
 		var isList = true;
 		var uploadStatus = true;
@@ -156,15 +156,12 @@
 
 		// Make form field ID
 		var $formfield = $('#' + inputID);
+		console.log(inputID);
 
 		// Get form name
 		var formName = $formfield.attr('name');
 
 		// If the media frame already exists, reopen it.
-		if (frame) {
-			frame.open();
-			return;
-		}
 
 		// Remove existing error messages
 		redux.field_objects.multi_media.removeErrMsgs();
@@ -225,7 +222,7 @@
 			var msgArr = [];
 
 			// Get existing file count
-			var childCount = $('#' + redux.field_objects.multi_media.mainID + ' .attach_list').children().length;
+			var childCount = $(selector).find('.attach_list').children().length;
 
 			// Enum through each attachment
 			$(attachment).each(function () {
@@ -234,7 +231,7 @@
 				if (maxFileUpload <= 0 || (addCount + childCount) < maxFileUpload) {
 
 					// Check for duplicates and format duplicate message
-					if (redux.field_objects.multi_media.selExists(this.id)) {
+					if (redux.field_objects.multi_media.selExists(this.id, selector)) {
 						var dupMsg = l10n.dup_warn;
 
 						dupMsg = dupMsg.replace('%s', '<strong>' + this.filename + '</strong>');
@@ -245,7 +242,7 @@
 						// If only file, then don't ask to save changes.
 						doChange = false;
 
-						// continue equivilent
+						// continue equivalent
 						return true;
 					}
 

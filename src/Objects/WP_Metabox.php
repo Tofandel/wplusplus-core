@@ -65,7 +65,7 @@ class WP_Metabox {
 		$this->opt_name = $opt_name;
 		$this->id       = $id;
 		$this->title    = $title;
-		$this->screen   = is_array( $post_types ) ? $post_types : array( $post_types );
+		$this->screen   = $post_types;
 		$this->priority = $priority;
 		$this->position = $position;
 
