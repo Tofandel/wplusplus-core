@@ -47,8 +47,8 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 		//Then we can hide the core and make it update with the latest version when this other plugin is updating/
 		add_action( 'upgrader_process_complete', [ $this, 'WPPBundledUpgrade' ], 10, 2 );
 		//add_action( 'site_transient_update_plugins', [ $this, 'WPPBundledUpdate' ] );
-		add_action( 'pre_current_active_plugins', [ $this, 'maybe_hide_plugin' ] );
-		add_filter( 'all_plugins', [ $this, 'multisite_maybe_hide_plugin' ] );
+		//add_action( 'pre_current_active_plugins', [ $this, 'maybe_hide_plugin' ] );
+		//add_filter( 'all_plugins', [ $this, 'multisite_maybe_hide_plugin' ] );
 	}
 
 
