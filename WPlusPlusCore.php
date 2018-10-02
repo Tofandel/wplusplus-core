@@ -80,7 +80,7 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	 * @throws \ReflectionException
 	 */
 	private function searchPlugins( $plugins ) {
-		$non_core = self::getSingletons();
+		$non_core = self::getSingletonsByClass( WP_Plugin::class );
 		$class    = new \ReflectionClass( static::class );
 		$class->getName();
 		unset( $non_core[ $class->getName() ] );
@@ -93,6 +93,7 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 			if ( in_array( $file, $plugins ) ) {
 				return true;
 			}
+
 		}
 
 		return false;

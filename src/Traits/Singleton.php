@@ -7,9 +7,10 @@
 
 namespace Tofandel\Core\Traits;
 
-global $singletons;
+global $singletons, $singletons_hierarchy;
 
-$singletons = array();
+$singletons           = array();
+$singletons_hierarchy = array();
 
 trait Singleton {
 	/**
@@ -19,7 +20,7 @@ trait Singleton {
 	 *
 	 */
 	public static final function __StaticInit() {
-		global $singletons;
+		global $singletons, $singletons_hierarchy;
 
 		try {
 			$class = new \ReflectionClass( static::class );
@@ -35,14 +36,25 @@ trait Singleton {
 			//if ( method_exists( $instance, 'init' ) ) {
 			//	$instance->init();
 			//}
-			$singletons[ $class->getName() ] = $instance;
+
+			$parent = $class->getParentClass();
+			if ( $parent ) {
+				$singletons_hierarchy[ $parent->getName() ][ $class->getName() ] = &$instance;
+				while ( $parent = $parent->getParentClass() ) {
+					$singletons_hierarchy[ $parent->getName() ][ $class->getName() ] = &$instance;
+				}
+			}
+
+			$singletons_hierarchy[ $class->getName() ] = &$instance;
+
+			$singletons[ $class->getName() ] = &$instance;
 		}
 
 		return $singletons[ $class->getName() ];
 	}
 
 	public static final function InitFromConstructor( $that ) {
-		global $singletons;
+		global $singletons, $singletons_hierarchy;
 
 		try {
 			$class = new \ReflectionClass( $that );
@@ -57,8 +69,27 @@ trait Singleton {
 			//if ( method_exists( $instance, 'init' ) ) {
 			//	$instance->init();
 			//}
-			$singletons[ $class->getName() ] = $that;
+			$parent = $class->getParentClass();
+			if ( $parent ) {
+				$singletons_hierarchy[ $parent->getName() ][ $class->getName() ] = &$that;
+				while ( $parent = $parent->getParentClass() ) {
+					$singletons_hierarchy[ $parent->getName() ][ $class->getName() ] = &$that;
+				}
+			}
+			$singletons_hierarchy[ $class->getName() ] = &$that;
+			$singletons[ $class->getName() ]           = &$that;
 		}
+	}
+
+	/**
+	 * @param string $class
+	 *
+	 * @return array
+	 */
+	public static final function getSingletonsByClass( $class ) {
+		global $singletons_hierarchy;
+
+		return $singletons_hierarchy[ $class ];
 	}
 
 	/**
