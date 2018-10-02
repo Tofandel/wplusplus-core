@@ -82,22 +82,19 @@ trait Singleton {
 	}
 
 	/**
-	 * @param string $class
+	 * @param bool|string $class
 	 *
 	 * @return array
 	 */
-	public static final function getSingletonsByClass( $class ) {
-		global $singletons_hierarchy;
+	public static final function getSingletons( $class = false ) {
+		if ( ! empty( $class ) ) {
+			global $singletons_hierarchy;
 
-		return $singletons_hierarchy[ $class ];
-	}
+			return $singletons_hierarchy[ $class ];
+		} else {
+			global $singletons;
 
-	/**
-	 * @return array
-	 */
-	public static final function getSingletons() {
-		global $singletons;
-
-		return $singletons;
+			return $singletons;
+		}
 	}
 }

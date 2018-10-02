@@ -53,7 +53,7 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 
 
 	public function multisite_maybe_hide_plugin( $plugins ) {
-		if ( count( self::getSingletons() ) > 1 ) {
+		if ( count( self::getSingletons( WP_Plugin::class ) ) > 1 ) {
 			$updates = get_transient( 'update_plugins' );
 			if ( ! isset( $updates->response[ $this->getPluginFile() ] ) ) {
 				unset( $plugins[ $this->getPluginFile() ] );
@@ -65,7 +65,7 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 
 	public function maybe_hide_plugin() {
 		global $wp_list_table;
-		if ( count( self::getSingletons() ) > 1 && isset( $wp_list_table->items[ $this->getPluginFile() ] ) ) {
+		if ( count( self::getSingletons( WP_Plugin::class ) ) > 1 && isset( $wp_list_table->items[ $this->getPluginFile() ] ) ) {
 			$updates = get_transient( 'update_plugins' );
 			if ( ! isset( $updates->response[ $this->getPluginFile() ] ) ) {
 				unset( $wp_list_table->items[ $this->getPluginFile() ] );
@@ -80,7 +80,7 @@ class WPlusPlusCore extends WP_Plugin implements WP_Plugin_Interface {
 	 * @throws \ReflectionException
 	 */
 	private function searchPlugins( $plugins ) {
-		$non_core = self::getSingletonsByClass( WP_Plugin::class );
+		$non_core = self::getSingletons( WP_Plugin::class );
 		$class    = new \ReflectionClass( static::class );
 		$class->getName();
 		unset( $non_core[ $class->getName() ] );
