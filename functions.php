@@ -7,6 +7,20 @@
 
 //namespace Tofandel;
 
+if ( defined( 'WPP_MUPLUGIN' ) ) {
+	function wpp_before_theme_loaded( $root ) {
+		//Add a hook after the taxonomies and wp global variables are declared but before theme is loaded
+		do_action( 'before_theme_loaded' );
+		remove_filter( 'theme_root', 'wpp_before_theme_loaded' );
+
+		return $root;
+	}
+
+	add_filter( 'theme_root', 'wpp_before_theme_loaded' );
+} else {
+	define( 'WPP_MUPLUGIN', false );
+}
+
 if ( ! function_exists( 'wpp_array_insert_after' ) ) {
 	/**
 	 * Insert a value or key/value pair after a specific key in an array.  If key doesn't exist, value is appended

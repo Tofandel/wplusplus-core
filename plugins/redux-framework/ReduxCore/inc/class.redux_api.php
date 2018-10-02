@@ -550,7 +550,7 @@ if ( ! class_exists( 'Redux', false ) ) {
 				self::$extensions[ $name ][ $version ] = isset( self::$extensions[ $name ][ $version ] ) ? self::$extensions[ $name ][ $version ] : $class_file;
 
 				$api_check = str_replace( 'extension_' . $name, $name . '_api', $class_file );
-				if ( file_exists( $api_check ) && ! class_exists( 'Redux_' . ucfirst( $name, false ) ) ) {
+				if ( file_exists( $api_check ) && ! class_exists( 'Redux_' . ucfirst( $name ), false ) ) {
 					include_once( $api_check );
 				}
 			}

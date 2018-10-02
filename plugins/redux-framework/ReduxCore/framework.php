@@ -820,8 +820,6 @@ if ( ! class_exists( 'ReduxFramework', false ) ) {
 						set_theme_mod( $k, $v );
 					}
 				} else if ( $this->args['database'] === 'network' ) {
-					// Strip those slashes!
-					$value = json_decode( stripslashes( json_encode( $value ) ), true );
 					update_site_option( $this->args['opt_name'], $value );
 				} else {
 					update_option( $this->args['opt_name'], $value );
@@ -873,7 +871,6 @@ if ( ! class_exists( 'ReduxFramework', false ) ) {
 				$result = get_theme_mods();
 			} else if ( $this->args['database'] === 'network' ) {
 				$result = get_site_option( $this->args['opt_name'], array() );
-				$result = json_decode( stripslashes( json_encode( $result ) ), true );
 			} else {
 				$result = get_option( $this->args['opt_name'], array() );
 			}
