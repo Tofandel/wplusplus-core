@@ -342,7 +342,16 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			if ( is_admin() && ! wp_doing_ajax() ||
 			     ( wp_doing_ajax() && isset ( $_REQUEST['action'] ) &&
 			       ( $_REQUEST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_REQUEST['action'], 'redux' ) === 0 ) ) ) {
-				add_action( WPP_MUPLUGIN ? 'before_theme_loaded' : 'plugins_loaded', [ $this, '_reduxConfig' ] );
+
+				if ( WPP_MUPLUGIN ) {
+					add_action( 'before_theme_loaded', [ $this, '_reduxLoad' ] );
+				} else {
+					//Load redux as early as possible if for whatever reason the muplugin doesn't work
+					//Prevents old versions of redux to be loaded by other plugins
+					//As I will always have the latest, even the beta ones since I'm an active dev of it
+					$this->_reduxLoad();
+				}
+				add_action( 'plugins_loaded', [ $this, '_reduxConfig' ] );
 				add_action( 'init', [ $this, 'removeDemoModeLink' ] );
 			} else {
 				//We define it before in case some dummy used the option before plugins_loaded
@@ -1001,9 +1010,11 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	public function reduxInit( ReduxFramework $framework ) {
 	}
 
-	public function _reduxConfig() {
+	public function _reduxLoad() {
 		$module = new ReduxFramework( $this );
 		$this->setSubModule( $module );
+	}
+	public function _reduxConfig() {
 		$module = $this->getModule( ReduxFramework::class );
 		/**
 		 * @var ReduxFramework $module
