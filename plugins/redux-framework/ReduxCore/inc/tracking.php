@@ -201,9 +201,9 @@ if ( ! class_exists( 'Redux_Tracking', false ) ) {
 									allow_tracking: input,
 									nonce: nonce
 								};
-								jQuery.post(
+								$.post(
 									ajaxurl, redux_tracking_data, function () {
-										jQuery('#wp-pointer-0').remove();
+										$('#wp-pointer-0').remove();
 									}
 								);
 							}
@@ -211,10 +211,10 @@ if ( ! class_exists( 'Redux_Tracking', false ) ) {
 							redux_pointer_options = $.extend(
 								redux_pointer_options, {
 									buttons: function (event, t) {
-										button = jQuery('<a id="pointer-close" style="margin-left:5px" class="button-secondary">' + '<?php echo $button1; ?>' + '</a>');
-										button.bind(
-											'click.pointer', function () {
+										button = $('<a id="pointer-close" style="margin-left:5px" class="button-secondary">' + '<?php echo $button1; ?>' + '</a>');
+										button.on('click', function () {
 												t.element.pointer('close');
+											//todo SEND ajax request
 												//console.log( 'close button' );
 											}
 										);
@@ -228,13 +228,13 @@ if ( ! class_exists( 'Redux_Tracking', false ) ) {
 							setup = function () {
 								$('<?php echo $selector; ?>').pointer(redux_pointer_options).pointer('open');
 								<?php if ($button2) { ?>
-								jQuery('#pointer-close').after('<a id="pointer-primary" class="button-primary">' + '<?php echo $button2; ?>' + '</a>');
-								jQuery('#pointer-primary').click(
+								$('#pointer-close').after('<a id="pointer-primary" class="button-primary">' + '<?php echo $button2; ?>' + '</a>');
+								$('#pointer-primary').click(
 									function () {
 										<?php echo $button2_function; ?>
 									}
 								);
-								jQuery('#pointer-close').click(
+								$('#pointer-close').click(
 									function () {
 										<?php if ($button1_function == '') { ?>
 										redux_store_answer(input, nonce);
@@ -245,7 +245,7 @@ if ( ! class_exists( 'Redux_Tracking', false ) ) {
 									}
 								);
 								<?php } else if ($button1 && ! $button2) { ?>
-								jQuery('#pointer-close').click(
+								$('#pointer-close').click(
 									function () {
 										<?php if ($button1_function != '') { ?>
 										<?php echo $button1_function; ?>
@@ -256,7 +256,7 @@ if ( ! class_exists( 'Redux_Tracking', false ) ) {
 							};
 
 							if (redux_pointer_options.position && redux_pointer_options.position.defer_loading)
-								$(window).bind('load.wp-pointers', setup);
+								$(window).on('load.wp-pointers', setup);
 							else
 								$(document).ready(setup);
 						}

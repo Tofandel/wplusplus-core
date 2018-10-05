@@ -169,12 +169,11 @@ if ( ! class_exists( 'ReduxFramework_multi_media', false ) ) {
 
 					// Check for valud image extension
 					if ( $this->is_valid_img_ext( $url ) ) {
-
 						// Add image to array
 						$imgArr[] =
 							'<li class="img_status">' .
-							wp_get_attachment_image( $id, array( 50, 50 ) ) .
-							'<p class="redux_remove_wrapper"><a href="#" class="redux_remove_file_button">' . __( 'Remove Image', 'redux-framework' ) . '</a></p>
+							wp_get_attachment_image( $id, 'thumbnail', false, array( 'class' => 'redux-option-image' ) ) .
+							'<p class="redux_remove_wrapper"><a href="#" class="button remove-image redux_remove_file_button">' . __( 'Remove Image', 'redux-framework' ) . '</a></p>
                             ' . $id_input . '
                         </li>';
 

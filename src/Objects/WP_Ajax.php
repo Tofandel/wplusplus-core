@@ -37,12 +37,12 @@ class WP_Ajax {
 		add_action( 'wp_ajax_' . $action, [ $this, 'call' ], 10, 0 );
 		if ( ! $private ) {
 			add_action( 'wp_ajax_nopriv_' . $action, [ $this, 'call' ], 10, 0 );
-		} else {
-			if ( $referer == true ) {
-				$referer = $action;
-			}
-			$this->referer = $referer;
 		}
+
+		if ( $referer == true ) {
+			$referer = $action;
+		}
+		$this->referer = $referer;
 
 		$this->action = $action;
 

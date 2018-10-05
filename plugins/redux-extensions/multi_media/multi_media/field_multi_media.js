@@ -156,7 +156,6 @@
 
 		// Make form field ID
 		var $formfield = $('#' + inputID);
-		console.log(inputID);
 
 		// Get form name
 		var formName = $formfield.attr('name');
@@ -248,12 +247,12 @@
 
 					// Handle images
 					if (this.type && this.type === 'image') {
-
+						var url = 'thumbnail' in this.sizes ? this.sizes.thumbnail.url : this.url;
 						// image preview
 						uploadStatus =
 							'<li class="img_status">' +
-							'<img width="50" height="50" src="' + this.url + '" class="attachment-50x50" alt="' + this.filename + '">' +
-							'<p><a href="#" class="redux_remove_file_button" rel="' + inputID + '[' + this.id + ']">' + l10n.remove_image + '</a></p>' +
+							'<img src="' + url + '" class="redux-option-image" alt="' + this.filename + '">' +
+							'<p><a href="#" class="button remove-image redux_remove_file_button" rel="' + inputID + '[' + this.id + ']">' + l10n.remove_image + '</a></p>' +
 							'<input type="hidden" id="filelist-' + this.id + '" name="' + formName + '[' + this.id + ']" value="' + this.url + '">' +
 							'</li>';
 

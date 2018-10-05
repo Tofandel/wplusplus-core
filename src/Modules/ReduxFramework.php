@@ -30,6 +30,8 @@ class ReduxFramework implements SubModule {
 	private $metabox;
 
 	public function __construct( WP_Plugin &$parent = null ) {
+		ReduxConfig::loadRedux();
+
 		$this->ParentConstruct( $parent );
 		if ( $parent ) {
 			$this->opt_name = $parent->getReduxOptName();

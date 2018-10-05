@@ -112,7 +112,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * @param SubModule $submodule
+	 * @param string|SubModule $submodule
 	 */
 	public function setSubModule( $submodule ) {
 		if ( $submodule instanceof SubModule ) {
@@ -122,6 +122,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			} catch ( \ReflectionException $exception ) {
 				error_log( $exception->getMessage() );
 			}
+		} elseif ( is_string( $submodule ) ) {
+			$this->modules[ $submodule ] = new $submodule( $this );
 		}
 	}
 
