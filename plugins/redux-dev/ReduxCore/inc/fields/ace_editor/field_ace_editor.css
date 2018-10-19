@@ -1,0 +1,16 @@
+.redux-container-ace_editor .ace-wrapper {
+  position: static;
+}
+
+.redux-container-ace_editor .ace_editor {
+  height: 200px;
+  border-radius: 3px;
+}
+
+.redux-container-ace_editor .ace_gutter {
+  z-index: 1 !important;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZmllbGRfYWNlX2VkaXRvci5jc3MiLCJzb3VyY2VzIjpbImZpZWxkX2FjZV9lZGl0b3Iuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxBQUNJLDJCQUR1QixDQUN2QixZQUFZLENBQUM7RUFDVCxRQUFRLEVBQUUsTUFBTTtDQUNuQjs7QUFITCxBQUtJLDJCQUx1QixDQUt2QixXQUFXLENBQUM7RUFDUixNQUFNLEVBQUUsS0FBSztFQUNiLHFCQUFxQixFQUFFLEdBQUc7RUFDMUIsa0JBQWtCLEVBQUUsR0FBRztFQUN2QixhQUFhLEVBQUUsR0FBRztDQUNyQjs7QUFWTCxBQVlJLDJCQVp1QixDQVl2QixXQUFXLENBQUM7RUFDUixPQUFPLEVBQUUsWUFBWTtDQUN4QiJ9 */
+
+/*# sourceMappingURL=field_ace_editor.css.map */

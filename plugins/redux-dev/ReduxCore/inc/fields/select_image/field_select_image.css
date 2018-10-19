@@ -1,0 +1,20 @@
+.redux-container-select_image {
+  margin-top: 2px;
+  margin-left: 5px;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.redux-preview-image {
+  max-height: 250px;
+  max-width: 250px;
+  padding: 5px;
+  margin-top: 10px;
+  border: 1px solid #e3e3e3;
+  background: #f7f7f7;
+  border-radius: 3px;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZmllbGRfc2VsZWN0X2ltYWdlLmNzcyIsInNvdXJjZXMiOlsiZmllbGRfc2VsZWN0X2ltYWdlLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsQUFBQSw2QkFBNkIsQ0FBQztFQUMxQixVQUFVLEVBQUUsR0FBRztFQUNmLFdBQVcsRUFBRSxHQUFHO0VBQ2hCLEtBQUssRUFBRSxJQUFJO0VBQ1gsYUFBYSxFQUFFLENBQUM7Q0FDbkI7O0FBRUQsQUFBQSxvQkFBb0IsQ0FBQztFQUNqQixVQUFVLEVBQUUsS0FBSztFQUNqQixTQUFTLEVBQUUsS0FBSztFQUNoQixPQUFPLEVBQUUsR0FBRztFQUNaLFVBQVUsRUFBRSxJQUFJO0VBQ2hCLE1BQU0sRUFBRSxpQkFBaUI7RUFDekIsVUFBVSxFQUFFLE9BQU87RUFDbkIsa0JBQWtCLEVBQUUsR0FBRztFQUN2QixvQkFBb0IsRUFBRSxHQUFHO0VBQ3pCLHFCQUFxQixFQUFFLEdBQUc7RUFDMUIsYUFBYSxFQUFFLEdBQUc7Q0FDckIifQ== */
+
+/*# sourceMappingURL=field_select_image.css.map */

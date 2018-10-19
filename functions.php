@@ -17,7 +17,8 @@ if ( defined( 'WPP_MUPLUGIN' ) ) {
 	}
 
 	add_filter( 'theme_root', 'wpp_before_theme_loaded' );
-} else {
+}
+else {
 	define( 'WPP_MUPLUGIN', false );
 }
 
@@ -28,9 +29,9 @@ if ( ! function_exists( 'wpp_array_insert_after' ) ) {
 	 *
 	 * @since 1.9
 	 *
-	 * @param array $array
+	 * @param array  $array
 	 * @param string $key
-	 * @param array $new
+	 * @param array  $new
 	 *
 	 * @return array
 	 */
@@ -44,7 +45,7 @@ if ( ! function_exists( 'wpp_array_insert_after' ) ) {
 }
 if ( ! function_exists( 'wpp_admin_notice' ) ) {
 	/**
-	 * @param $text
+	 * @param        $text
 	 * @param string $type
 	 */
 	function wpp_admin_notice( $text, $type = 'success' ) {
@@ -63,8 +64,8 @@ if ( ! function_exists( 'wpp_remove_domain_from_url' ) ) {
 	 * @return mixed
 	 */
 	function wpp_remove_domain_from_url( $url ) {
-		if ( preg_match( '#(?:https?:\/\/)?[^\/]*?(\/.*)#', $url, $matches ) ) {
-			return $matches[1];
+		if ( preg_match( '#(?:(?:https?:)?\/\/)[^\/]*(\/.*)?#', $url, $matches ) ) {
+			return $matches[ 1 ];
 		}
 
 		return $url;
@@ -73,14 +74,14 @@ if ( ! function_exists( 'wpp_remove_domain_from_url' ) ) {
 
 if ( ! function_exists( 'wpp_get_domain_from_url' ) ) {
 	/**
-	 * @param $url
+	 * @param      $url
 	 * @param bool $scheme
 	 *
 	 * @return string
 	 */
 	function wpp_get_domain_from_url( $url, $scheme = false ) {
 		if ( preg_match( '#(https?:\/\/)?([^\/]*?)\/.*#', $url, $matches ) ) {
-			return $scheme ? $matches[1] . $matches[2] : $matches[2];
+			return $scheme ? $matches[ 1 ] . $matches[ 2 ] : $matches[ 2 ];
 		}
 
 		return $url;
@@ -89,7 +90,7 @@ if ( ! function_exists( 'wpp_get_domain_from_url' ) ) {
 
 if ( ! function_exists( 'wpp_has_shortcode' ) ) {
 	/**
-	 * @param string $string
+	 * @param string       $string
 	 * @param string|array $shortcode
 	 *
 	 * @return bool
@@ -106,7 +107,8 @@ if ( ! function_exists( 'wpp_has_shortcode' ) ) {
 					return true;
 				}
 			}
-		} else {
+		}
+		else {
 			$shortcode_tags = array( $shortcode => '' );
 			if ( has_shortcode( $string, $shortcode ) ) {
 				$shortcode_tags = $old;
@@ -123,10 +125,10 @@ if ( ! function_exists( 'wpp_has_shortcode' ) ) {
 
 if ( ! function_exists( 'wpp_unique_slug' ) ) {
 	/**
-	 * @param string $string The string to slugifiy
-	 * @param bool $prepend Can be (and should) be used as a vendor name to separate slugs
+	 * @param string $string  The string to slugifiy
+	 * @param bool   $prepend Can be (and should) be used as a vendor name to separate slugs
 	 *
-	 * @param array $other_slugs
+	 * @param array  $other_slugs
 	 *
 	 * @return string
 	 */
@@ -165,8 +167,8 @@ if ( ! function_exists( 'wpp_get_editable_users' ) ) {
 			$args = array_merge( $args, array( 'role__in' => array_keys( $roles ) ) );
 
 			$args = wpp_apply_filters( 'wpp_get_editable_users_args', $args );
-			if ( empty( $args['role__in'] ) ) {
-				$args['include'] = array_merge( wp_get_users_with_no_role(), array( get_current_user_id() ) );
+			if ( empty( $args[ 'role__in' ] ) ) {
+				$args[ 'include' ] = array_merge( wp_get_users_with_no_role(), array( get_current_user_id() ) );
 			}
 
 			$users_t = get_users( $args );
@@ -195,7 +197,8 @@ if ( ! function_exists( 'wpp_apply_filter' ) ) {
 	function wpp_apply_filters( $filter, $value ) {
 		if ( ! has_filter( $filter ) ) {
 			return $value;
-		} else {
+		}
+		else {
 			$args = func_get_args();
 
 			return call_user_func_array( 'apply_filters', $args );
@@ -205,7 +208,7 @@ if ( ! function_exists( 'wpp_apply_filter' ) ) {
 
 if ( ! function_exists( 'get_post_transient' ) ) {
 	/**
-	 * @param int $post_id
+	 * @param int    $post_id
 	 * @param string $transient
 	 *
 	 * @return mixed
@@ -218,10 +221,10 @@ if ( ! function_exists( 'get_post_transient' ) ) {
 
 if ( ! function_exists( 'set_post_transient' ) ) {
 	/**
-	 * @param int $post_id
+	 * @param int    $post_id
 	 * @param string $transient
-	 * @param mixed $value
-	 * @param int $expiration
+	 * @param mixed  $value
+	 * @param int    $expiration
 	 *
 	 * @return bool
 	 */
@@ -233,7 +236,7 @@ if ( ! function_exists( 'set_post_transient' ) ) {
 
 if ( ! function_exists( 'delete_post_transient' ) ) {
 	/**
-	 * @param int $post_id
+	 * @param int    $post_id
 	 * @param string $transient
 	 *
 	 * @return bool
@@ -256,7 +259,7 @@ if ( ! function_exists( 'delete_expired_post_transients' ) ) {
 
 if ( ! function_exists( 'get_user_transient' ) ) {
 	/**
-	 * @param int $user_id
+	 * @param int    $user_id
 	 * @param string $transient
 	 *
 	 * @return mixed
@@ -268,10 +271,10 @@ if ( ! function_exists( 'get_user_transient' ) ) {
 
 if ( ! function_exists( 'set_user_transient' ) ) {
 	/**
-	 * @param int $user_id
+	 * @param int    $user_id
 	 * @param string $transient
-	 * @param mixed $value
-	 * @param int $expiration
+	 * @param mixed  $value
+	 * @param int    $expiration
 	 *
 	 * @return bool
 	 */
@@ -282,7 +285,7 @@ if ( ! function_exists( 'set_user_transient' ) ) {
 
 if ( ! function_exists( 'delete_user_transient' ) ) {
 	/**
-	 * @param int $user_id
+	 * @param int    $user_id
 	 * @param string $transient
 	 *
 	 * @return bool
@@ -313,7 +316,7 @@ if ( ! function_exists( 'get_object_transient' ) ) {
 	 * @since 2.8.0
 	 *
 	 * @param string $object
-	 * @param int $object_id
+	 * @param int    $object_id
 	 * @param string $transient Transient name. Expected to not be SQL-escaped.
 	 *
 	 * @return mixed Value of transient.
@@ -333,10 +336,10 @@ if ( ! function_exists( 'get_object_transient' ) ) {
 		 * @since 2.8.0
 		 * @since 4.4.0 The `$transient` parameter was added
 		 *
-		 * @param mixed $pre_transient The default value to return if the transient does not exist.
+		 * @param mixed  $pre_transient The default value to return if the transient does not exist.
 		 *                              Any value other than false will short-circuit the retrieval
 		 *                              of the transient, and return the returned value.
-		 * @param string $transient Transient name.
+		 * @param string $transient     Transient name.
 		 */
 		$pre = wpp_apply_filters( "pre_{$object}_transient_{$transient}", false, $transient, $object_id );
 		if ( false !== $pre ) {
@@ -345,7 +348,8 @@ if ( ! function_exists( 'get_object_transient' ) ) {
 
 		if ( wp_using_ext_object_cache() ) {
 			$value = wp_cache_get( $object_id . '_' . $transient, "{$object}_transient" );
-		} else {
+		}
+		else {
 			$transient_option  = '_transient_' . $transient;
 			$transient_timeout = '_transient_timeout_' . $transient;
 			$timeout           = get_metadata( $object, $object_id, $transient_timeout, true );
@@ -368,7 +372,7 @@ if ( ! function_exists( 'get_object_transient' ) ) {
 		 * @since 2.8.0
 		 * @since 4.4.0 The `$transient` parameter was added
 		 *
-		 * @param mixed $value Value of transient.
+		 * @param mixed  $value     Value of transient.
 		 * @param string $transient Transient name.
 		 */
 		return wpp_apply_filters( "{$object}_transient_{$transient}", $value, $transient );
@@ -385,12 +389,12 @@ if ( ! function_exists( 'set_object_transient' ) ) {
 	 * @since 2.8.0
 	 *
 	 * @param string $object
-	 * @param int $object_id
-	 * @param string $transient Transient name. Expected to not be SQL-escaped. Must be
+	 * @param int    $object_id
+	 * @param string $transient  Transient name. Expected to not be SQL-escaped. Must be
 	 *                           172 characters or fewer in length.
-	 * @param mixed $value Transient value. Must be serializable if non-scalar.
+	 * @param mixed  $value      Transient value. Must be serializable if non-scalar.
 	 *                           Expected to not be SQL-escaped.
-	 * @param int $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
+	 * @param int    $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
 	 *
 	 * @return bool False if value was not set and true if value was set.
 	 */
@@ -409,9 +413,9 @@ if ( ! function_exists( 'set_object_transient' ) ) {
 		 * @since 4.2.0 The `$expiration` parameter was added.
 		 * @since 4.4.0 The `$transient` parameter was added.
 		 *
-		 * @param mixed $value New value of transient.
-		 * @param int $expiration Time until expiration in seconds.
-		 * @param string $transient Transient name.
+		 * @param mixed  $value      New value of transient.
+		 * @param int    $expiration Time until expiration in seconds.
+		 * @param string $transient  Transient name.
 		 */
 		$value = wpp_apply_filters( "pre_set_{$object}_transient_{$transient}", $value, $expiration, $transient );
 
@@ -422,15 +426,16 @@ if ( ! function_exists( 'set_object_transient' ) ) {
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param int $expiration Time until expiration in seconds. Use 0 for no expiration.
-		 * @param mixed $value New value of transient.
-		 * @param string $transient Transient name.
+		 * @param int    $expiration Time until expiration in seconds. Use 0 for no expiration.
+		 * @param mixed  $value      New value of transient.
+		 * @param string $transient  Transient name.
 		 */
 		$expiration = wpp_apply_filters( "expiration_of_{$object}_transient_{$transient}", $expiration, $value, $transient );
 
 		if ( wp_using_ext_object_cache() ) {
 			$result = wp_cache_set( $object_id . '_' . $transient, $value, "{$object}_transient", $expiration );
-		} else {
+		}
+		else {
 			$transient_timeout = '_transient_timeout_' . $transient;
 			$transient_option  = '_transient_' . $transient;
 			if ( false === get_metadata( $object, $object_id, $transient_option, true ) ) {
@@ -438,7 +443,8 @@ if ( ! function_exists( 'set_object_transient' ) ) {
 					add_metadata( $object, $object_id, $transient_timeout, time() + $expiration, true );
 				}
 				$result = add_metadata( $object, $object_id, $transient_option, $value, true );
-			} else {
+			}
+			else {
 				// If expiration is requested, but the transient has no timeout option,
 				// delete, then re-create transient rather than update.
 				$update = true;
@@ -448,7 +454,8 @@ if ( ! function_exists( 'set_object_transient' ) ) {
 						add_metadata( $object, $object_id, $transient_timeout, time() + $expiration, true );
 						$result = add_metadata( $object, $object_id, $transient_option, $value, true );
 						$update = false;
-					} else {
+					}
+					else {
 						update_metadata( $object, $object_id, $transient_timeout, time() + $expiration );
 					}
 				}
@@ -469,9 +476,9 @@ if ( ! function_exists( 'set_object_transient' ) ) {
 			 * @since 3.6.0 The `$value` and `$expiration` parameters were added.
 			 * @since 4.4.0 The `$transient` parameter was added.
 			 *
-			 * @param mixed $value Transient value.
-			 * @param int $expiration Time until expiration in seconds.
-			 * @param string $transient The name of the transient.
+			 * @param mixed  $value      Transient value.
+			 * @param int    $expiration Time until expiration in seconds.
+			 * @param string $transient  The name of the transient.
 			 */
 			do_action( "set_{$object}_transient_{$transient}", $value, $expiration, $transient );
 
@@ -481,9 +488,9 @@ if ( ! function_exists( 'set_object_transient' ) ) {
 			 * @since 3.0.0
 			 * @since 3.6.0 The `$value` and `$expiration` parameters were added.
 			 *
-			 * @param string $transient The name of the transient.
-			 * @param mixed $value Transient value.
-			 * @param int $expiration Time until expiration in seconds.
+			 * @param string $transient  The name of the transient.
+			 * @param mixed  $value      Transient value.
+			 * @param int    $expiration Time until expiration in seconds.
 			 */
 			do_action( "setted_{$object}_transient", $transient, $value, $expiration );
 
@@ -502,7 +509,7 @@ if ( ! function_exists( 'delete_object_transient' ) ) {
 	 * @since 2.8.0
 	 *
 	 * @param string $object
-	 * @param int $object_id
+	 * @param int    $object_id
 	 * @param string $transient Transient name. Expected to not be SQL-escaped.
 	 *
 	 * @return bool true if successful, false otherwise
@@ -524,7 +531,8 @@ if ( ! function_exists( 'delete_object_transient' ) ) {
 
 		if ( wp_using_ext_object_cache() ) {
 			$result = wp_cache_delete( $transient, "{$object}_transient" );
-		} else {
+		}
+		else {
 			$option_timeout = '_transient_timeout_' . $transient;
 			$option         = '_transient_' . $transient;
 			$result         = delete_metadata( $object, $object_id, $option );
@@ -560,7 +568,7 @@ if ( ! function_exists( 'delete_expired_object_transients' ) ) {
 	 * @since 4.9.0
 	 *
 	 * @param string $object
-	 * @param bool $force_db Optional. Force cleanup to run against the database even when an external object cache is used.
+	 * @param bool   $force_db Optional. Force cleanup to run against the database even when an external object cache is used.
 	 */
 	function delete_expired_object_transients( $object = 'user', $force_db = false ) {
 		global $wpdb;
@@ -608,25 +616,26 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 			$user->ID         = (int) $user_id;
 			$userdata         = get_userdata( $user_id );
 			$user->user_login = wp_slash( $userdata->user_login );
-		} else {
+		}
+		else {
 			$update = false;
 		}
 
-		if ( ! $update && isset( $_POST['user_login'] ) ) {
-			$user->user_login = sanitize_user( $_POST['user_login'], true );
+		if ( ! $update && isset( $_POST[ 'user_login' ] ) ) {
+			$user->user_login = sanitize_user( $_POST[ 'user_login' ], true );
 		}
 
 		$pass1 = $pass2 = '';
-		if ( isset( $_POST['pass1'] ) ) {
-			$pass1 = $_POST['pass1'];
+		if ( isset( $_POST[ 'pass1' ] ) ) {
+			$pass1 = $_POST[ 'pass1' ];
 		}
-		if ( isset( $_POST['pass2'] ) ) {
-			$pass2 = $_POST['pass2'];
+		if ( isset( $_POST[ 'pass2' ] ) ) {
+			$pass2 = $_POST[ 'pass2' ];
 		}
 
 		$errors = new WP_Error();
-		if ( isset( $_POST['role'] ) ) {
-			$new_role       = sanitize_text_field( $_POST['role'] );
+		if ( isset( $_POST[ 'role' ] ) ) {
+			$new_role       = sanitize_text_field( $_POST[ 'role' ] );
 			$potential_role = isset( $wp_roles->role_objects[ $new_role ] ) ? $wp_roles->role_objects[ $new_role ] : false;
 			// Don't let anyone with 'edit_users' (admins) edit their own role to something without it.
 			// Multisite super admins can freely edit their blog roles -- they possess all caps.
@@ -643,33 +652,34 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 			}
 		}
 
-		if ( isset( $_POST['email'] ) ) {
-			$user->user_email = sanitize_text_field( wp_unslash( $_POST['email'] ) );
+		if ( isset( $_POST[ 'email' ] ) ) {
+			$user->user_email = sanitize_text_field( wp_unslash( $_POST[ 'email' ] ) );
 		}
-		if ( isset( $_POST['url'] ) ) {
-			if ( empty ( $_POST['url'] ) || $_POST['url'] == 'http://' ) {
+		if ( isset( $_POST[ 'url' ] ) ) {
+			if ( empty ( $_POST[ 'url' ] ) || $_POST[ 'url' ] == 'http://' ) {
 				$user->user_url = '';
-			} else {
-				$user->user_url = esc_url_raw( $_POST['url'] );
+			}
+			else {
+				$user->user_url = esc_url_raw( $_POST[ 'url' ] );
 				$protocols      = implode( '|', array_map( 'preg_quote', wp_allowed_protocols() ) );
 				$user->user_url = preg_match( '/^(' . $protocols . '):/is', $user->user_url ) ? $user->user_url : 'http://' . $user->user_url;
 			}
 		}
-		if ( isset( $_POST['first_name'] ) ) {
-			$user->first_name = sanitize_text_field( $_POST['first_name'] );
+		if ( isset( $_POST[ 'first_name' ] ) ) {
+			$user->first_name = sanitize_text_field( $_POST[ 'first_name' ] );
 		}
-		if ( isset( $_POST['last_name'] ) ) {
-			$user->last_name = sanitize_text_field( $_POST['last_name'] );
+		if ( isset( $_POST[ 'last_name' ] ) ) {
+			$user->last_name = sanitize_text_field( $_POST[ 'last_name' ] );
 		}
-		if ( isset( $_POST['nickname'] ) ) {
-			$user->nickname = sanitize_text_field( $_POST['nickname'] );
+		if ( isset( $_POST[ 'nickname' ] ) ) {
+			$user->nickname = sanitize_text_field( $_POST[ 'nickname' ] );
 		}
-		if ( isset( $_POST['display_name'] ) ) {
-			$user->display_name = sanitize_text_field( $_POST['display_name'] );
+		if ( isset( $_POST[ 'display_name' ] ) ) {
+			$user->display_name = sanitize_text_field( $_POST[ 'display_name' ] );
 		}
 
-		if ( isset( $_POST['description'] ) ) {
-			$user->description = trim( $_POST['description'] );
+		if ( isset( $_POST[ 'description' ] ) ) {
+			$user->description = trim( $_POST[ 'description' ] );
 		}
 
 		foreach ( wp_get_user_contact_methods( $user ) as $method => $name ) {
@@ -679,19 +689,21 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 		}
 
 		if ( $update ) {
-			$user->rich_editing         = isset( $_POST['rich_editing'] ) && 'false' === $_POST['rich_editing'] ? 'false' : 'true';
-			$user->syntax_highlighting  = isset( $_POST['syntax_highlighting'] ) && 'false' === $_POST['syntax_highlighting'] ? 'false' : 'true';
-			$user->admin_color          = isset( $_POST['admin_color'] ) ? sanitize_text_field( $_POST['admin_color'] ) : 'fresh';
-			$user->show_admin_bar_front = isset( $_POST['admin_bar_front'] ) ? 'true' : 'false';
+			$user->rich_editing         = isset( $_POST[ 'rich_editing' ] ) && 'false' === $_POST[ 'rich_editing' ] ? 'false' : 'true';
+			$user->syntax_highlighting  = isset( $_POST[ 'syntax_highlighting' ] ) && 'false' === $_POST[ 'syntax_highlighting' ] ? 'false' : 'true';
+			$user->admin_color          = isset( $_POST[ 'admin_color' ] ) ? sanitize_text_field( $_POST[ 'admin_color' ] ) : 'fresh';
+			$user->show_admin_bar_front = isset( $_POST[ 'admin_bar_front' ] ) ? 'true' : 'false';
 			$user->locale               = '';
 
-			if ( isset( $_POST['locale'] ) ) {
-				$locale = sanitize_text_field( $_POST['locale'] );
+			if ( isset( $_POST[ 'locale' ] ) ) {
+				$locale = sanitize_text_field( $_POST[ 'locale' ] );
 				if ( 'site-default' === $locale ) {
 					$locale = '';
-				} elseif ( '' === $locale ) {
+				}
+				elseif ( '' === $locale ) {
 					$locale = 'en_US';
-				} elseif ( ! in_array( $locale, get_available_languages(), true ) ) {
+				}
+				elseif ( ! in_array( $locale, get_available_languages(), true ) ) {
 					$locale = '';
 				}
 
@@ -699,10 +711,10 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 			}
 		}
 
-		$user->comment_shortcuts = isset( $_POST['comment_shortcuts'] ) && 'true' == $_POST['comment_shortcuts'] ? 'true' : '';
+		$user->comment_shortcuts = isset( $_POST[ 'comment_shortcuts' ] ) && 'true' == $_POST[ 'comment_shortcuts' ] ? 'true' : '';
 
 		$user->use_ssl = 0;
-		if ( ! empty( $_POST['use_ssl'] ) ) {
+		if ( ! empty( $_POST[ 'use_ssl' ] ) ) {
 			$user->use_ssl = 1;
 		}
 
@@ -723,8 +735,8 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 		 * @since 1.5.1
 		 *
 		 * @param string $user_login The username.
-		 * @param string $pass1 The password (passed by reference).
-		 * @param string $pass2 The confirmed password (passed by reference).
+		 * @param string $pass1      The password (passed by reference).
+		 * @param string $pass2      The confirmed password (passed by reference).
 		 */
 		do_action_ref_array( 'check_passwords', array( $user->user_login, &$pass1, &$pass2 ) );
 
@@ -747,7 +759,7 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 			$user->user_pass = $pass1;
 		}
 
-		if ( ! $update && isset( $_POST['user_login'] ) && ! validate_username( $_POST['user_login'] ) ) {
+		if ( ! $update && isset( $_POST[ 'user_login' ] ) && ! validate_username( $_POST[ 'user_login' ] ) ) {
 			$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.' ) );
 		}
 
@@ -765,9 +777,11 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 		/* checking email address */
 		if ( empty( $user->user_email ) ) {
 			$errors->add( 'empty_email', __( '<strong>ERROR</strong>: Please enter an email address.' ), array( 'form-field' => 'email' ) );
-		} elseif ( ! is_email( $user->user_email ) ) {
+		}
+		elseif ( ! is_email( $user->user_email ) ) {
 			$errors->add( 'invalid_email', __( '<strong>ERROR</strong>: The email address isn&#8217;t correct.' ), array( 'form-field' => 'email' ) );
-		} elseif ( ( $owner_id = email_exists( $user->user_email ) ) && ( ! $update || ( $owner_id != $user->ID ) ) ) {
+		}
+		elseif ( ( $owner_id = email_exists( $user->user_email ) ) && ( ! $update || ( $owner_id != $user->ID ) ) ) {
 			$errors->add( 'email_exists', __( '<strong>ERROR</strong>: This email is already registered, please choose another one.' ), array( 'form-field' => 'email' ) );
 		}
 
@@ -777,8 +791,8 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 		 * @since 2.8.0
 		 *
 		 * @param WP_Error $errors WP_Error object (passed by reference).
-		 * @param bool $update Whether this is a user update.
-		 * @param stdClass $user User object (passed by reference).
+		 * @param bool     $update Whether this is a user update.
+		 * @param stdClass $user   User object (passed by reference).
 		 */
 		do_action_ref_array( 'user_profile_update_errors', array( &$errors, $update, &$user ) );
 
@@ -788,9 +802,10 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 
 		if ( $update ) {
 			$user_id = wp_update_user( $user );
-		} else {
+		}
+		else {
 			$user_id = wp_insert_user( $user );
-			$notify  = isset( $_POST['send_user_notification'] ) ? 'user' : '';
+			$notify  = isset( $_POST[ 'send_user_notification' ] ) ? 'user' : '';
 
 			if ( ! empty( $notify ) ) {
 				/**
@@ -798,8 +813,8 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 				 *
 				 * @since 4.4.0
 				 *
-				 * @param int $user_id ID of the newly created user.
-				 * @param string $notify Type of notification that should happen. See wp_send_new_user_notifications()
+				 * @param int    $user_id ID of the newly created user.
+				 * @param string $notify  Type of notification that should happen. See wp_send_new_user_notifications()
 				 *                        for more information on possible values.
 				 */
 				do_action( 'edit_user_created_user', $user_id, $notify );
@@ -869,7 +884,7 @@ if ( ! function_exists( 'wpp_is_plugin_active_for_network' ) ) {
 
 if ( ! function_exists( 'wpp_slugify' ) ) {
 	/**
-	 * @param $string
+	 * @param      $string
 	 * @param bool $slashes
 	 *
 	 * @return mixed|null|string|string[]
@@ -921,7 +936,7 @@ if ( ! function_exists( 'wpp_slugify' ) ) {
 			' ' => '-',
 		);
 		if ( $slashes ) {
-			$normalizeChars['/'] = '-';
+			$normalizeChars[ '/' ] = '-';
 		}
 		$string = strtr( $string, $normalizeChars );
 		//Make alphanumeric (removes all other characters)
@@ -939,9 +954,9 @@ if ( ! function_exists( 'wpp_order_by' ) ) {
 	/**
 	 * Order a multidimensional array from a subelement set specified as a path "foo.bar.orderValue"
 	 *
-	 * @param array $array
+	 * @param array  $array
 	 * @param string $path
-	 * @param bool $keep_keys
+	 * @param bool   $keep_keys
 	 *
 	 * @return array
 	 * @throws Exception
@@ -962,7 +977,8 @@ if ( ! function_exists( 'wpp_order_by' ) ) {
 				$k = $path[ $i ];
 				if ( isset( $v1[ $k ] ) ) {
 					$v1 = $v1[ $k ];
-				} else {
+				}
+				else {
 					$v1 = '0';
 				}
 			}
@@ -971,7 +987,8 @@ if ( ! function_exists( 'wpp_order_by' ) ) {
 				$k = $path[ $i ];
 				if ( isset( $v2[ $k ] ) ) {
 					$v2 = $v2[ $k ];
-				} else {
+				}
+				else {
 					$v2 = '0';
 				}
 			}
@@ -989,7 +1006,7 @@ if ( ! function_exists( 'wpp_group_by' ) ) {
 	 *
 	 * If multiple elements exist with the same value they will be grouped and merged recursively (the scalar elements will become indexed array)
 	 *
-	 * @param array $array
+	 * @param array  $array
 	 * @param string $path
 	 *
 	 * @return array
@@ -1011,7 +1028,8 @@ if ( ! function_exists( 'wpp_group_by' ) ) {
 				$k = $path[ $i ];
 				if ( isset( $v[ $k ] ) ) {
 					$v = $v[ $k ];
-				} else {
+				}
+				else {
 					$v = '0';
 				}
 			}
@@ -1020,7 +1038,8 @@ if ( ! function_exists( 'wpp_group_by' ) ) {
 			}
 			if ( ! empty( $new_array[ $v ] ) ) {
 				$new_array[ $v ] = array_merge_recursive( $new_array[ $v ], $a );
-			} else {
+			}
+			else {
 				$new_array[ $v ] = $a;
 			}
 		}
@@ -1042,10 +1061,12 @@ if ( ! function_exists( 'wpp_remove_empty_elements' ) ) {
 			if ( is_array( $value ) ) {
 				if ( empty( $value ) ) {
 					unset( $array[ $key ] );
-				} else {
+				}
+				else {
 					$array[ $key ] = wpp_remove_empty_elements( $value );
 				}
-			} else {
+			}
+			else {
 				if ( empty( $value ) ) {
 					unset( $array[ $key ] );
 				}
@@ -1069,7 +1090,8 @@ if ( ! function_exists( 'wpp_timezone_offset' ) ) {
 			$timezone_object = new DateTimeZone( $timezone );
 
 			return $timezone_object->getOffset( new DateTime( 'now' ) );
-		} else {
+		}
+		else {
 			return floatval( get_option( 'gmt_offset', 0 ) ) * HOUR_IN_SECONDS;
 		}
 	}
@@ -1080,7 +1102,7 @@ if ( ! function_exists( 'wpp_string_to_timestamp' ) ) {
 	/**
 	 * Convert mysql datetime to PHP timestamp, forcing UTC. Wrapper for strtotime.
 	 *
-	 * @param  string $time_string Time string.
+	 * @param  string   $time_string    Time string.
 	 * @param  int|null $from_timestamp Timestamp to convert from.
 	 *
 	 * @return int
@@ -1093,7 +1115,8 @@ if ( ! function_exists( 'wpp_string_to_timestamp' ) ) {
 
 		if ( null === $from_timestamp ) {
 			$next_timestamp = strtotime( $time_string );
-		} else {
+		}
+		else {
 			$next_timestamp = strtotime( $time_string, $from_timestamp );
 		}
 
@@ -1140,8 +1163,8 @@ if ( ! function_exists( 'wp_timezone_string' ) ) {
 		// Last try, guess timezone string manually.
 		foreach ( timezone_abbreviations_list() as $abbr ) {
 			foreach ( $abbr as $city ) {
-				if ( (bool) date( 'I' ) === (bool) $city['dst'] && $city['timezone_id'] && intval( $city['offset'] ) === $utc_offset ) {
-					return $city['timezone_id'];
+				if ( (bool) date( 'I' ) === (bool) $city[ 'dst' ] && $city[ 'timezone_id' ] && intval( $city[ 'offset' ] ) === $utc_offset ) {
+					return $city[ 'timezone_id' ];
 				}
 			}
 		}
@@ -1157,8 +1180,8 @@ if ( ! function_exists( 'wpp_doing_it_wrong' ) ) {
 	 * Wrapper for wpp_doing_it_wrong.
 	 *
 	 * @param string $function Function used.
-	 * @param string $message Message to log.
-	 * @param string $version Version the message was added in.
+	 * @param string $message  Message to log.
+	 * @param string $version  Version the message was added in.
 	 */
 	function wpp_doing_it_wrong( $function, $message, $version ) {
 		// @codingStandardsIgnoreStart
@@ -1167,7 +1190,8 @@ if ( ! function_exists( 'wpp_doing_it_wrong' ) ) {
 		if ( wp_doing_ajax() ) {
 			do_action( 'doing_it_wrong_run', $function, $message, $version );
 			error_log( "{$function} was called incorrectly. {$message}. This message was added in version {$version}." );
-		} else {
+		}
+		else {
 			_doing_it_wrong( $function, $message, $version );
 		}
 		// @codingStandardsIgnoreEnd

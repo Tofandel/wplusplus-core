@@ -46,7 +46,6 @@ if ( ! class_exists( 'ReduxFramework_extension_ad_remover', false ) ) {
 		public static $theInstance;
 		public static $ext_url;
 		public $field_id = '';
-		private $class_css = '';
 
 		/**
 		 * Class Constructor. Defines the args for the extions class

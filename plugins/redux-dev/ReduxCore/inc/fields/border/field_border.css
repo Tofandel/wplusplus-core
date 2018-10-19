@@ -1,0 +1,43 @@
+.redux-container-border .select2-container {
+  float: left;
+  display: block;
+  margin-right: 10px;
+}
+
+.redux-container-border .select_wrapper {
+  float: left;
+  width: inherit;
+}
+
+.redux-container-border .select_wrapper select {
+  width: 80px;
+  float: left;
+}
+
+.redux-container-border .field-border-input {
+  margin-right: 10px;
+  margin-bottom: 7px;
+}
+
+.redux-container-border .wp-picker-container {
+  margin-top: 2px;
+}
+
+@media screen and (max-width: 782px) {
+  .redux-container-border .field-border-input input {
+    display: inline-block !important;
+    width: 100px !important;
+  }
+  .redux-container-border .field-border-input .add-on {
+    padding: 7px 4px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .redux-container-border .select_wrapper {
+    margin-top: 6px;
+  }
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZmllbGRfYm9yZGVyLmNzcyIsInNvdXJjZXMiOlsiZmllbGRfYm9yZGVyLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsQUFDSSx1QkFEbUIsQ0FDbkIsa0JBQWtCLENBQUM7RUFDZixLQUFLLEVBQUUsSUFBSTtFQUNYLE9BQU8sRUFBRSxLQUFLO0VBQ2QsWUFBWSxFQUFFLElBQUk7Q0FDckI7O0FBTEwsQUFPSSx1QkFQbUIsQ0FPbkIsZUFBZSxDQUFDO0VBQ1osS0FBSyxFQUFFLElBQUk7RUFNWCxLQUFLLEVBQUUsT0FBTztDQUNqQjs7QUFmTCxBQVNRLHVCQVRlLENBT25CLGVBQWUsQ0FFWCxNQUFNLENBQUM7RUFDSCxLQUFLLEVBQUUsSUFBSTtFQUNYLEtBQUssRUFBRSxJQUFJO0NBRWQ7O0FBYlQsQUFpQkksdUJBakJtQixDQWlCbkIsbUJBQW1CLENBQUM7RUFDaEIsWUFBWSxFQUFFLElBQUk7RUFDbEIsYUFBYSxFQUFFLEdBQUc7Q0FDckI7O0FBcEJMLEFBc0JJLHVCQXRCbUIsQ0FzQm5CLG9CQUFvQixDQUFDO0VBQ2pCLFVBQVUsRUFBRSxHQUFHO0NBQ2xCOztBQUdMLE1BQU0sQ0FBQyxNQUFNLE1BQU0sU0FBUyxFQUFFLEtBQUs7RUFDL0IsQUFFUSx1QkFGZSxDQUNuQixtQkFBbUIsQ0FDZixLQUFLLENBQUM7SUFDRixPQUFPLEVBQUUsdUJBQXVCO0lBQ2hDLEtBQUssRUFBRSxnQkFBZ0I7R0FDMUI7RUFMVCxBQU9RLHVCQVBlLENBQ25CLG1CQUFtQixDQU1mLE9BQU8sQ0FBQztJQUNKLE9BQU8sRUFBRSxPQUFPO0lBQ2hCLFNBQVMsRUFBRSxJQUFJO0lBQ2YsV0FBVyxFQUFFLEdBQUc7R0FDbkI7RUFYVCxBQWNJLHVCQWRtQixDQWNuQixlQUFlLENBQUM7SUFDWixVQUFVLEVBQUUsR0FBRztHQUNsQiJ9 */
+
+/*# sourceMappingURL=field_border.css.map */

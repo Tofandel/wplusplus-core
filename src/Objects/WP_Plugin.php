@@ -1018,11 +1018,13 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 	public function _reduxConfig() {
 		$module = $this->getModule( ReduxFramework::class );
-		/**
-		 * @var ReduxFramework $module
-		 */
-		$this->reduxInit( $module );
-		apply_filters( 'wpp_redux_' . $this->redux_opt_name . '_config', $module );
+		if ($module) {
+			/**
+			 * @var ReduxFramework $module
+			 */
+			$this->reduxInit( $module );
+			apply_filters( 'wpp_redux_' . $this->redux_opt_name . '_config', $module );
+		}
 	}
 
 	/**
