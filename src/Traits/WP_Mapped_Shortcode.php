@@ -7,88 +7,96 @@
 
 namespace Tofandel\Core\Traits;
 
+use Tofandel\Core\Interfaces\ShortcodeMapper;
+use Tofandel\Core\Interfaces\WP_Plugin;
 use Tofandel\Core\Objects\ShortcodeParameter;
+use Tofandel\Core\ShortcodeMappers\VC_Mapper;
 
 /**
  * Class WP_Shortcode
  * @package Abstracts
  *
- * @author Adrien Foulon <tofandel@tukan.hu>
+ * @author  Adrien Foulon <tofandel@tukan.hu>
  */
 trait WP_Mapped_Shortcode {
 	use WP_Shortcode;
+	use StaticSubModule {
+		SubModuleInit as ParentSubModuleInit;
+	}
+
 	//Define this
-	protected static $default_attributes = array();
+	public static $atts = array();
 
 	//Don't touch
-	protected static $_info = array();
-	protected static $_name;
-	protected static $_params;
+	protected static $_info;
 
 	protected static $last_param;
 
-	protected function __init() {
-	}
+	/**
+	 * @var ShortcodeMapper[]
+	 */
+	protected static $mappers = array();
 
 	public static function setInfo( $name, $description = '', $category = '', $icon = '' ) {
-		self::$_info['name'] = $name;
-		self::$_info['description'] = $description;
-		self::$_info['category'] = $category;
-		self::$_info['icon'] = $icon;
+		self::$_info              = new \stdClass();
+		self::$_info->name        = $name;
+		self::$_info->description = $description;
+		self::$_info->category    = $category;
+		self::$_info->icon        = $icon;
 	}
 
 	public static function setParam( ShortcodeParameter $param ) {
-		static::$_info['params'][ $param->getName() ] = $param;
+		static::$_info->params[ $param->getName() ] = $param;
 	}
 
-	abstract public static function mapShortcode();
+	/**
+	 * Function where you define all the parameters with the given functions in this class
+	 */
+	abstract public static function mapping();
 
 	/**
-	 * WP_Shortcode constructor.
+	 * @return ShortcodeMapper[]
 	 */
-	public static function __StaticInit() {
-		self::__baseInit__();
+	public static function initMappers() {
+		static $mappers;
 
-		//if ( ! static::$reflectionClass->implementsInterface( \Tofandel\Core\Interfaces\WP_Shortcode::class ) ) {
-		//	return;
-		//}
-		global $pagenow;
+		if ( ! isset( $mappers ) ) {
+			self::$mappers = apply_filters( 'wpp_shortcode_mappers', array( VC_Mapper::class ) );
+			foreach ( self::$mappers as $mapper ) {
+				if ( $mapper::shouldMap() ) {
+					$mappers[] = $mapper;
+				}
+			}
+		}
 
-		if ( ( $pagenow == "post-new.php" || $pagenow == "post.php" || ( ! empty( $_REQUEST['action'] ) && wp_doing_ajax() && strpos( $_REQUEST['action'], 'vc_' ) === 0 ) ) ) {
-			ShortcodeParameter::setDefaultAttributes( static::$default_attributes );
-			static::mapShortcode();
-			/*
-			add_action( 'vc_before_mapping', function () {
-				vc_map( static::$vc_params );
-			} );*/
+		return $mappers;
+	}
+
+
+	public static function SubModuleInit( WP_Plugin &$parent = null ) {
+		self::ParentSubModuleInit( $parent );
+
+		if ( $mappers = self::initMappers() ) {
+			ShortcodeParameter::setDefaultAttributes( static::$atts );
+			self::mapping();
+			foreach ( $mappers as $mapper ) {
+				$mapper::map( self::$_info );
+			}
 		}
 
 		new \Tofandel\Core\Objects\WP_Shortcode( static::getName(), [
 			static::class,
 			'shortcode'
-		], static::$default_attributes );
+		], static::$atts );
 	}
 
 	/**
-	 * @param array $attributes
+	 * @param array  $attributes
 	 * @param string $content
 	 * @param string $name of the shortcode
 	 *
 	 * @return string
 	 */
 	//abstract public function shortcode( $attributes, $content, $name );
-
-	/**
-	 *
-	 */
-	public static function mapToVc() {
-	}
-
-	/**
-	 *
-	 */
-	public static function mapToDoc() {
-
-	}
 
 }

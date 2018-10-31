@@ -293,8 +293,8 @@ trait WP_Entity {
 	 * Get Meta Data by Key.
 	 *
 	 *
-	 * @param  string $key Meta Key.
-	 * @param  bool $single return first found meta with key, or all with $key.
+	 * @param  string $key     Meta Key.
+	 * @param  bool   $single  return first found meta with key, or all with $key.
 	 * @param  string $context What the value is for. Valid values are view and edit.
 	 *
 	 * @return mixed
@@ -356,11 +356,11 @@ trait WP_Entity {
 			$this->maybe_read_meta_data();
 			foreach ( $data as $meta ) {
 				$meta = (array) $meta;
-				if ( isset( $meta['key'], $meta['value'], $meta['id'] ) ) {
+				if ( isset( $meta[ 'key' ], $meta[ 'value' ], $meta[ 'id' ] ) ) {
 					$this->meta_data[] = new WP_MetaData( array(
-						'id'    => $meta['id'],
-						'key'   => $meta['key'],
-						'value' => $meta['value'],
+						'id'    => $meta[ 'id' ],
+						'key'   => $meta[ 'key' ],
+						'value' => $meta[ 'value' ],
 					) );
 				}
 			}
@@ -370,9 +370,9 @@ trait WP_Entity {
 	/**
 	 * Add meta data.
 	 *
-	 * @param string $key Meta key.
-	 * @param string $value Meta value.
-	 * @param bool $unique Should this be a unique key?.
+	 * @param string $key    Meta key.
+	 * @param string $value  Meta value.
+	 * @param bool   $unique Should this be a unique key?.
 	 *
 	 */
 	public function add_meta_data( $key, $value, $unique = false ) {
@@ -400,9 +400,9 @@ trait WP_Entity {
 	 * Update meta data by key or ID, if provided.
 	 *
 	 *
-	 * @param  string $key Meta key.
-	 * @param  string $value Meta value.
-	 * @param  int $meta_id Meta ID.
+	 * @param  string $key     Meta key.
+	 * @param  string $value   Meta value.
+	 * @param  int    $meta_id Meta ID.
 	 *
 	 */
 	public function update_meta_data( $key, $value, $meta_id = 0 ) {
@@ -629,8 +629,8 @@ trait WP_Entity {
 	 * the the DB later.
 	 *
 	 *
-	 * @param string $prop Name of prop to set.
-	 * @param mixed $value Value of the prop.
+	 * @param string $prop  Name of prop to set.
+	 * @param mixed  $value Value of the prop.
 	 */
 	protected function set_prop( $prop, $value ) {
 		if ( array_key_exists( $prop, $this->data ) ) {
@@ -677,7 +677,7 @@ trait WP_Entity {
 	 * Context controls what happens to the value before it's returned.
 	 *
 	 *
-	 * @param  string $prop Name of prop to get.
+	 * @param  string $prop    Name of prop to get.
 	 * @param  string $context What the value is for. Valid values are view and edit.
 	 *
 	 * @return mixed
@@ -700,7 +700,7 @@ trait WP_Entity {
 	 * Sets a date prop whilst handling formatting and datetime objects.
 	 *
 	 *
-	 * @param string $prop Name of prop to set.
+	 * @param string         $prop  Name of prop to set.
 	 * @param string|integer $value Value of the prop.
 	 */
 	protected function set_date_prop( $prop, $value ) {
@@ -719,8 +719,8 @@ trait WP_Entity {
 			} else {
 				// Strings are defined in local WP timezone. Convert to UTC.
 				if ( 1 === preg_match( '/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|((-|\+)\d{2}:\d{2}))$/', $value, $date_bits ) ) {
-					$offset    = ! empty( $date_bits[7] ) ? iso8601_timezone_to_offset( $date_bits[7] ) : wpp_timezone_offset();
-					$timestamp = gmmktime( $date_bits[4], $date_bits[5], $date_bits[6], $date_bits[2], $date_bits[3], $date_bits[1] ) - $offset;
+					$offset    = ! empty( $date_bits[ 7 ] ) ? iso8601_timezone_to_offset( $date_bits[ 7 ] ) : wpp_timezone_offset();
+					$timestamp = gmmktime( $date_bits[ 4 ], $date_bits[ 5 ], $date_bits[ 6 ], $date_bits[ 2 ], $date_bits[ 3 ], $date_bits[ 1 ] ) - $offset;
 				} else {
 					$timestamp = wpp_string_to_timestamp( get_gmt_from_date( gmdate( 'Y-m-d H:i:s', wpp_string_to_timestamp( $value ) ) ) );
 				}

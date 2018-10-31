@@ -13,41 +13,41 @@ use Tofandel\Core\Interfaces\WP_Plugin;
  * Trait SubModule
  * @package Tofandel\Core\Traits
  */
-trait SubModule {
+trait StaticSubModule {
 	/**
 	 * @var \Tofandel\Core\Objects\WP_Plugin
 	 */
-	protected $parent;
+	protected static $parent;
 
-	public function __construct( WP_Plugin &$parent = null ) {
-		$this->parent = $parent;
+	public static function SubModuleInit( WP_Plugin &$parent = null ) {
+		static::$parent = $parent;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getTextDomain() {
-		return $this->parent->getTextDomain();
+	public static function getTextDomain() {
+		return static::$parent->getTextDomain();
 	}
 
 	/**
 	 * Called function on plugin activation
 	 */
-	public function activated() {
+	public static function activated() {
 
 	}
 
 	/**
 	 * Called function on plugin deactivation
 	 */
-	public function deactivated() {
+	public static function deactivated() {
 
 	}
 
 	/**
 	 * The hooks of the submodule
 	 */
-	public function actionsAndFilters() {
+	public static function actionsAndFilters() {
 
 	}
 
@@ -56,7 +56,7 @@ trait SubModule {
 	 *
 	 * @param $last_version
 	 */
-	public function upgrade( $last_version ) {
+	public static function upgrade( $last_version ) {
 
 	}
 }

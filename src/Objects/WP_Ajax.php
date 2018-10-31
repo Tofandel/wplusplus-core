@@ -7,9 +7,6 @@
 
 namespace Tofandel\Core\Objects;
 
-
-use Tofandel\WPlusPlusCore;
-
 class WP_Ajax {
 	const T_SUCCESS = 'success';
 	const T_ERROR = 'error';
@@ -126,11 +123,12 @@ class WP_Ajax {
 	 * Only for poedit
 	 */
 	public function typeStr() {
-		__( 'Success', WPlusPlusCore::TextDomain() );
-		__( 'Error', WPlusPlusCore::TextDomain() );
-		__( 'Warning', WPlusPlusCore::TextDomain() );
-		__( 'Info', WPlusPlusCore::TextDomain() );
-		__( 'Question', WPlusPlusCore::TextDomain() );
+		global $WPlusPlusCore;
+		__( 'Success', $WPlusPlusCore->getTextDomain() );
+		__( 'Error', $WPlusPlusCore->getTextDomain() );
+		__( 'Warning', $WPlusPlusCore->getTextDomain() );
+		__( 'Info', $WPlusPlusCore->getTextDomain() );
+		__( 'Question', $WPlusPlusCore->getTextDomain() );
 	}
 
 	/**
@@ -150,7 +148,8 @@ class WP_Ajax {
 	 */
 	public function swalRedirect( $type, $redirect = false, $delay = false, $msg = "", $msg2 = "" ) {
 		if ( empty( $msg ) ) {
-			$msg = __( ucfirst( $type ), WPlusPlusCore::TextDomain() );
+			global $WPlusPlusCore;
+			$msg = __( ucfirst( $type ), $WPlusPlusCore->getTextDomain() );
 		}
 
 		if ( $type == self::T_ERROR ) {
@@ -173,7 +172,8 @@ class WP_Ajax {
 
 	public function check_nonce( $nonce ) {
 		if ( ! check_ajax_referer( $nonce, '_wpnonce', false ) ) {
-			$this->swal( 'error', __( 'Invalid nonce', WPlusPlusCore::TextDomain() ), __( 'It has probably expired, you should try again!', WPlusPlusCore::TextDomain() ) );
+			global $WPlusPlusCore;
+			$this->swal( 'error', __( 'Invalid nonce', $WPlusPlusCore->getTextDomain() ), __( 'It has probably expired, you should try again!', $WPlusPlusCore->getTextDomain() ) );
 			$this->send();
 			die();
 		}
@@ -187,8 +187,9 @@ class WP_Ajax {
 	 * @param string|bool $cancel_button
 	 */
 	public function swal( $type, $msg = "", $msg2 = "", $confirm_button = null, $cancel_button = false ) {
+		global $WPlusPlusCore;
 		if ( empty( $msg ) ) {
-			$msg = __( ucfirst( $type ), WPlusPlusCore::TextDomain() );
+			$msg = __( ucfirst( $type ), $WPlusPlusCore->getTextDomain() );
 		}
 
 		if ( $type == self::T_ERROR ) {
@@ -204,14 +205,14 @@ class WP_Ajax {
 		if ( $confirm_button === false ) {
 			$this->addResponse( 'swal', 'showConfirmButton', false );
 		} else {
-			$this->addResponse( 'swal', 'confirmButtonText', isset( $confirm_button ) ? $confirm_button : __( 'Ok', WPlusPlusCore::TextDomain() ) );
+			$this->addResponse( 'swal', 'confirmButtonText', isset( $confirm_button ) ? $confirm_button : __( 'Ok', $WPlusPlusCore->getTextDomain() ) );
 		}
 
 
 		if ( $cancel_button === false ) {
 			$this->addResponse( 'swal', 'showCancelButton', false );
 		} else {
-			$this->addResponse( 'swal', 'cancelButtonText', isset( $cancel_button ) ? $cancel_button : __( 'Cancel', WPlusPlusCore::TextDomain() ) );
+			$this->addResponse( 'swal', 'cancelButtonText', isset( $cancel_button ) ? $cancel_button : __( 'Cancel', $WPlusPlusCore->getTextDomain() ) );
 		}
 	}
 }

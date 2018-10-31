@@ -17,7 +17,10 @@ use Tofandel\Core\Objects\ShortcodeParameter;
  * @author Adrien Foulon <tofandel@tukan.hu>
  */
 interface WP_Mapped_Shortcode extends WP_Shortcode {
-	public static function mapShortcode();
+	/**
+	 * Function where you define all the parameters with the given functions in this class
+	 */
+	public static function mapping();
 
 	public static function setInfo( $name, $description = '', $category = '', $icon = '' );
 

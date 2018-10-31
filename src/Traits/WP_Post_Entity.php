@@ -104,7 +104,7 @@ trait WP_Post_Entity {
 
 	/**
 	 * @param \WP_Post $post
-	 * @param int $new_author
+	 * @param int      $new_author
 	 */
 	public function reassign_recursive( $post, $new_author ) {
 		$post_author = $post->post_author;

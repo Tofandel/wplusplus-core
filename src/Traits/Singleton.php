@@ -12,6 +12,10 @@ global $singletons, $singletons_hierarchy;
 $singletons           = array();
 $singletons_hierarchy = array();
 
+/**
+ * Trait Singleton
+ * @package Tofandel\Core\Traits
+ */
 trait Singleton {
 	/**
 	 * Returns the singleton instanced class.

@@ -11,6 +11,10 @@ global $static_initializables;
 
 $static_initializables = array();
 
+/**
+ * Trait Initializable
+ * @package Tofandel\Core\Traits
+ */
 trait Initializable {
 	/**
 	 * @var \ReflectionClass

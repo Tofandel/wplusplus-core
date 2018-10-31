@@ -9,12 +9,14 @@ namespace Tofandel\Core\Traits;
 
 /**
  * Class WP_Shortcode
- * @package Abstracts
+ * @package    Abstracts
  *
- * @author Adrien Foulon <tofandel@tukan.hu>
+ * @author     Adrien Foulon <tofandel@tukan.hu>
+ *
+ * @property array $atts
  */
 trait WP_Shortcode {
-	use SubModule;
+	use StaticSubModule;
 	use Initializable;
 
 	//protected static $atts = array();
@@ -28,16 +30,14 @@ trait WP_Shortcode {
 			return;
 		}
 
-		static::getName();
-
-		new \Tofandel\Core\Objects\WP_Shortcode( static::$_name, [
+		new \Tofandel\Core\Objects\WP_Shortcode( static::getName(), [
 			static::class,
 			'shortcode'
-		], static::$default_attributes );
+		], static::$atts );
 	}
 
 	/**
-	 * @param array $attributes
+	 * @param array  $attributes
 	 * @param string $content
 	 * @param string $name of the shortcode
 	 *

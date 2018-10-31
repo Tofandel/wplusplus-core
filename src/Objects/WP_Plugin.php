@@ -9,6 +9,7 @@ namespace Tofandel\Core\Objects;
 
 use ReduxFrameworkPlugin;
 use ReflectionClass;
+use Tofandel\Core\Interfaces\StaticSubModule;
 use Tofandel\Core\Interfaces\SubModule;
 use Tofandel\Core\Modules\LicenceManager;
 use Tofandel\Core\Modules\ReduxFramework;
@@ -102,6 +103,38 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @throws \ReflectionException
 	 */
 	public function setShortcode( $shortcode ) {
+		try {
+			if ( is_string( $shortcode ) && class_exists( $shortcode ) ) {
+				$reflection = new ReflectionClass( $shortcode );
+			} elseif ( is_object( $shortcode ) ) {
+				$reflection = new \ReflectionObject( $shortcode );
+			}
+			if ( ! isset( $reflection ) ) {
+				error_log( 'Unknown Shortcode ' . $shortcode );
+
+				return;
+			}
+			$static     = $reflection->implementsInterface( StaticSubModule::class );
+			$non_static = $reflection->implementsInterface( SubModule::class );
+			if ( $static || $non_static ) {
+				if ( is_string( $shortcode ) ) {
+					if ( $static ) {
+						/**
+						 * @var StaticSubModule $shortcode
+						 */
+						call_user_func( array( $shortcode, 'SubModuleInit' ), array() );
+					} else {
+						$this->modules[ $shortcode ] = $reflection->newInstance( $this );
+					}
+				} elseif ( is_object( $shortcode ) ) {
+					$this->modules[ $reflection->getName() ] = $shortcode;
+				}
+			} else {
+				error_log( 'Shortcode ' . $reflection->getName() . ' does not implement the SubModule/StaticSubModule interface' );
+			}
+		} catch ( \ReflectionException $exception ) {
+			error_log( $exception->getMessage() );
+		}
 		$this->shortcodes[ $shortcode::getName() ] = $shortcode;
 	}
 
@@ -115,15 +148,35 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	 * @param string|SubModule $submodule
 	 */
 	public function setSubModule( $submodule ) {
-		if ( $submodule instanceof SubModule ) {
-			try {
-				$reflection                              = new ReflectionClass( $submodule );
-				$this->modules[ $reflection->getName() ] = $submodule;
-			} catch ( \ReflectionException $exception ) {
-				error_log( $exception->getMessage() );
+		try {
+			if ( is_string( $submodule ) && class_exists( $submodule ) ) {
+				$reflection = new ReflectionClass( $submodule );
+			} elseif ( is_object( $submodule ) ) {
+				$reflection = new \ReflectionObject( $submodule );
 			}
-		} elseif ( is_string( $submodule ) ) {
-			$this->modules[ $submodule ] = new $submodule( $this );
+			if ( ! isset( $reflection ) ) {
+				error_log( 'Unknown Submodule ' . $submodule );
+
+				return;
+			}
+			$static     = $reflection->implementsInterface( StaticSubModule::class );
+			$non_static = $reflection->implementsInterface( SubModule::class );
+			if ( $static || $non_static ) {
+				if ( is_string( $submodule ) ) {
+					if ( $static ) {
+						/**
+						 * @var StaticSubModule $submodule
+						 */
+						call_user_func( array( $submodule, 'SubModuleInit' ), array() );
+					} else {
+						$this->modules[ $submodule ] = $reflection->newInstance( $this );
+					}
+				} elseif ( is_object( $submodule ) ) {
+					$this->modules[ $reflection->getName() ] = $submodule;
+				}
+			}
+		} catch ( \ReflectionException $exception ) {
+			error_log( $exception->getMessage() );
 		}
 	}
 
@@ -162,7 +215,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	public function initUpdateChecker() {
 		if ( ! empty( $this->getRepoUrl() ) && ( ( is_admin() && ! wp_doing_ajax() )
-		                                         || ( wp_doing_ajax() && $_REQUEST['action'] == 'update-plugin' ) ) ) {
+		                                         || ( wp_doing_ajax() && $_REQUEST[ 'action' ] == 'update-plugin' ) ) ) {
 			\Puc_v4_Factory::buildUpdateChecker(
 				$this->getRepoUrl(),
 				$this->file, //Full path to the main plugin file or functions.php.
@@ -170,7 +223,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			);
 		} elseif ( ! empty( $this->getDownloadUrl() )
 		           && ( ( is_admin() && ! wp_doing_ajax() ) ||
-		                ( wp_doing_ajax() && $_REQUEST['action'] == 'update-plugin' ) ) && $this->is_licensed ) {
+		                ( wp_doing_ajax() && $_REQUEST[ 'action' ] == 'update-plugin' ) ) && $this->is_licensed ) {
 			/**
 			 * @var LicenceManager $LicenceManager
 			 */
@@ -236,8 +289,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		if ( is_plugin_active( $this->getPluginFile() ) ) {
 			deactivate_plugins( $this->getPluginFile() );
 			add_action( 'admin_notices', array( $this, 'disabled_notice' ) );
-			if ( isset( $_GET['activate'] ) ) {
-				unset( $_GET['activate'] );
+			if ( isset( $_GET[ 'activate' ] ) ) {
+				unset( $_GET[ 'activate' ] );
 			}
 		}
 	}
@@ -288,38 +341,38 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 		//Read the version of the plugin from the comments
 		if ( empty( $this->version ) && $comment && preg_match( '#version[:\s]*([0-9\.]+)#i', $comment, $matches ) ) {
-			$this->version = trim( $matches[1] );
+			$this->version = trim( $matches[ 1 ] );
 		} elseif ( empty( $this->version ) ) {
 			$this->version = '1.0';
 		}
 
 		//Read the name of the plugin from the comments
 		if ( empty( $this->name ) && $comment && preg_match( '#(?:plugin|theme)[-\s]?name[:\s]*([^\r\n]*)#i', $comment, $matches ) ) {
-			$this->name = trim( $matches[1] );
+			$this->name = trim( $matches[ 1 ] );
 		} elseif ( empty( $this->name ) ) {
 			$this->name = $this->slug;
 		}
 
 		//Read the text domain of the plugin from the comments
 		if ( empty( $this->text_domain ) && $comment && preg_match( '#text[-\s]?domain[:\s]*([^\r\n]*)#i', $comment, $matches ) ) {
-			$this->text_domain = trim( $matches[1] );
+			$this->text_domain = trim( $matches[ 1 ] );
 		} elseif ( empty( $this->text_domain ) ) {
 			$this->text_domain = $this->slug;
 		}
 
 		/** @deprecated Overwrite the variable instead */
 		if ( empty( $this->download_url ) && $comment && preg_match( '#download[-\s]?url[:\s]*([^\r\n]*)#i', $comment, $matches ) ) {
-			$this->download_url = trim( $matches[1] );
+			$this->download_url = trim( $matches[ 1 ] );
 		}
 
 		if ( empty( $this->buy_url ) && $comment && preg_match( '#donate[-\s]?link[:\s]*([^\r\n]*)#i', $comment, $matches ) ) {
-			$this->buy_url = trim( $matches[1] );
+			$this->buy_url = trim( $matches[ 1 ] );
 		} elseif ( empty( $this->buy_url ) ) {
 			$this->buy_url = $this->download_url;
 		}
 
 		if ( $comment && preg_match( '#requires[-\s]?php[:\s]*([0-9\.]+)#i', $comment, $matches ) ) {
-			$v                          = trim( $matches[1] );
+			$v                          = trim( $matches[ 1 ] );
 			$this->required_php_version = version_compare( $this->required_php_version, $v, '<' ) ? $v : $this->required_php_version;
 		}
 	}
@@ -342,8 +395,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 		if ( ! $this->no_redux ) {
 			if ( is_admin() && ! wp_doing_ajax() ||
-			     ( wp_doing_ajax() && isset ( $_REQUEST['action'] ) &&
-			       ( $_REQUEST['action'] == $this->redux_opt_name . '_ajax_save' || strpos( $_REQUEST['action'], 'redux' ) === 0 ) ) ) {
+			     ( wp_doing_ajax() && isset ( $_REQUEST[ 'action' ] ) &&
+			       ( $_REQUEST[ 'action' ] == $this->redux_opt_name . '_ajax_save' || strpos( $_REQUEST[ 'action' ], 'redux' ) === 0 ) ) ) {
 
 				if ( WPP_MUPLUGIN ) {
 					add_action( 'before_theme_loaded', [ $this, '_reduxLoad' ] );
@@ -461,9 +514,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * @param string $opt_name
+	 * @param string            $opt_name
 	 * @param string|array|null $option
-	 * @param mixed $default
+	 * @param mixed             $default
 	 *
 	 * @return array|string
 	 */
@@ -505,9 +558,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	/**
 	 * Searchs if a file exists in the plugin folder (minified or not)
 	 *
-	 * @param string $name
-	 * @param string $type
-	 * @param bool $cache
+	 * @param string       $name
+	 * @param string       $type
+	 * @param bool         $cache
 	 * @param string|false $folder
 	 *
 	 * @return string
@@ -607,10 +660,10 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	/**
 	 * @param string $name Handle name
-	 * @param string $js Filename (optional extension)
-	 * @param array $require
-	 * @param bool $localize
-	 * @param bool $in_footer
+	 * @param string $js   Filename (optional extension)
+	 * @param array  $require
+	 * @param bool   $localize
+	 * @param bool   $in_footer
 	 * @param string $async_defer
 	 *
 	 * @return bool|string Handle name if registered false otherwise
@@ -634,9 +687,9 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	/**
 	 * @param string $js Filename (optional extension)
-	 * @param array $require
-	 * @param bool $localize
-	 * @param bool $in_footer
+	 * @param array  $require
+	 * @param bool   $localize
+	 * @param bool   $in_footer
 	 * @param string $async_defer
 	 *
 	 * @return bool|string Handle name if registered false otherwise
@@ -674,12 +727,12 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * @param string $name Handle name
-	 * @param string $js Name of the file without extension and js folder
-	 * @param array $require
+	 * @param string     $name Handle name
+	 * @param string     $js   Name of the file without extension and js folder
+	 * @param array      $require
 	 * @param bool|array $localize
-	 * @param bool $in_footer
-	 * @param string $async_defer
+	 * @param bool       $in_footer
+	 * @param string     $async_defer
 	 *
 	 * @return bool|string Handle name if registered false otherwise
 	 */
@@ -715,11 +768,11 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * @param string $js Name of the file without extension and js folder
-	 * @param array $require
+	 * @param string     $js Name of the file without extension and js folder
+	 * @param array      $require
 	 * @param bool|array $localize
-	 * @param bool $in_footer
-	 * @param string $async_defer
+	 * @param bool       $in_footer
+	 * @param string     $async_defer
 	 *
 	 * @return bool|string Handle name if registered false otherwise
 	 */
@@ -741,6 +794,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		if ( ! wp_script_is( $this->slug, 'registered' ) ) {
 			//We register a non existing script with the slug of the plugin to localize it with the data of all scripts
 			wp_register_script( $this->slug, '' );
+			wp_enqueue_script( $this->slug );
 		}
 		global $wp_scripts;
 		//We remove the previous script localization, not ideal but works for now
@@ -809,7 +863,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	/**
 	 * @param string $name Handle name
-	 * @param string $css Filename (extension is optional)
+	 * @param string $css  Filename (extension is optional)
 	 * @param string $media
 	 *
 	 * @return bool|string Handle name if registered false otherwise
@@ -930,8 +984,8 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * @param $file
-	 * @param $dest
+	 * @param      $file
+	 * @param      $dest
 	 *
 	 * @param bool $overwrite
 	 *
@@ -986,7 +1040,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	}
 
 	/**
-	 * @param $folder
+	 * @param      $folder
 	 * @param bool $recursive
 	 *
 	 * @return bool
@@ -1016,9 +1070,10 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		$module = new ReduxFramework( $this );
 		$this->setSubModule( $module );
 	}
+
 	public function _reduxConfig() {
 		$module = $this->getModule( ReduxFramework::class );
-		if ($module) {
+		if ( $module ) {
 			/**
 			 * @var ReduxFramework $module
 			 */
@@ -1050,7 +1105,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		$new_versions  = explode( '.', $this->version, 2 );
 		$last_versions = explode( '.', $last_version, 2 );
 
-		if ( $new_versions[0] == $last_versions[0] && $new_versions[1] != $last_versions[1] ) {
+		if ( $new_versions[ 0 ] == $last_versions[ 0 ] && $new_versions[ 1 ] != $last_versions[ 1 ] ) {
 			return true;
 		}
 
@@ -1068,7 +1123,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		$new_versions  = explode( '.', $this->version, 2 );
 		$last_versions = explode( '.', $last_version, 2 );
 
-		if ( $new_versions[0] != $last_versions[0] ) {
+		if ( $new_versions[ 0 ] != $last_versions[ 0 ] ) {
 			return true;
 		}
 
@@ -1093,17 +1148,17 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			}
 			$link .= $family;
 
-			if ( ! empty( $font['font-style'] ) || ! empty( $font['all-styles'] ) ) {
+			if ( ! empty( $font[ 'font-style' ] ) || ! empty( $font[ 'all-styles' ] ) ) {
 				$link .= ':';
-				if ( ! empty( $font['all-styles'] ) ) {
-					$link .= implode( ',', $font['all-styles'] );
-				} else if ( ! empty( $font['font-style'] ) ) {
-					$link .= implode( ',', $font['font-style'] );
+				if ( ! empty( $font[ 'all-styles' ] ) ) {
+					$link .= implode( ',', $font[ 'all-styles' ] );
+				} elseif ( ! empty( $font[ 'font-style' ] ) ) {
+					$link .= implode( ',', $font[ 'font-style' ] );
 				}
 			}
 
-			if ( ! empty( $font['subset'] ) ) {
-				foreach ( $font['subset'] as $subset ) {
+			if ( ! empty( $font[ 'subset' ] ) ) {
+				foreach ( $font[ 'subset' ] as $subset ) {
 					if ( ! in_array( $subset, $subsets ) ) {
 						array_push( $subsets, $subset );
 					}
@@ -1135,17 +1190,17 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			}
 			$link .= $family;
 
-			if ( ! empty( $font['font-style'] ) || ! empty( $font['all-styles'] ) ) {
+			if ( ! empty( $font[ 'font-style' ] ) || ! empty( $font[ 'all-styles' ] ) ) {
 				$link .= ':';
-				if ( ! empty( $font['all-styles'] ) ) {
-					$link .= implode( ',', $font['all-styles'] );
-				} else if ( ! empty( $font['font-style'] ) ) {
-					$link .= implode( ',', $font['font-style'] );
+				if ( ! empty( $font[ 'all-styles' ] ) ) {
+					$link .= implode( ',', $font[ 'all-styles' ] );
+				} elseif ( ! empty( $font[ 'font-style' ] ) ) {
+					$link .= implode( ',', $font[ 'font-style' ] );
 				}
 			}
 
-			if ( ! empty( $font['subset'] ) ) {
-				foreach ( $font['subset'] as $subset ) {
+			if ( ! empty( $font[ 'subset' ] ) ) {
+				foreach ( $font[ 'subset' ] as $subset ) {
 					if ( ! in_array( $subset, $subsets ) ) {
 						array_push( $subsets, $subset );
 					}
@@ -1169,19 +1224,19 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			return strpos( $key, 'font-' ) === 0;
 		}, ARRAY_FILTER_USE_KEY );
 		foreach ( $opt_fonts as $key => $value ) {
-			if ( (bool) $value['google'] == true ) {
-				$value['font-family'] = str_replace( ' ', '+', $value['font-family'] );
-				if ( ! isset( $fonts[ $value['font-family'] ] ) ) {
-					$fonts[ $value['font-family'] ] = array(
-						'font-style' => ! empty( $value['font-style'] ) ? array( $value['font-style'] ) : array(),
-						'subset'     => ! empty( $value['subsets'] ) ? array( $value['subsets'] ) : array()
+			if ( (bool) $value[ 'google' ] == true ) {
+				$value[ 'font-family' ] = str_replace( ' ', '+', $value[ 'font-family' ] );
+				if ( ! isset( $fonts[ $value[ 'font-family' ] ] ) ) {
+					$fonts[ $value[ 'font-family' ] ] = array(
+						'font-style' => ! empty( $value[ 'font-style' ] ) ? array( $value[ 'font-style' ] ) : array(),
+						'subset'     => ! empty( $value[ 'subsets' ] ) ? array( $value[ 'subsets' ] ) : array()
 					);
 				} else {
-					if ( ! empty( $value['font-style'] ) ) {
-						$fonts[ $value['font-family'] ]['font-style'][] = $value['font-style'];
+					if ( ! empty( $value[ 'font-style' ] ) ) {
+						$fonts[ $value[ 'font-family' ] ][ 'font-style' ][] = $value[ 'font-style' ];
 					}
-					if ( ! empty( $value['subsets'] ) ) {
-						$fonts[ $value['font-family'] ]['subset'][] = $value['subsets'];
+					if ( ! empty( $value[ 'subsets' ] ) ) {
+						$fonts[ $value[ 'font-family' ] ][ 'subset' ][] = $value[ 'subsets' ];
 					}
 				}
 			}

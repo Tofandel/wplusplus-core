@@ -11,6 +11,8 @@ namespace Tofandel\Core\Objects;
  * Class WP_Shortcode
  * @package Abstracts
  *
+ *
+ *
  * @author Adrien Foulon <tofandel@tukan.hu>
  */
 class WP_Shortcode {
