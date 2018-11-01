@@ -39,7 +39,7 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 
 		self::loadRedux();
 
-		if ( ! class_exists( Redux::class, false ) ) {
+		if ( ! class_exists( Redux::class, true ) ) {
 			return;
 		}
 		self::loadExtensions( $this->opt_name );
