@@ -12,8 +12,8 @@
 *  http://www.gnu.org/licenses/gpl.html
 */
 
-(function (jQuery) {
-	jQuery.fn.typeWatch = function (o) {
+(function(jQuery) {
+	jQuery.fn.typeWatch = function(o) {
 		// The default input types that are supported
 		var _supportedInputTypes =
 			['TEXT', 'TEXTAREA', 'PASSWORD', 'TEL', 'SEARCH', 'URL', 'EMAIL', 'DATETIME', 'DATE', 'MONTH', 'WEEK', 'TIME', 'DATETIME-LOCAL', 'NUMBER', 'RANGE'];
@@ -21,8 +21,7 @@
 		// Options
 		var options = jQuery.extend({
 			wait: 750,
-			callback: function () {
-			},
+			callback: function() { },
 			highlight: true,
 			captureLength: 2,
 			inputTypes: _supportedInputTypes
@@ -33,7 +32,8 @@
 
 			// Fire if text >= options.captureLength AND text != saved text OR if override AND text >= options.captureLength
 			if ((value.length >= options.captureLength && value.toUpperCase() != timer.text)
-				|| (override && value.length >= options.captureLength)) {
+				|| (override && value.length >= options.captureLength))
+			{
 				timer.text = value.toUpperCase();
 				timer.cb.call(timer.el, value);
 			}
@@ -55,13 +55,13 @@
 				// Set focus action (highlight)
 				if (options.highlight) {
 					jQuery(elem).focus(
-						function () {
+						function() {
 							this.select();
 						});
 				}
 
 				// Key watcher / clear and reset the timer
-				var startWatch = function (evt) {
+				var startWatch = function(evt) {
 					var timerWait = timer.wait;
 					var overrideBool = false;
 					var evtElementType = this.type.toUpperCase();
@@ -72,7 +72,7 @@
 						overrideBool = true;
 					}
 
-					var timerCallbackFx = function () {
+					var timerCallbackFx = function() {
 						checkElement(timer, overrideBool)
 					}
 
@@ -86,7 +86,7 @@
 		};
 
 		// Watch Each Element
-		return this.each(function () {
+		return this.each(function() {
 			watchElement(this);
 		});
 

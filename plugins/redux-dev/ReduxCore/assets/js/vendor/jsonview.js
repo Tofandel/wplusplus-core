@@ -1,5 +1,5 @@
-/* global console, jsonView */
 
+/* global console, jsonView */
 /*
  * ViewJSON
  * Version 1.0
@@ -59,12 +59,10 @@ function jsonView(id, target) {
 		this.idType = "class";
 		this.id = id.replace('.', '');
 	} else {
-		if (this.debug) {
-			console.log("Can't find that element");
-		}
+		if (this.debug) { console.log("Can't find that element"); }
 		return;
 	}
-
+	
 	this.data = document.getElementById(this.id).innerHTML;
 	if (typeof(target) !== undefined) {
 		if (target.indexOf("#") !== -1) {
@@ -74,9 +72,7 @@ function jsonView(id, target) {
 			this.targetType = "class";
 			this.target = target.replace('.', '');
 		} else {
-			if (this.debug) {
-				console.log("Can't find the target element");
-			}
+			if (this.debug) { console.log("Can't find the target element"); }
 			return;
 		}
 	}
@@ -87,9 +83,7 @@ function jsonView(id, target) {
 	// Our manifest specifies that we only do URLs matching '.json', so attempt to sanitize any HTML
 	// added by Chrome's "text/plain" or "text/html" handlers
 	if (/^\<pre.*\>(.*)\<\/pre\>$/.test(this.data)) {
-		if (this.debug) {
-			console.log("JSONView: data is wrapped in <pre>...</pre>, stripping HTML...");
-		}
+		if (this.debug) { console.log("JSONView: data is wrapped in <pre>...</pre>, stripping HTML..."); }
 		this.data = this.data.replace(/<(?:.|\s)*?>/g, ''); //Aggressively strip HTML.
 	}
 	// Test if what remains is JSON or JSONp
@@ -98,29 +92,24 @@ function jsonView(id, target) {
 	var jsonp_regex2 = /([\[\{][\s\S]*[\]\}])\)/; // more liberal support... this allows us to pass the jsonp.json & jsonp2.json tests
 	var is_json = json_regex.test(this.data);
 	var is_jsonp = jsonp_regex.test(this.data);
-	if (this.debug) {
-		console.log("JSONView: is_json=" + is_json + " is_jsonp=" + is_jsonp);
-	}
+	if (this.debug) { console.log("JSONView: is_json=" + is_json + " is_jsonp=" + is_jsonp); }
 	if (is_json || is_jsonp) {
-		if (this.debug) {
-			console.log("JSONView: sexytime!");
-		}
+		if (this.debug) { console.log("JSONView: sexytime!"); }
 		// JSONFormatter json->HTML prototype straight from Firefox JSONView
 		// For reference: http://code.google.com/p/jsonview
 
 		function JSONFormatter() {
 			// No magic required.
 		}
-
 		JSONFormatter.prototype = {
-			htmlEncode: function (t) {
+			htmlEncode: function(t) {
 				return t != null ? t.toString().replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
 			},
-			decorateWithSpan: function (value, className) {
+			decorateWithSpan: function(value, className) {
 				return '<span class="' + className + '">' + this.htmlEncode(value) + '</span>';
 			},
 			// Convert a basic JSON datatype (number, string, boolean, null, object, array) into an HTML fragment.
-			valueToHTML: function (value) {
+			valueToHTML: function(value) {
 				var valueType = typeof value;
 				var output = "";
 				if (value === null) {
@@ -143,7 +132,7 @@ function jsonView(id, target) {
 				return output;
 			},
 			// Convert an array into an HTML fragment
-			arrayToHTML: function (json) {
+			arrayToHTML: function(json) {
 				var output = '[<ul class="array collapsible">';
 				var hasContents = false;
 				for (var prop in json) {
@@ -159,7 +148,7 @@ function jsonView(id, target) {
 				return output;
 			},
 			// Convert a JSON object to an HTML fragment
-			objectToHTML: function (json) {
+			objectToHTML: function(json) {
 				var output = '{<ul class="obj collapsible">';
 				var hasContents = false;
 				for (var prop in json) {
@@ -176,7 +165,7 @@ function jsonView(id, target) {
 				return output;
 			},
 			// Convert a whole JSON object into a formatted HTML document.
-			jsonToHTML: function (json, callback, uri) {
+			jsonToHTML: function(json, callback, uri) {
 				var output = '';
 				if (callback) {
 					output += '<div class="callback">' + callback + ' (</div>';
@@ -192,7 +181,7 @@ function jsonView(id, target) {
 				return this.toHTML(output, uri);
 			},
 			// Produce an error document for when parsing fails.
-			errorPage: function (error, data, uri) {
+			errorPage: function(error, data, uri) {
 				// var output = '<div id="error">' + this.stringbundle.GetStringFromName('errorParsing') + '</div>';
 				// output += '<h1>' + this.stringbundle.GetStringFromName('docContents') + ':</h1>';
 				var output = '<div id="error">Error parsing JSON: ' + error.message + '</div>';
@@ -201,7 +190,7 @@ function jsonView(id, target) {
 				return this.toHTML(output, uri + ' - Error');
 			},
 			// Wrap the HTML fragment in a full document. Used by jsonToHTML and errorPage.
-			toHTML: function (content) {
+			toHTML: function(content) {
 				return content;
 			}
 		};
@@ -225,20 +214,14 @@ function jsonView(id, target) {
 			callback = '';
 		var callback_results = jsonp_regex.exec(this.data);
 		if (callback_results && callback_results.length === 3) {
-			if (this.debug) {
-				console.log("THIS IS JSONp");
-			}
+			if (this.debug) { console.log("THIS IS JSONp"); }
 			callback = callback_results[1];
 			cleanData = callback_results[2];
 		} else {
-			if (this.debug) {
-				console.log("Vanilla JSON");
-			}
+			if (this.debug) { console.log("Vanilla JSON"); }
 			cleanData = this.data;
 		}
-		if (this.debug) {
-			console.log(cleanData);
-		}
+		if (this.debug) { console.log(cleanData); }
 		// Covert, and catch exceptions on failure
 		try {
 			// var jsonObj = this.nativeJSON.decode(cleanData);
@@ -249,9 +232,7 @@ function jsonView(id, target) {
 				throw "There was no object!";
 			}
 		} catch (e) {
-			if (this.debug) {
-				console.log(e);
-			}
+			if (this.debug) { console.log(e); }
 			outputDoc = this.jsonFormatter.errorPage(e, this.data);
 		}
 		var links = '<style type="text/css">.jsonViewOutput .prop{font-weight:700;}.jsonViewOutput .null{color:red;}.jsonViewOutput .string{color:green;}.jsonViewOutput .collapser{position:absolute;left:-1em;cursor:pointer;}.jsonViewOutput li{position:relative;}.jsonViewOutput li:after{content:\',\';}.jsonViewOutput li:last-child:after{content:\'\';}.jsonViewOutput #error{-moz-border-radius:8px;border:1px solid #970000;background-color:#F7E8E8;margin:.5em;padding:.5em;}.jsonViewOutput .errormessage{font-family:monospace;}.jsonViewOutput #json{font-family:monospace;font-size:1.1em;}.jsonViewOutput ul{list-style:none;margin:0 0 0 2em;padding:0;}.jsonViewOutput h1{font-size:1.2em;}.jsonViewOutput .callback + #json{padding-left:1em;}.jsonViewOutput .callback{font-family:monospace;color:#A52A2A;}.jsonViewOutput .bool,.jsonViewOutput .num{color:blue;}</style>';

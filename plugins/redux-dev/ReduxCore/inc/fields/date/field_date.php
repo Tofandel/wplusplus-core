@@ -18,62 +18,55 @@
  * @author      Kevin Provance (kprovance)
  * @version     4.0.0
  */
-
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_date', false ) ) {
+if (!class_exists('ReduxFramework_date', false)) {
 
-	/**
-	 * Main ReduxFramework_date class
-	 *
-	 * @since       1.0.0
-	 */
-	class ReduxFramework_date extends Redux_Field {
+    /**
+     * Main ReduxFramework_date class
+     *
+     * @since       1.0.0
+     */
+    class ReduxFramework_date extends Redux_Field {
 
-		/**
-		 * Field Render Function.
-		 * Takes the vars and outputs the HTML for the field in the settings
-		 *
-		 * @since         1.0.0
-		 * @access        public
-		 * @return        void
-		 */
-		public function render() {
-			$placeholder = ( isset( $this->field['placeholder'] ) ) ? ' placeholder="' . $this->field['placeholder'] . '" ' : '';
+        /**
+         * Field Render Function.
+         * Takes the vars and outputs the HTML for the field in the settings
+         *
+         * @since         1.0.0
+         * @access        public
+         * @return        void
+         */
+        public function render() {
+            $placeholder = ( isset($this->field['placeholder']) ) ? ' placeholder="' . $this->field['placeholder'] . '" ' : '';
 
-			echo '<input data-id="' . esc_attr( $this->field['id'] ) . '" type="text" id="' . esc_attr( $this->field['id'] ) . '-date" name="' . esc_attr( $this->field['name'] . $this->field['name_suffix'] ) . '"' . esc_attr( $placeholder ) . 'value="' . esc_attr( $this->value ) . '" class="redux-datepicker regular-text ' . esc_attr( $this->field['class'] ) . '" />';
-		}
+            echo '<input data-id="' . esc_attr($this->field['id']) . '" type="text" id="' . esc_attr($this->field['id']) . '-date" name="' . esc_attr($this->field['name'] . $this->field['name_suffix']) . '"' . esc_attr($placeholder) . 'value="' . esc_attr($this->value) . '" class="redux-datepicker regular-text ' . esc_attr($this->field['class']) . '" />';
+        }
 
-		/**
-		 * Enqueue Function.
-		 * If this field requires any scripts, or css define this function and register/enqueue the scripts/css
-		 *
-		 * @since         1.0.0
-		 * @access        public
-		 * @return        void
-		 */
-		public function enqueue() {
-			if ( $this->parent->args['dev_mode'] ) {
-				wp_enqueue_style(
-					'redux-field-date-css',
-					ReduxCore::$_url . 'inc/fields/date/field_date.css',
-					array(),
-					$this->timestamp,
-					'all'
-				);
-			}
+        /**
+         * Enqueue Function.
+         * If this field requires any scripts, or css define this function and register/enqueue the scripts/css
+         *
+         * @since         1.0.0
+         * @access        public
+         * @return        void
+         */
+        public function enqueue() {
+            if ($this->parent->args['dev_mode']) {
+                wp_enqueue_style(
+                        'redux-field-date-css', ReduxCore::$_url . 'inc/fields/date/field_date.css', array(), $this->timestamp, 'all'
+                );
+            }
 
-			wp_enqueue_script(
-				'redux-field-date-js',
-				ReduxCore::$_url . 'inc/fields/date/field_date' . Redux_Functions::isMin() . '.js',
-				array( 'jquery', 'jquery-ui-core', 'jquery-ui-datepicker', 'redux-js' ),
-				$this->timestamp,
-				true
-			);
-		}
-	}
+            wp_enqueue_script(
+                    'redux-field-date-js', ReduxCore::$_url . 'inc/fields/date/field_date' . Redux_Functions::isMin() . '.js', array('jquery', 'jquery-ui-core', 'jquery-ui-datepicker', 'redux-js'), $this->timestamp, true
+            );
+        }
+
+    }
+
 }

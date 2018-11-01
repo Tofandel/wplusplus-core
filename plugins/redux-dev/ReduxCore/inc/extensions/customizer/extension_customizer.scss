@@ -1,13 +1,7 @@
-/*!
- * Copyright (c) Adrien Foulon - 2018.
- * Licensed under the Apache License, Version 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 .redux-section {
     p.customize-section-description {
         margin-top: 22px;
-        word-break: break-all;
+        word-break: break-word;
         &.legacy {
             margin-top: 7px;
         }
@@ -44,7 +38,7 @@
 }
 
 .redux_field_th {
-    padding: 13px 0 0 0;
+    padding: 13px 0px 0px 0px;
 }
 
 .redux-main {
@@ -84,7 +78,7 @@
     }
     .redux-container-raw {
         margin-top: 22px;
-        word-break: break-all;
+        word-break: break-word;
         padding: 0 !important;
     }
     .redux-container-password input {

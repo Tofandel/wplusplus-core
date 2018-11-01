@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The Redux Framework Plugin
  *
@@ -28,16 +29,16 @@
  */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
-	die;
+if (!defined('ABSPATH')) {
+    die;
 }
 
 // Require the main plugin class
-require_once plugin_dir_path( __FILE__ ) . 'class.redux-plugin.php';
+require_once plugin_dir_path(__FILE__) . 'class.redux-plugin.php';
 
 // Register hooks that are fired when the plugin is activated and deactivated, respectively.
-register_activation_hook( __FILE__, array( 'ReduxFrameworkPlugin', 'activate' ) );
-register_deactivation_hook( __FILE__, array( 'ReduxFrameworkPlugin', 'deactivate' ) );
+register_activation_hook(__FILE__, array('ReduxFrameworkPlugin', 'activate'));
+register_deactivation_hook(__FILE__, array('ReduxFrameworkPlugin', 'deactivate'));
 
 // Get plugin instance
 ReduxFrameworkPlugin::instance();

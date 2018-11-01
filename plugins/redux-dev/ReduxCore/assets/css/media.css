@@ -1,57 +1,57 @@
 .redux-main .button.remove-image,
 .redux-main .removeCSS {
-	margin-left: 10px;
-	color: #ef521d;
+  margin-left: 10px;
+  color: #ef521d;
 }
 
 .redux-main .button.remove-image:hover,
 .redux-main .removeCSS:hover {
-	color: red;
+  color: red;
 }
 
 .redux-main .upload_button_div {
-	margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .redux-main .upload-error {
-	float: left;
-	color: #666;
-	font-size: 10px;
-	font-weight: bold;
-	text-decoration: none;
-	text-shadow: 1px 1px 0 #FFFFFF;
-	margin: 0 10px 0 0;
-	padding: 3px 10px;
-	background: #FFDFEC;
-	border-radius: 4px;
+  float: left;
+  color: #666;
+  font-size: 10px;
+  font-weight: bold;
+  text-decoration: none;
+  text-shadow: 1px 1px 0 #FFFFFF;
+  margin: 0 10px 0 0;
+  padding: 3px 10px;
+  background: #FFDFEC;
+  border-radius: 4px;
 }
 
 .redux-main .reset-button {
-	font-family: Arial, Verdana, sans-serif;
-	float: left;
-	margin: 0;
-	color: #ef521d;
-	border-color: #bbb;
+  font-family: Arial, Verdana, sans-serif;
+  float: left;
+  margin: 0;
+  color: #ef521d;
+  border-color: #bbb;
 }
 
 .redux-main .redux-option-image {
-	max-height: 340px;
-	max-width: 340px;
-	padding: 5px;
-	margin-bottom: 0;
-	margin-top: 10px;
-	margin-right: 15px;
-	border: 1px solid #e3e3e3;
-	background: #f7f7f7;
-	border-radius: 3px;
+  max-height: 340px;
+  max-width: 340px;
+  padding: 5px;
+  margin-bottom: 0;
+  margin-top: 10px;
+  margin-right: 15px;
+  border: 1px solid #e3e3e3;
+  background: #f7f7f7;
+  border-radius: 3px;
 }
 
 .redux-main .redux-main .upload {
-	width: 80% !important;
+  width: 80% !important;
 }
 
 .redux-main .button {
-	margin-top: 2px;
+  margin-top: 2px;
 }
 
 /*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibWVkaWEuY3NzIiwic291cmNlcyI6WyJtZWRpYS5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLEFBQ0ksV0FETyxDQUNQLE9BQU8sQUFBQSxhQUFhO0FBRHhCLEFBRUksV0FGTyxDQUVQLFVBQVUsQ0FBQztFQUNQLFdBQVcsRUFBRSxJQUFJO0VBQ2pCLEtBQUssRUFBRSxPQUFPO0NBS2pCOztBQVRMLEFBQ0ksV0FETyxDQUNQLE9BQU8sQUFBQSxhQUFhLEFBS2pCLE1BQVE7QUFOZixBQUVJLFdBRk8sQ0FFUCxVQUFVLEFBSVAsTUFBUSxDQUFDO0VBQ0osS0FBSyxFQUFFLEdBQUc7Q0FDYjs7QUFSVCxBQVdJLFdBWE8sQ0FXUCxrQkFBa0IsQ0FBQztFQUNmLGFBQWEsRUFBRSxHQUFHO0NBQ3JCOztBQWJMLEFBZUksV0FmTyxDQWVQLGFBQWEsQ0FBQztFQUNWLEtBQUssRUFBRSxJQUFJO0VBQ1gsS0FBSyxFQUFFLElBQUk7RUFDWCxTQUFTLEVBQUUsSUFBSTtFQUNmLFdBQVcsRUFBRSxJQUFJO0VBQ2pCLGVBQWUsRUFBRSxJQUFJO0VBQ3JCLFdBQVcsRUFBRSxpQkFBaUI7RUFDOUIsTUFBTSxFQUFFLFVBQVU7RUFDbEIsT0FBTyxFQUFFLFFBQVE7RUFDakIsVUFBVSxFQUFFLE9BQU87RUFDbkIscUJBQXFCLEVBQUUsR0FBRztFQUMxQixrQkFBa0IsRUFBRSxHQUFHO0VBQ3ZCLGFBQWEsRUFBRSxHQUFHO0NBQ3JCOztBQTVCTCxBQThCSSxXQTlCTyxDQThCUCxhQUFhLENBQUM7RUFDVixXQUFXLEVBQUUsMEJBQTBCO0VBQ3ZDLEtBQUssRUFBRSxJQUFJO0VBQ1gsTUFBTSxFQUFFLENBQUM7RUFDVCxLQUFLLEVBQUUsT0FBTztFQUNkLFlBQVksRUFBRSxJQUFJO0NBQ3JCOztBQXBDTCxBQXNDSSxXQXRDTyxDQXNDUCxtQkFBbUIsQ0FBQztFQUNoQixVQUFVLEVBQUUsS0FBSztFQUNqQixTQUFTLEVBQUUsS0FBSztFQUNoQixPQUFPLEVBQUUsR0FBRztFQUNaLGFBQWEsRUFBRSxDQUFDO0VBQ2hCLFVBQVUsRUFBRSxJQUFJO0VBQ2hCLFlBQVksRUFBRSxJQUFJO0VBQ2xCLE1BQU0sRUFBRSxpQkFBaUI7RUFDekIsVUFBVSxFQUFFLE9BQU87RUFDbkIsa0JBQWtCLEVBQUUsR0FBRztFQUN2QixvQkFBb0IsRUFBRSxHQUFHO0VBQ3pCLHFCQUFxQixFQUFFLEdBQUc7RUFDMUIsYUFBYSxFQUFFLEdBQUc7Q0FDckI7O0FBbkRMLEFBcURnQixXQXJETCxDQXFEUCxXQUFXLENBQUMsT0FBTyxDQUFDO0VBQ2hCLEtBQUssRUFBRSxjQUFjO0NBQ3hCOztBQXZETCxBQXlESSxXQXpETyxDQXlEUCxPQUFPLENBQUM7RUFDSixVQUFVLEVBQUUsR0FBRztDQUNsQiJ9 */

@@ -1,28 +1,31 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
-if ( ! class_exists( 'Redux_Validation_no_special_chars', false ) ) {
-	class Redux_Validation_no_special_chars extends Redux_Validate {
+if (!class_exists('Redux_Validation_no_special_chars', false)) {
 
-		/**
-		 * Field Render Function.
-		 * Takes the vars and validates them
-		 *
-		 * @since ReduxFramework 1.0.0
-		 */
-		function validate() {
-			$this->field['msg'] = ( isset( $this->field['msg'] ) ) ? $this->field['msg'] : esc_html__( 'You must not enter any special characters in this field, all special characters have been removed.', 'redux-framework' );
+    class Redux_Validation_no_special_chars extends Redux_Validate {
 
-			if ( ! preg_match( '/[^a-zA-Z0-9_ -]/s', $this->value ) == 0 ) {
-				$this->field['current'] = $this->current;
+        /**
+         * Field Render Function.
+         * Takes the vars and validates them
+         *
+         * @since ReduxFramework 1.0.0
+         */
+        function validate() {
+            $this->field['msg'] = ( isset($this->field['msg']) ) ? $this->field['msg'] : esc_html__('You must not enter any special characters in this field, all special characters have been removed.', 'redux-framework');
 
-				$this->warning = $this->field;
-			}
+            if (!preg_match('/[^a-zA-Z0-9_ -]/s', $this->value) == 0) {
+                $this->field['current'] = $this->current;
 
-			$this->value = preg_replace( '/[^a-zA-Z0-9_ -]/s', '', $this->value );
-		}
-	}
+                $this->warning = $this->field;
+            }
+
+            $this->value = preg_replace('/[^a-zA-Z0-9_ -]/s', '', $this->value);
+        }
+
+    }
+
 }

@@ -9,22 +9,12 @@
   line-height: 2em;
   vertical-align: middle;
 }
-
 .#{$el-css-prefix}-stack-1x, .#{$el-css-prefix}-stack-2x {
   position: absolute;
   left: 0;
   width: 100%;
   text-align: center;
 }
-
-.#{$el-css-prefix}-stack-1x {
-  line-height: inherit;
-}
-
-.#{$el-css-prefix}-stack-2x {
-  font-size: 2em;
-}
-
-.#{$el-css-prefix}-inverse {
-  color: $el-inverse;
-}
+.#{$el-css-prefix}-stack-1x { line-height: inherit; }
+.#{$el-css-prefix}-stack-2x { font-size: 2em; }
+.#{$el-css-prefix}-inverse { color: $el-inverse; }

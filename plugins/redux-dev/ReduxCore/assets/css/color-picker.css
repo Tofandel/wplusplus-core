@@ -1,101 +1,101 @@
 .redux-main input.redux-color {
-	float: left;
-	width: 70px;
-	margin-left: 5px;
+  float: left;
+  width: 70px;
+  margin-left: 5px;
 }
 
 .redux-main input.color-transparency {
-	margin-left: 10px;
-	margin-right: 3px;
+  margin-left: 10px;
+  margin-right: 3px;
 }
 
 .redux-main input.wp-color-picker {
-	width: 80px !important;
+  width: 80px !important;
 }
 
 .redux-main .section-color .controls {
-	width: 345px;
+  width: 345px;
 }
 
 .redux-main .section-color .explain {
-	width: 225px;
+  width: 225px;
 }
 
 .redux-main .iris-picker .iris-strip .ui-slider-handle {
-	position: absolute;
-	background: none !important;
-	right: -3px;
-	left: -3px;
-	border: 4px solid #aaa !important;
-	border-width: 4px 3px;
-	width: auto;
-	border-radius: 4px;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-	opacity: .9;
-	z-index: 5;
-	cursor: ns-resize;
+  position: absolute;
+  background: none !important;
+  right: -3px;
+  left: -3px;
+  border: 4px solid #aaa !important;
+  border-width: 4px 3px;
+  width: auto;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  opacity: .9;
+  z-index: 5;
+  cursor: ns-resize;
 }
 
 .redux-main .iris-picker .iris-slider-offset {
-	position: absolute;
-	top: 2px;
-	left: 0px;
-	right: 0;
-	bottom: 4px;
-	width: 28px;
-	background: none !important;
-	border: 0 !important;
-	height: auto;
+  position: absolute;
+  top: 2px;
+  left: 0px;
+  right: 0;
+  bottom: 4px;
+  width: 28px;
+  background: none !important;
+  border: 0 !important;
+  height: auto;
 }
 
 .redux-main .wp-picker-container {
-	display: inline-block;
-	outline: 0;
+  display: inline-block;
+  outline: 0;
 }
 
 .redux-main .wp-picker-container input {
-	margin-bottom: inherit;
-	margin-top: inherit;
-	padding: 3px 5px;
+  margin-bottom: inherit;
+  margin-top: inherit;
+  padding: 3px 5px;
 }
 
 .redux-main .wp-picker-container .wp-color-result {
-	outline: 0;
-	margin: 0;
-	height: 24px !important;
-	margin: 0 6px 6px 0 !important;
+  outline: 0;
+  margin: 0;
+  height: 24px !important;
+  margin: 0 6px 6px 0 !important;
 }
 
 .redux-main .wp-picker-container .wp-picker-default {
-	padding: 0 10px 1px;
+  padding: 0 10px 1px;
 }
 
 .redux-main .wp-picker-container .wp-color-result-text {
-	line-height: 22px;
+  line-height: 22px;
 }
 
 .redux-main .redux-color-gradient {
-	line-height: 24px;
+  line-height: 24px;
 }
 
 .redux-main .color-transparency-check {
-	line-height: 1;
-	/*        margin-top: 5px !important;*/
-	margin: 0 !important;
-	padding-top: 10px;
+  line-height: 1;
+  /*        margin-top: 5px !important;*/
+  margin: 0 !important;
+  padding-top: 10px;
 }
 
 .redux-main .wp-picker-clear {
-	margin-top: 0 !important;
+  margin-top: 0 !important;
 }
 
 .wp-customizer .redux-main input.wp-picker-default, .wp-customizer .redux-main .redux-typography-container input.wp-picker-default, .wp-customizer .redux-main .redux-typography-container .redux-typography-color {
-	padding: 0px 4px !important;
+  padding: 0px 4px !important;
 }
 
 .wp-customizer .redux-main input.wp-color-picker {
-	width: 65px !important;
-	margin-left: 5px !important;
+  width: 65px !important;
+  margin-left: 5px !important;
 }
 
 /*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29sb3ItcGlja2VyLmNzcyIsInNvdXJjZXMiOlsiY29sb3ItcGlja2VyLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsQUFDSSxXQURPLENBQ1AsS0FBSyxBQUNELFlBQWEsQ0FBQztFQUNWLEtBQUssRUFBRSxJQUFJO0VBQ1gsS0FBSyxFQUFFLElBQUk7RUFDWCxXQUFXLEVBQUUsR0FBRztDQUNuQjs7QUFOVCxBQUNJLFdBRE8sQ0FDUCxLQUFLLEFBT0QsbUJBQW9CLENBQUM7RUFDakIsV0FBVyxFQUFFLElBQUk7RUFDakIsWUFBWSxFQUFFLEdBQUc7Q0FDcEI7O0FBWFQsQUFDSSxXQURPLENBQ1AsS0FBSyxBQVlELGdCQUFpQixDQUFDO0VBQ2QsS0FBSyxFQUFFLGVBQWU7Q0FDekI7O0FBZlQsQUFtQlEsV0FuQkcsQ0FrQlAsY0FBYyxDQUNWLFNBQVMsQ0FBQztFQUNOLEtBQUssRUFBRSxLQUFLO0NBQ2Y7O0FBckJULEFBdUJRLFdBdkJHLENBa0JQLGNBQWMsQ0FLVixRQUFRLENBQUM7RUFDTCxLQUFLLEVBQUUsS0FBSztDQUNmOztBQXpCVCxBQTZCb0IsV0E3QlQsQ0E0QlAsWUFBWSxDQUNSLFdBQVcsQ0FBQyxpQkFBaUIsQ0FBQztFQUMxQixRQUFRLEVBQUUsUUFBUTtFQUNsQixVQUFVLEVBQUUsZUFBZTtFQUMzQixLQUFLLEVBQUUsSUFBSTtFQUNYLElBQUksRUFBRSxJQUFJO0VBQ1YsTUFBTSxFQUFFLHlCQUF5QjtFQUNqQyxZQUFZLEVBQUUsT0FBTztFQUNyQixLQUFLLEVBQUUsSUFBSTtFQUNYLGFBQWEsRUFBRSxHQUFHO0VBQ2xCLFVBQVUsRUFBRSxDQUFDLENBQUMsR0FBRyxDQUFDLEdBQUcsQ0FBQyxrQkFBaUI7RUFDdkMsT0FBTyxFQUFFLEVBQUU7RUFDWCxPQUFPLEVBQUUsQ0FBQztFQUNWLE1BQU0sRUFBRSxTQUFTO0NBQ3BCOztBQTFDVCxBQTRDUSxXQTVDRyxDQTRCUCxZQUFZLENBZ0JSLG1CQUFtQixDQUFDO0VBQ2hCLFFBQVEsRUFBRSxRQUFRO0VBQ2xCLEdBQUcsRUFBRSxHQUFHO0VBQ1IsSUFBSSxFQUFFLEdBQUc7RUFDVCxLQUFLLEVBQUUsQ0FBQztFQUNSLE1BQU0sRUFBRSxHQUFHO0VBQ1gsS0FBSyxFQUFFLElBQUk7RUFDWCxVQUFVLEVBQUUsZUFBZTtFQUMzQixNQUFNLEVBQUUsWUFBWTtFQUNwQixNQUFNLEVBQUUsSUFBSTtDQUNmOztBQXREVCxBQXlESSxXQXpETyxDQXlEUCxvQkFBb0IsQ0FBQztFQUNqQixPQUFPLEVBQUUsWUFBWTtFQUNyQixPQUFPLEVBQUUsQ0FBQztDQXNCYjs7QUFqRkwsQUE2RFEsV0E3REcsQ0F5RFAsb0JBQW9CLENBSWhCLEtBQUssQ0FBQztFQUNGLGFBQWEsRUFBRSxPQUFPO0VBQ3RCLFVBQVUsRUFBRSxPQUFPO0VBQ25CLE9BQU8sRUFBRSxPQUFPO0NBQ25COztBQWpFVCxBQW1FUSxXQW5FRyxDQXlEUCxvQkFBb0IsQ0FVaEIsZ0JBQWdCLENBQUM7RUFDYixPQUFPLEVBQUUsQ0FBQztFQUNWLE1BQU0sRUFBRSxDQUFDO0VBQ1QsTUFBTSxFQUFFLElBQUksQ0FBQSxVQUFVO0VBQ3RCLE1BQU0sRUFBRSxDQUFDLENBQUMsR0FBRyxDQUFDLEdBQUcsQ0FBQyxDQUFDLENBQUEsVUFBVTtDQUNoQzs7QUF4RVQsQUEwRVEsV0ExRUcsQ0F5RFAsb0JBQW9CLENBaUJoQixrQkFBa0IsQ0FBQztFQUNmLE9BQU8sRUFBRSxVQUFVO0NBQ3RCOztBQTVFVCxBQThFUSxXQTlFRyxDQXlEUCxvQkFBb0IsQ0FxQmhCLHFCQUFxQixDQUFDO0VBQ2xCLFdBQVcsRUFBRSxJQUFJO0NBQ3BCOztBQWhGVCxBQW1GSSxXQW5GTyxDQW1GUCxxQkFBcUIsQ0FBQztFQUNsQixXQUFXLEVBQUUsSUFBSTtDQUNwQjs7QUFyRkwsQUF1RkksV0F2Rk8sQ0F1RlAseUJBQXlCLENBQUM7RUFDdEIsV0FBVyxFQUFFLENBQUM7RUFDdEIsdUNBQXVDO0VBQy9CLE1BQU0sRUFBRSxDQUFDLENBQUEsVUFBVTtFQUNuQixXQUFXLEVBQUUsSUFBSTtDQUNwQjs7QUE1RkwsQUE4RkksV0E5Rk8sQ0E4RlAsZ0JBQWdCLENBQUM7RUFDYixVQUFVLEVBQUUsWUFBWTtDQUMzQjs7QUFHTCxBQUNnQixjQURGLENBQ1YsV0FBVyxDQUFDLEtBQUssQUFBQSxrQkFBa0IsRUFEdkMsQUFDaUYsY0FEbkUsQ0FDMkIsV0FBVyxDQUFDLDJCQUEyQixDQUFDLEtBQUssQUFBQSxrQkFBa0IsRUFEeEcsQUFDa0osY0FEcEksQ0FDNEYsV0FBVyxDQUFDLDJCQUEyQixDQUFDLHVCQUF1QixDQUFDO0VBQ2xLLE9BQU8sRUFBRSxrQkFBa0I7Q0FDOUI7O0FBSEwsQUFJZ0IsY0FKRixDQUlWLFdBQVcsQ0FBQyxLQUFLLEFBQUEsZ0JBQWdCLENBQUM7RUFDOUIsS0FBSyxFQUFFLGVBQWU7RUFDdEIsV0FBVyxFQUFFLGNBQWM7Q0FDOUIifQ== */

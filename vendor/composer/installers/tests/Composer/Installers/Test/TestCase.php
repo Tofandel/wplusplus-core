@@ -12,10 +12,10 @@
 
 namespace Composer\Installers\Test;
 
-use Composer\Package\Version\VersionParser;
-use Composer\Package\Package;
 use Composer\Package\AliasPackage;
 use Composer\Package\LinkConstraint\VersionConstraint;
+use Composer\Package\Package;
+use Composer\Package\Version\VersionParser;
 use Composer\Util\Filesystem;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 

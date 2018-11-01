@@ -1,9 +1,3 @@
-/*!
- * Copyright (c) Adrien Foulon - 2018.
- * Licensed under the Apache License, Version 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 .redux-container-sortable {
     i {
         &.el,
@@ -17,7 +11,7 @@
         margin-right: 10px;
 
         &.bugger {
-            margin-bottom: 0 !important;
+            margin-bottom: 0px !important;
             font-size: 12px !important;
             color: #999999;
         }

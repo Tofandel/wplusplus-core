@@ -16,80 +16,82 @@
  * @author      Kevin Provance (kprovance)
  * @version     4.0.0
  */
-
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 // Don't duplicate me!
-if ( ! class_exists( 'ReduxFramework_Extension_options_object', false) ) {
+if (!class_exists('ReduxFramework_Extension_options_object', false)) {
 
 
-	/**
-	 * Main ReduxFramework options_object extension class
-	 *
-	 * @since       3.1.6
-	 */
-	class ReduxFramework_Extension_options_object {
+    /**
+     * Main ReduxFramework options_object extension class
+     *
+     * @since       3.1.6
+     */
+    class ReduxFramework_Extension_options_object {
 
-		// Protected vars
-		protected $parent;
-		public static $theInstance;
-		public static $version = "4.0";
-		public $is_field = false;
+        // Protected vars
+        protected $parent;
+        public static $theInstance;
+        public static $version = "4.0";
+        public $is_field = false;
 
-		/**
-		 * Class Constructor. Defines the args for the extions class
-		 *
-		 * @since       1.0.0
-		 * @access      public
-		 *
-		 * @param       array $sections Panel sections.
-		 * @param       array $args Class constructor arguments.
-		 * @param       array $extra_tabs Extra panel tabs.
-		 *
-		 * @return      void
-		 */
-		public function __construct( $parent ) {
+        /**
+         * Class Constructor. Defines the args for the extions class
+         *
+         * @since       1.0.0
+         * @access      public
+         *
+         * @param       array $sections Panel sections.
+         * @param       array $args Class constructor arguments.
+         * @param       array $extra_tabs Extra panel tabs.
+         *
+         * @return      void
+         */
+        public function __construct($parent) {
 
-			$this->parent     = $parent;
-			$this->field_name = 'options_object';
+            $this->parent = $parent;
+            $this->field_name = 'options_object';
 
-			self::$theInstance = $this;
+            self::$theInstance = $this;
 
-			$this->is_field = Redux_Helpers::isFieldInUse( $parent, 'options_object' );
+            $this->is_field = Redux_Helpers::isFieldInUse($parent, 'options_object');
 
-			if ( ! $this->is_field && $this->parent->args['dev_mode'] && $this->parent->args['show_options_object'] ) {
-				$this->add_section();
-			}
+            if (!$this->is_field && $this->parent->args['dev_mode'] && $this->parent->args['show_options_object']) {
+                $this->add_section();
+            }
 
-			add_filter( 'redux/' . $this->parent->args['opt_name'] . '/field/class/' . $this->field_name, array(
-				&$this,
-				'overload_field_path'
-			) ); // Adds the local field
-		}
+            add_filter('redux/' . $this->parent->args['opt_name'] . '/field/class/' . $this->field_name, array(
+                &$this,
+                'overload_field_path'
+            )); // Adds the local field
+        }
 
-		public function add_section() {
-			$this->parent->sections[] = array(
-				'id'         => 'options-object',
-				'title'      => esc_html__( 'Options Object', 'redux-framework' ),
-				'heading'    => '',
-				'icon'       => 'el el-info-circle',
-				'customizer' => false,
-				'fields'     => array(
-					array(
-						'id'    => 'redux_options_object',
-						'type'  => 'options_object',
-						'title' => '',
-					)
-				),
-			);
-		}
+        public function add_section() {
+            $this->parent->sections[] = array(
+                'id' => 'options-object',
+                'title' => esc_html__('Options Object', 'redux-framework'),
+                'heading' => '',
+                'icon' => 'el el-info-circle',
+                'customizer' => false,
+                'fields' => array(
+                    array(
+                        'id' => 'redux_options_object',
+                        'type' => 'options_object',
+                        'title' => '',
+                    )
+                ),
+            );
+        }
 
-		// Forces the use of the embeded field path vs what the core typically would use
-		public function overload_field_path( $field ) {
-			return dirname( __FILE__ ) . '/' . $this->field_name . '/field_' . $this->field_name . '.php';
-		}
-	} // class
+        // Forces the use of the embeded field path vs what the core typically would use
+        public function overload_field_path($field) {
+            return dirname(__FILE__) . '/' . $this->field_name . '/field_' . $this->field_name . '.php';
+        }
+
+    }
+
+    // class
 } // if

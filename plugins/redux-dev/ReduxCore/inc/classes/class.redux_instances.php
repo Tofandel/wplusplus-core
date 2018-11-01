@@ -1,10 +1,10 @@
 <?php
+
 /**
  * Copyright (c) Adrien Foulon - 2018.
  * Licensed under the Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * Redux Framework Instance Container Class
  * Automatically captures and stores all instances
@@ -13,66 +13,65 @@
  * @package     Redux_Framework
  * @subpackage  Core
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
-if ( ! class_exists( 'Redux_Instances', false ) ) {
-	class Redux_Instances {
+if (!class_exists('Redux_Instances', false)) {
 
-		/**
-		 * ReduxFramework instances
-		 *
-		 * @var ReduxFramework[]
-		 */
-		private static $instances;
+    class Redux_Instances {
 
-		/**
-		 * Get Instance
-		 * Get Redux_Instances instance
-		 * OR an instance of ReduxFramework by [opt_name]
-		 *
-		 * @param  string|false $opt_name the defined opt_name
-		 *
-		 * @return ReduxFramework class instance
-		 */
-		public static function get_instance( $opt_name = false ) {
+        /**
+         * ReduxFramework instances
+         *
+         * @var ReduxFramework[]
+         */
+        private static $instances;
 
-			if ( $opt_name && ! empty( self::$instances[ $opt_name ] ) ) {
-				return self::$instances[ $opt_name ];
-			}
+        /**
+         * Get Instance
+         * Get Redux_Instances instance
+         * OR an instance of ReduxFramework by [opt_name]
+         *
+         * @param  string|false $opt_name the defined opt_name
+         *
+         * @return ReduxFramework class instance
+         */
+        public static function get_instance($opt_name = false) {
 
-			return null;
-		}
+            if ($opt_name && !empty(self::$instances[$opt_name])) {
+                return self::$instances[$opt_name];
+            }
 
-		/**
-		 * Get all instantiated ReduxFramework instances (so far)
-		 *
-		 * @return [type] [description]
-		 */
-		public static function get_all_instances() {
-			return self::$instances;
-		}
+            return null;
+        }
 
-		public function __construct( $ReduxFramework = false ) {
-			if ( $ReduxFramework ) {
-				$this->store( $ReduxFramework );
-			}
-			else {
-				add_action( 'redux/construct', array( $this, 'store' ), 5, 1 );
-			}
-		}
+        /**
+         * Get all instantiated ReduxFramework instances (so far)
+         *
+         * @return [type] [description]
+         */
+        public static function get_all_instances() {
+            return self::$instances;
+        }
 
-		public function store( $ReduxFramework ) {
-			if ( $ReduxFramework instanceof ReduxFramework ) {
-				$key                     = $ReduxFramework->args[ 'opt_name' ];
-				self::$instances[ $key ] = $ReduxFramework;
-			}
-		}
-	}
+        public function __construct($ReduxFramework = false) {
+            if ($ReduxFramework) {
+                $this->store($ReduxFramework);
+            } else {
+                add_action('redux/construct', array($this, 'store'), 5, 1);
+            }
+        }
+
+        public function store($ReduxFramework) {
+            if ($ReduxFramework instanceof ReduxFramework) {
+                $key = $ReduxFramework->args['opt_name'];
+                self::$instances[$key] = $ReduxFramework;
+            }
+        }
+
+    }
+
 }
 
-if ( ! class_exists( 'ReduxFrameworkInstances', false ) ) {
-	class_alias( 'Redux_Instances', 'ReduxFrameworkInstances' );
-}
+class_alias('Redux_Instances', 'ReduxFrameworkInstances');
