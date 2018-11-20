@@ -54,7 +54,7 @@ if ( ! class_exists( 'ReduxFramework_extension_accordion', false ) ) {
 			parent::__construct( $parent, __FILE__ );
 			self::$ext_url = $this->_extension_url;
 
-			$this->add_overload_field_filter( 'accordion' );
+			$this->add_field( 'accordion' );
 
 			// Uncomment when customizer works - kp
 			//include_once($this->extension_dir . 'multi-media/inc/class.customizer.php');

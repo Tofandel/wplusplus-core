@@ -168,7 +168,7 @@ if (!class_exists('ReduxCore', false)) {
 
             spl_autoload_register(array($this, 'register_classes'));
 
-            new Redux_Builder_Api($this);
+            new Redux_Builder_Api();
             new Redux_Welcome();
         }
 

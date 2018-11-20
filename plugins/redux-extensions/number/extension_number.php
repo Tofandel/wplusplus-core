@@ -18,7 +18,7 @@ if ( ! class_exists( 'ReduxFramework_Extension_number', false ) ) {
 		public function __construct( $parent ) {
 			parent::__construct( $parent, __FILE__ );
 
-			$this->add_overload_field_filter( 'number' );
+			$this->add_field( 'number' );
 		}
 	}
 }
