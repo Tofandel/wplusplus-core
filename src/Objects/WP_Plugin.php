@@ -86,10 +86,11 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 	/**
 	 * @param string[] $shortcodes array of class names
+	 *
 	 */
 	public function setShortcodes( array $shortcodes ) {
 		foreach ( $shortcodes as $shortcode ) {
-			$this->shortcodes[ $shortcode::getName() ] = $shortcode;
+			$this->setShortcode( $shortcode );
 		}
 	}
 
@@ -100,7 +101,6 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 	/**
 	 * @param \Tofandel\Core\Traits\WP_Shortcode $shortcode class name
 	 *
-	 * @throws \ReflectionException
 	 */
 	public function setShortcode( $shortcode ) {
 		try {
@@ -122,7 +122,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 						/**
 						 * @var StaticSubModule $shortcode
 						 */
-						call_user_func( array( $shortcode, 'SubModuleInit' ), array() );
+						call_user_func_array( array( $shortcode, 'SubModuleInit' ), array( &$this ) );
 					} else {
 						$this->modules[ $shortcode ] = $reflection->newInstance( $this );
 					}
@@ -167,7 +167,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 						/**
 						 * @var StaticSubModule $submodule
 						 */
-						call_user_func( array( $submodule, 'SubModuleInit' ), array() );
+						call_user_func_array( array( $submodule, 'SubModuleInit' ), array( &$this ) );
 					} else {
 						$this->modules[ $submodule ] = $reflection->newInstance( $this );
 					}
@@ -394,6 +394,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 		add_action( 'init', [ $this, 'initShortcodes' ], 1 );
 
 		if ( ! $this->no_redux ) {
+
 			if ( is_admin() && ! wp_doing_ajax() ||
 			     ( wp_doing_ajax() && isset ( $_REQUEST[ 'action' ] ) &&
 			       ( $_REQUEST[ 'action' ] == $this->redux_opt_name . '_ajax_save' || strpos( $_REQUEST[ 'action' ], 'redux' ) === 0 ) ) ) {
@@ -419,6 +420,12 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 
 				if ( ! class_exists( \Redux::class, false ) && ! did_action( 'redux_not_loaded' ) ) {
 					do_action( 'redux_not_loaded' );
+					add_action( 'rest_api_init', function () {
+						if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+							$this->_reduxLoad();
+							add_action( 'plugins_loaded', [ $this, '_reduxConfig' ] );
+						}
+					}, - 1 );
 				}
 			}
 		}
@@ -1078,7 +1085,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			 * @var ReduxFramework $module
 			 */
 			$this->reduxInit( $module );
-			apply_filters( 'wpp_redux_' . $this->redux_opt_name . '_config', $module );
+			do_action( 'wpp_redux_' . $this->redux_opt_name . '_config', $module );
 		}
 	}
 

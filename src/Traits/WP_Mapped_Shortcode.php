@@ -19,8 +19,7 @@ use Tofandel\Core\ShortcodeMappers\VC_Mapper;
  * @author  Adrien Foulon <tofandel@tukan.hu>
  */
 trait WP_Mapped_Shortcode {
-	use WP_Shortcode;
-	use StaticSubModule {
+	use WP_Shortcode {
 		SubModuleInit as ParentSubModuleInit;
 	}
 

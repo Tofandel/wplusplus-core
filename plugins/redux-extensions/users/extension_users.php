@@ -1106,7 +1106,7 @@ if ( ! class_exists( 'ReduxFramework_extension_users', false ) ) {
 # Helper function to bypass WordPress hook priorities.  ;)
 if ( ! function_exists( 'create_term_redux_users' ) ) {
 	function create_term_redux_users( $profile_id, $tt_id = 0, $users = '' ) {
-		$instances = ReduxFrameworkInstances::get_all_instances();
+		$instances = Redux_Instances::get_all_instances();
 		foreach ( $_POST as $key => $value ) {
 			if ( is_array( $value ) && isset( $instances[ $key ] ) ) {
 				$instances[ $key ]->extensions[ 'users' ]->user_meta_save( $profile_id );

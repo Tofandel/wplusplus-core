@@ -179,7 +179,7 @@ if ( ! class_exists( 'ReduxFramework_extension_custom_fonts', false ) ) {
 			}
 
 			if ( file_exists( $this->upload_dir . 'fonts.css' ) ) {
-				$theme_advanced_fonts = isset( $opt['font_formats'] ) ? isset( $opt['font_formats'] ) : "Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Symbol=symbol;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats";
+				$theme_advanced_fonts = isset( $opt[ 'font_formats' ] ) ? $opt[ 'font_formats' ] : "Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Symbol=symbol;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats";
 				$custom_fonts         = '';
 
 				$stylesheet = $this->upload_url . 'fonts.css';

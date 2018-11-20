@@ -28,7 +28,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Don't duplicate me!
 if ( ! class_exists( 'ReduxFramework_extension_icon_select', false ) ) {
 
-
 	/**
 	 * Main ReduxFramework icon_select extension class
 	 *
@@ -50,9 +49,7 @@ if ( ! class_exists( 'ReduxFramework_extension_icon_select', false ) ) {
 		 * @since       1.0.0
 		 * @access      public
 		 *
-		 * @param       array $sections Panel sections.
-		 * @param       array $args Class constructor arguments.
-		 * @param       array $extra_tabs Extra panel tabs.
+		 * @param       ReduxFramework $parent
 		 *
 		 * @return      void
 		 */

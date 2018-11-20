@@ -67,7 +67,7 @@ class ReduxConfig implements \Tofandel\Core\Interfaces\ReduxConfig {
 	public static function loadRedux() {
 		if ( ! class_exists( Redux::class, false ) ) {
 			global $WPlusPlusCore;
-			$folder = WP_DEBUG ? 'redux-dev' : 'redux-framework';
+			$folder = true ? 'redux-dev' : 'redux-framework';
 			if ( file_exists( $f = $WPlusPlusCore->file( "plugins/$folder/redux-framework.php" ) ) ) {
 				require_once $f;
 			}

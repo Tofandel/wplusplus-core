@@ -43,7 +43,7 @@ if ( ! class_exists( 'Redux_Taxonomy', false ) ) {
 			global $pagenow;
 			$pagenows = array( 'edit-tags.php', 'term.php', 'admin-ajax.php' );
 			if ( ! empty( Redux_Taxonomy::$sections ) && in_array( $pagenow, $pagenows ) ) {
-				$instances = ReduxFrameworkInstances::get_all_instances();
+				$instances = Redux_Instances::get_all_instances();
 				foreach ( Redux_Taxonomy::$fields as $opt_name => $fields ) {
 					if ( ! isset( $instances[ $opt_name ] ) ) {
 						Redux::setArgs( $opt_name, array( 'menu_type' => 'hidden' ) );
@@ -57,14 +57,14 @@ if ( ! class_exists( 'Redux_Taxonomy', false ) ) {
 						Redux::init( $opt_name );
 					} else {
 						remove_action( 'admin_enqueue_scripts', array(
-							ReduxFrameworkInstances::get_instance( $opt_name ),
+							Redux_Instances::get_instance( $opt_name ),
 							'_enqueue'
 						) );
 					}
 					//Redux::setArgs( $opt_name, array( 'output' => false ) );
 					Redux::setArgs( $opt_name, Redux_Taxonomy::$args[ $opt_name ] );
 				}
-				$instances = ReduxFrameworkInstances::get_all_instances();
+				$instances = Redux_Instances::get_all_instances();
 				add_action( 'admin_enqueue_scripts', array( $instances[ $opt_name ], '_enqueue' ), 1 );
 			}
 		}

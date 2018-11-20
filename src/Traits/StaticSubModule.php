@@ -21,6 +21,7 @@ trait StaticSubModule {
 
 	public static function SubModuleInit( WP_Plugin &$parent = null ) {
 		static::$parent = $parent;
+		static::actionsAndFilters();
 	}
 
 	/**

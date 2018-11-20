@@ -60,6 +60,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 		public $post_id = 0;
 		public $base_url;
 		private $notices;
+		private static $instances = array();
 
 		public function __construct( $parent ) {
 			global $pagenow;
@@ -84,19 +85,17 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 				$this->parent->never_save_to_db = true;
 			}
 
-			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
-			add_action( 'save_post', array( $this, 'meta_boxes_save' ), 1, 2 );
-			add_action( 'pre_post_update', array( $this, 'pre_post_update' ) );
-			add_action( 'admin_notices', array( $this, 'meta_boxes_show_errors' ), 0 );
-			add_action( 'admin_enqueue_scripts', array( $this, '_enqueue' ), 20 );
+			self::$instances[] = &$this;
 
-			// Global variable overrides for within loops
-			add_action( 'the_post', array( $this, '_loop_start' ), 0 );
-			add_action( 'loop_end', array( $this, '_loop_end' ), 0 );
-
-			$this->init();
+			add_action( 'admin_init', array( $this, 'init_all' ), 0, PHP_INT_MAX );
+			//$this->init();
 		} // __construct()
 
+		public static function init_all() {
+			foreach ( self::$instances as $instance ) {
+				$instance->init();
+			}
+		}
 
 		public function add_box_classes( $classes ) {
 			$classes[] = 'redux-metabox';
@@ -127,6 +126,17 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 			if ( empty( $this->boxes ) || ! is_array( $this->boxes ) ) {
 				return;
 			}
+
+			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+			add_action( 'save_post', array( $this, 'meta_boxes_save' ), 1, 2 );
+			add_action( 'pre_post_update', array( $this, 'pre_post_update' ) );
+			add_action( 'admin_notices', array( $this, 'meta_boxes_show_errors' ), 0 );
+			add_action( 'admin_enqueue_scripts', array( $this, '_enqueue' ), 20 );
+
+			// Global variable overrides for within loops
+			add_action( 'the_post', array( $this, '_loop_start' ), 0 );
+			add_action( 'loop_end', array( $this, '_loop_end' ), 0 );
+
 			if ( isset( $_SERVER["HTTP_HOST"] ) ) {
 				$this->base_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 				$this->post_id  = $this->url_to_postid( ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] );
@@ -1356,7 +1366,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 if ( ! function_exists( 'redux_metaboxes_loop_start' ) ) {
 	function redux_metaboxes_loop_start( $opt_name, $the_post = array() ) {
-		$redux     = ReduxFrameworkInstances::get_instance( $opt_name );
+		$redux     = Redux_Instances::get_instance( $opt_name );
 		$metaboxes = $redux->extensions['metaboxes'];
 
 		$metaboxes->_loop_start( $the_post );
@@ -1365,7 +1375,7 @@ if ( ! function_exists( 'redux_metaboxes_loop_start' ) ) {
 
 if ( ! function_exists( 'redux_metaboxes_loop_end' ) ) {
 	function redux_metaboxes_loop_end( $opt_name, $the_post = array() ) {
-		$redux     = ReduxFrameworkInstances::get_instance( $opt_name );
+		$redux     = Redux_Instances::get_instance( $opt_name );
 		$metaboxes = $redux->extensions['metaboxes'];
 
 		$metaboxes->_loop_end();
@@ -1389,7 +1399,7 @@ if ( ! function_exists( 'redux_post_meta' ) ) {
 			return null;
 		}
 
-		$redux     = ReduxFrameworkInstances::get_instance( $opt_name );
+		$redux     = Redux_Instances::get_instance( $opt_name );
 		$metaboxes = $redux->extensions['metaboxes'];
 
 		if ( isset( $thePost ) && is_array( $thePost ) ) {

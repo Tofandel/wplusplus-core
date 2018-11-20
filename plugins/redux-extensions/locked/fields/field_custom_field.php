@@ -31,7 +31,7 @@ if ( ! class_exists( 'ReduxFramework_custom_field', false ) ) {
 	 *
 	 * @since       1.0.0
 	 */
-	class ReduxFramework_custom_field extends ReduxFramework {
+	class ReduxFramework_custom_field extends Redux_Field {
 
 		/**
 		 * Field Constructor.
@@ -43,11 +43,7 @@ if ( ! class_exists( 'ReduxFramework_custom_field', false ) ) {
 		 * @return      void
 		 */
 		function __construct( $field = array(), $value = '', $parent ) {
-
-
-			$this->parent = $parent;
-			$this->field  = $field;
-			$this->value  = $value;
+			parent::__construct( $field, $value, $parent );
 
 			if ( empty( $this->extension_dir ) ) {
 				$this->extension_dir = trailingslashit( str_replace( '\\', '/', dirname( __FILE__ ) ) );

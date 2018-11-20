@@ -34,9 +34,9 @@ if ( ! class_exists( 'ReduxFramework_multi_media', false ) ) {
 		 *
 		 * @return      void
 		 */
-		public function __construct( $field = array(), $value = '', $parent ) {
+		public function __construct( $field = array(), $value = array(), $parent ) {
 			if ( ! class_exists( ReduxFramework_extension_multi_media::class ) ) {
-				require_once __DIR__ . '../extension_multi_media.php';
+				require_once __DIR__ . '/../extension_multi_media.php';
 			}
 
 			// Set required variables

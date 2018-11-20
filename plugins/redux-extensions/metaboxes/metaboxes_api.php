@@ -35,7 +35,7 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 		public static $args = array();
 
 		public static function load() {
-			add_action( 'init', 'Redux_Metaboxes::_enqueue' );
+			add_action( 'admin_init', 'Redux_Metaboxes::_enqueue', 0, PHP_INT_MAX - 1 );
 		}
 
 		public static function _enqueue() {
@@ -43,7 +43,7 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 			global $pagenow;
 			$pagenows = array( 'post-new.php', 'post.php' );
 			if ( ! empty( self::$sections ) && in_array( $pagenow, $pagenows ) ) {
-				$instances = ReduxFrameworkInstances::get_all_instances();
+				$instances = Redux_Instances::get_all_instances();
 				foreach ( self::$fields as $opt_name => $fields ) {
 					if ( ! isset( $instances[ $opt_name ] ) ) {
 						Redux::setArgs( $opt_name, array( 'menu_type' => 'hidden' ) );
@@ -58,7 +58,7 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 						Redux::init( $opt_name );
 					}
 				}
-				$instances = ReduxFrameworkInstances::get_all_instances();
+				$instances = Redux_Instances::get_all_instances();
 				foreach ( $instances as $opt_name => $instance ) {
 					add_action( 'admin_enqueue_scripts', array( $instance, '_enqueue' ), 1 );
 				}

@@ -46,14 +46,18 @@ trait WP_Shortcode {
 	//abstract public function shortcode( $attributes, $content, $name );
 
 	/**
-	 * @throws \ReflectionException
+	 * @return string
 	 */
 	public static function getName() {
 		if ( ! empty( static::$_name ) ) {
 			return static::$_name;
 		}
 		if ( ! isset( static::$reflectionClass ) ) {
-			static::$reflectionClass = new \ReflectionClass( static::class );
+			try {
+				static::$reflectionClass = new \ReflectionClass( static::class );
+			} catch ( \ReflectionException $e ) {
+				//Can't fail
+			}
 		}
 
 		return static::$_name = static::$reflectionClass->getShortName();

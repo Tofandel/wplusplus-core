@@ -31,40 +31,17 @@ if ( ! class_exists( 'ReduxFramework_extension_locked', false ) ) {
 	 *
 	 * @since       3.1.6
 	 */
-	class ReduxFramework_extension_locked {
-
+	class ReduxFramework_extension_locked extends Redux_Abstract_Extension {
 		// Protected vars
-		protected $parent;
-		public $_extension_url;
-		public $_extension_dir;
-		public static $theInstance;
 		public static $version = "2.0.0";
 
-		public
-
-			/**
-			 * Class Constructor. Defines the args for the extions class
-			 *
-			 * @since       1.0.0
-			 * @access      public
-			 *
-			 * @param       array $sections Panel sections.
-			 * @param       array $args Class constructor arguments.
-			 * @param       array $extra_tabs Extra panel tabs.
-			 *
-			 * @return      void
-			 */
-		function __construct(
-			$parent
-		) {
-
-			$this->parent = $parent;
-			if ( empty( $this->_extension_dir ) ) {
-				$this->_extension_dir = trailingslashit( str_replace( '\\', '/', dirname( __FILE__ ) ) );
-				$this->_extension_url = site_url( str_replace( trailingslashit( str_replace( '\\', '/', ABSPATH ) ), '', $this->_extension_dir ) );
-			}
-
-			self::$theInstance = $this;
+		/**
+		 * ReduxFramework_extension_locked constructor.
+		 *
+		 * @param ReduxFramework $parent
+		 */
+		public function __construct( $parent ) {
+			parent::__construct( $parent, __FILE__ );
 
 			add_filter( "redux/field/{$this->parent->args['opt_name']}/render/after", array(
 				$this,
@@ -77,7 +54,6 @@ if ( ! class_exists( 'ReduxFramework_extension_locked', false ) ) {
 			) );
 
 			add_action( "redux/page/{$this->parent->args['opt_name']}/enqueue", array( $this, 'enqueue' ) );
-
 		}
 
 		public function check_locked_field( $render, $field ) {
@@ -103,10 +79,6 @@ if ( ! class_exists( 'ReduxFramework_extension_locked', false ) ) {
 			}
 		}
 
-		public function getInstance() {
-			return self::$theInstance;
-		}
-
 		public function enqueue() {
 			static $enqueued = false;
 
@@ -120,7 +92,7 @@ if ( ! class_exists( 'ReduxFramework_extension_locked', false ) ) {
 				'redux-locked-css',
 				$this->_extension_url . 'extension_locked.css',
 				array(),
-				ReduxFramework_extension_locked::$version,
+				self::$version,
 				'all'
 			);
 		}

@@ -81,10 +81,11 @@ if ( ! class_exists( 'reduxSocialProfilesFunctions', false ) ) {
 
 			if ( is_admin() && ( $pagenow == "post-new.php" || $pagenow == "post.php" ) ) {
 
-				$inst = ReduxFrameworkInstances::get_instance( self::$_parent->args['opt_name'] );
+				$inst = Redux_Instances::get_instance( self::$_parent->args[ 'opt_name' ] );
 
-				$ext = $inst->extensions;
-
+				if ( isset( $inst->extensions ) ) {
+					$ext = $inst->extensions;
+				}
 				if ( isset( $ext['metaboxes'] ) ) {
 					$obj   = $ext['metaboxes'];
 					$boxes = ( $obj->boxes );

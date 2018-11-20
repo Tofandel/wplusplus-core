@@ -825,6 +825,21 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 	}
 }
 
+if ( ! defined( 'A_MIN_IN_S' ) ) {
+	define( 'A_MIN_IN_S', 60 * 60 );
+}
+if ( ! defined( 'A_DAY_IN_S' ) ) {
+	define( 'A_DAY_IN_S', A_MIN_IN_S * 24 );
+}
+if ( ! defined( 'A_WEEK_IN_S' ) ) {
+	define( 'A_WEEK_IN_S', A_DAY_IN_S * 7 );
+}
+if ( ! defined( 'A_MONTH_IN_S' ) ) {
+	define( 'A_MONTH_IN_S', A_DAY_IN_S * 30 );
+}
+if ( ! defined( 'A_YEAR_IN_S' ) ) {
+	define( 'A_YEAR_IN_S', A_DAY_IN_S * 365 );
+}
 
 if ( ! function_exists( 'wpp_is_float' ) ) {
 	function wpp_is_float( $val ) {
@@ -846,6 +861,11 @@ if ( ! function_exists( 'wpp_is_integer' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wpp_is_date' ) ) {
+	function wpp_is_date( $val ) {
+		return (bool) strtotime( $val );
+	}
+}
 
 if ( ! function_exists( 'wpp_is_plugin_active' ) ) {
 	function wpp_is_plugin_active( $plugin ) {

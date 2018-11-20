@@ -312,7 +312,7 @@ if ( ! function_exists( 'redux_social_profile_value_from_id' ) ) {
 			return;
 		}
 
-		$redux           = ReduxFrameworkInstances::get_instance( $opt_name );
+		$redux           = Redux_Instances::get_instance( $opt_name );
 		$social_profiles = $redux->extensions['social_profiles'];
 
 		$redux_options = get_option( $social_profiles->opt_name );
@@ -352,7 +352,7 @@ if ( ! function_exists( 'redux_render_icon_from_id' ) ) {
 
 		include_once( 'social_profiles/inc/class.functions.php' );
 
-		$redux           = ReduxFrameworkInstances::get_instance( $opt_name );
+		$redux           = Redux_Instances::get_instance( $opt_name );
 		$social_profiles = $redux->extensions['social_profiles'];
 
 		$redux_options = get_option( $social_profiles->opt_name );
