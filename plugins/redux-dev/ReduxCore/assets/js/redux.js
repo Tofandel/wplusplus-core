@@ -74,10 +74,23 @@
                     data: $data
                 },
                 error: function( response ) {
-                    redux.optName.args.ajax_save = false;
                     $( '.redux-action_bar input' ).removeAttr( 'disabled' );
-                    $( button ).click();
-                    $( '.redux-action_bar input' ).attr( 'disabled', 'disabled' );
+                    
+                    if (redux.optName.args.dev_mode === true) {
+                        if ( !window.console ) console = {};
+                        console.log = console.log || function( name, data ) {};
+                        console.log( redux.optName.ajax.console );
+                        console.log( response.responseText );
+                        
+                        overlay.fadeOut( 'fast' );
+                        $( '.redux-action_bar .spinner' ).removeClass( 'is-active' );
+                        alert( redux.ajax.alert );
+                    } else {
+                        redux.optName.args.ajax_save = false;
+                        
+                        $( button ).click();
+                        $( '.redux-action_bar input' ).attr( 'disabled', 'disabled' );
+                    }
                 },
                 success: function( response ) {
                     //console.log(response);
@@ -382,7 +395,7 @@ function colorNameToHex( colour ) {
         );
 
         // Save button clicked
-        el.find( '.redux-action_bar input' ).on(
+        el.find( '.redux-action_bar input, #redux-import-action input' ).on(
             'click', function( e ) {
                 if ( $( this ).attr( 'name' ) === redux.optName.args.opt_name + '[defaults]' ) {
                     // Defaults button clicked
@@ -394,6 +407,10 @@ function colorNameToHex( colour ) {
                     if ( !confirm( redux.optName.args.reset_section_confirm ) ) {
                         return false;
                     }
+                } else if ( $( this ).attr( 'name' ) == 'import' ) {
+                    if ( !confirm( redux.optName.args.import_section_confirm ) ) {
+                        return false;
+                    }                    
                 }
 
                 window.onbeforeunload = null;
@@ -1114,123 +1131,132 @@ function colorNameToHex( colour ) {
 /* global redux */
 
 function redux_change( variable ) {
-    (function( $ ) {
-        'use strict';
-        
-        variable = $(variable);
+	(function( $ ) {
+		'use strict';
 
-        var rContainer  = $( variable ).parents( '.redux-container:first' );
-        var opt_name    = rContainer.data('opt-name');
+		variable = $( variable );
+		var rContainer = $( variable ).parents( '.redux-container:first' );
 
-        redux.optName   = window['redux_' + opt_name];
+		if ( $( 'body' ).hasClass( 'wp-customizer' ) ) {
+			var li = $( '.panel-meta.customize-info.redux-panel.accordion-section' );
 
-        $( 'body' ).trigger( 'check_dependencies', variable );
+			opt_name = li.data( 'opt-name' );
 
-        if ( variable.hasClass( 'compiler' ) ) {
-            $( '#redux-compiler-hook' ).val( 1 );
-        }
+			redux.optName = window['redux_' + opt_name];
+		} else {
+			var opt_name = rContainer.data( 'opt-name' );
 
-        var parentID = $( variable ).closest( '.redux-group-tab' ).attr( 'id' );
+			redux.optName = window['redux_' + opt_name];
+		}
 
-        // Let's count down the errors now. Fancy.  ;)
-        var id = parentID.split( '_' );
+		$( 'body' ).trigger( 'check_dependencies', variable );
 
-        id = id[0];
+		if ( variable.hasClass( 'compiler' ) ) {
+			$( '#redux-compiler-hook' ).val( 1 );
+		}
 
-        var th = rContainer.find( '.redux-group-tab-link-a[data-key="' + id + '"]' ).parents( '.redux-group-tab-link-li:first' );
-        var subParent = $( '#' + parentID + '_li' ).parents( '.hasSubSections:first' );
+		var parentID = $( variable ).closest( '.redux-group-tab' ).attr( 'id' );
 
-        if ( $( variable ).parents( 'fieldset.redux-field:first' ).hasClass( 'redux-field-error' ) ) {
-            $( variable ).parents( 'fieldset.redux-field:first' ).removeClass( 'redux-field-error' );
-            $( variable ).parent().find( '.redux-th-error' ).slideUp();
+		// Let's count down the errors now. Fancy.  ;)
+		var id = parentID.split( '_' );
 
-            var errorCount = (parseInt( rContainer.find( '.redux-field-errors span' ).text() ) - 1);
+		id = id[0];
 
-            if ( errorCount <= 0 ) {
-                $( '#' + parentID + '_li .redux-menu-error' ).fadeOut( 'fast' ).remove();
-                $( '#' + parentID + '_li .redux-group-tab-link-a' ).removeClass( 'hasError' );
-                $( '#' + parentID + '_li' ).parents( '.inside:first' ).find( '.redux-field-errors' ).slideUp();
-                $( variable ).parents( '.redux-container:first' ).find( '.redux-field-errors' ).slideUp();
-                $( '#redux_metaboxes_errors' ).slideUp();
-            } else {
-                var errorsLeft = (parseInt( th.find( '.redux-menu-error:first' ).text() ) - 1);
+		var th = rContainer.find( '.redux-group-tab-link-a[data-key="' + id + '"]' ).parents(
+			'.redux-group-tab-link-li:first' );
+		var subParent = $( '#' + parentID + '_li' ).parents( '.hasSubSections:first' );
 
-                if ( errorsLeft <= 0 ) {
-                    th.find( '.redux-menu-error:first' ).fadeOut().remove();
-                } else {
-                    th.find( '.redux-menu-error:first' ).text( errorsLeft );
-                }
+		if ( $( variable ).parents( 'fieldset.redux-field:first' ).hasClass( 'redux-field-error' ) ) {
+			$( variable ).parents( 'fieldset.redux-field:first' ).removeClass( 'redux-field-error' );
+			$( variable ).parent().find( '.redux-th-error' ).slideUp();
 
-                rContainer.find( '.redux-field-errors span' ).text( errorCount );
-            }
+			var errorCount = (parseInt( rContainer.find( '.redux-field-errors span' ).text() ) - 1);
 
-            if ( subParent.length !== 0 ) {
-                if ( subParent.find( '.redux-menu-error' ).length === 0 ) {
-                    subParent.find( '.hasError' ).removeClass( 'hasError' );
-                }
-            }
-        }
+			if ( errorCount <= 0 ) {
+				$( '#' + parentID + '_li .redux-menu-error' ).fadeOut( 'fast' ).remove();
+				$( '#' + parentID + '_li .redux-group-tab-link-a' ).removeClass( 'hasError' );
+				$( '#' + parentID + '_li' ).parents( '.inside:first' ).find( '.redux-field-errors' ).slideUp();
+				$( variable ).parents( '.redux-container:first' ).find( '.redux-field-errors' ).slideUp();
+				$( '#redux_metaboxes_errors' ).slideUp();
+			} else {
+				var errorsLeft = (parseInt( th.find( '.redux-menu-error:first' ).text() ) - 1);
 
-        if ( $( variable ).parents( 'fieldset.redux-field:first' ).hasClass( 'redux-field-warning' ) ) {
-            $( variable ).parents( 'fieldset.redux-field:first' ).removeClass( 'redux-field-warning' );
-            $( variable ).parent().find( '.redux-th-warning' ).slideUp();
+				if ( errorsLeft <= 0 ) {
+					th.find( '.redux-menu-error:first' ).fadeOut().remove();
+				} else {
+					th.find( '.redux-menu-error:first' ).text( errorsLeft );
+				}
 
-            var warningCount = (parseInt( rContainer.find( '.redux-field-warnings span' ).text() ) - 1);
+				rContainer.find( '.redux-field-errors span' ).text( errorCount );
+			}
 
-            if ( warningCount <= 0 ) {
-                $( '#' + parentID + '_li .redux-menu-warning' ).fadeOut( 'fast' ).remove();
-                $( '#' + parentID + '_li .redux-group-tab-link-a' ).removeClass( 'hasWarning' );
-                $( '#' + parentID + '_li' ).parents( '.inside:first' ).find( '.redux-field-warnings' ).slideUp();
-                $( variable ).parents( '.redux-container:first' ).find( '.redux-field-warnings' ).slideUp();
-                $( '#redux_metaboxes_warnings' ).slideUp();
-            } else {
-                // Let's count down the warnings now. Fancy.  ;)
-                var warningsLeft = (parseInt( th.find( '.redux-menu-warning:first' ).text() ) - 1);
+			if ( subParent.length !== 0 ) {
+				if ( subParent.find( '.redux-menu-error' ).length === 0 ) {
+					subParent.find( '.hasError' ).removeClass( 'hasError' );
+				}
+			}
+		}
 
-                if ( warningsLeft <= 0 ) {
-                    th.find( '.redux-menu-warning:first' ).fadeOut().remove();
-                } else {
-                    th.find( '.redux-menu-warning:first' ).text( warningsLeft );
-                }
+		if ( $( variable ).parents( 'fieldset.redux-field:first' ).hasClass( 'redux-field-warning' ) ) {
+			$( variable ).parents( 'fieldset.redux-field:first' ).removeClass( 'redux-field-warning' );
+			$( variable ).parent().find( '.redux-th-warning' ).slideUp();
 
-                rContainer.find( '.redux-field-warning span' ).text( warningCount );
-            }
+			var warningCount = (parseInt( rContainer.find( '.redux-field-warnings span' ).text() ) - 1);
 
-            if ( subParent.length !== 0 ) {
-                if ( subParent.find( '.redux-menu-warning' ).length === 0 ) {
-                    subParent.find( '.hasWarning' ).removeClass( 'hasWarning' );
-                }
-            }
-        }
+			if ( warningCount <= 0 ) {
+				$( '#' + parentID + '_li .redux-menu-warning' ).fadeOut( 'fast' ).remove();
+				$( '#' + parentID + '_li .redux-group-tab-link-a' ).removeClass( 'hasWarning' );
+				$( '#' + parentID + '_li' ).parents( '.inside:first' ).find( '.redux-field-warnings' ).slideUp();
+				$( variable ).parents( '.redux-container:first' ).find( '.redux-field-warnings' ).slideUp();
+				$( '#redux_metaboxes_warnings' ).slideUp();
+			} else {
+				// Let's count down the warnings now. Fancy.  ;)
+				var warningsLeft = (parseInt( th.find( '.redux-menu-warning:first' ).text() ) - 1);
 
-        // Don't show the changed value notice while save_notice is visible.
-        if ( rContainer.find( '.saved_notice:visible' ).length > 0 ) {
-            return;
-        }
+				if ( warningsLeft <= 0 ) {
+					th.find( '.redux-menu-warning:first' ).fadeOut().remove();
+				} else {
+					th.find( '.redux-menu-warning:first' ).text( warningsLeft );
+				}
 
-        if ( !redux.optName.args.disable_save_warn ) {
-            rContainer.find( '.redux-save-warn' ).slideDown();
-            window.onbeforeunload = confirmOnPageExit;
-        }
-    })(jQuery);
+				rContainer.find( '.redux-field-warning span' ).text( warningCount );
+			}
+
+			if ( subParent.length !== 0 ) {
+				if ( subParent.find( '.redux-menu-warning' ).length === 0 ) {
+					subParent.find( '.hasWarning' ).removeClass( 'hasWarning' );
+				}
+			}
+		}
+
+		// Don't show the changed value notice while save_notice is visible.
+		if ( rContainer.find( '.saved_notice:visible' ).length > 0 ) {
+			return;
+		}
+
+		if ( !redux.optName.args.disable_save_warn ) {
+			rContainer.find( '.redux-save-warn' ).slideDown();
+			window.onbeforeunload = confirmOnPageExit;
+		}
+	})( jQuery );
 }
 
 var confirmOnPageExit = function( e ) {
-    //return; // ONLY FOR DEBUGGING
-    // If we haven't been passed the event get the window.event
-    e = e || window.event;
+	//return; // ONLY FOR DEBUGGING
+	// If we haven't been passed the event get the window.event
+	e = e || window.event;
 
-    var message = redux.optName.args.save_pending;
+	var message = redux.optName.args.save_pending;
 
-    // For IE6-8 and Firefox prior to version 4
-    if ( e ) {
-        e.returnValue = message;
-    }
+	// For IE6-8 and Firefox prior to version 4
+	if ( e ) {
+		e.returnValue = message;
+	}
 
-    window.onbeforeunload = null;
+	window.onbeforeunload = null;
 
-    // For Chrome, Safari, IE8+ and Opera 12+
-    return message;
+	// For Chrome, Safari, IE8+ and Opera 12+
+	return message;
 };
 function redux_hook( object, functionName, callback, before ) {
     (function( originalFunction ) {
@@ -1961,7 +1987,7 @@ function redux_hook( object, functionName, callback, before ) {
             return;
         }
 
-        var tab = decodeURI( (new RegExp( 'tab' + '=' + '(.+?)(&|$)' ).exec( location.search ) || [, ''])[1] );
+        var tab = decodeURI( (new RegExp( 'tab' + '=' + '(.+?)(&|$)' ).exec( location.search ) || [''])[1] );
 
         if ( tab !== "" ) {
             if ( $.cookie( "redux_current_tab_get" ) !== tab ) {

@@ -73,13 +73,15 @@
                                         "checked", true
                                     );
                                     window.onbeforeunload = null;
-                                    
-                                    if ( $( '#import-code-value' ).length === 0 ) {
+
+                                    var importCodeValue = $( '#import-code-value' );
+
+                                    if ( importCodeValue.length === 0 ) {
                                         $( this ).append( '<textarea id="import-code-value" style="display:none;" name="' + redux.optName.args.opt_name + '[import_code]">' + JSON.stringify( data ) + '</textarea>' );
                                     } else {
-                                        $( '#import-code-value' ).val( JSON.stringify( data ) );
+                                        importCodeValue.val( JSON.stringify( data ) );
                                     }
-                                    
+
                                     if ( $( '#publishing-action #publish' ).length !== 0 ) {
                                         $( '#publish' ).click();
                                     } else {

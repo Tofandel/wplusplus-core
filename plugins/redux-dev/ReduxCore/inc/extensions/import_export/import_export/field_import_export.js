@@ -28,14 +28,14 @@
                 }
                 el.each(
                     function() {
+                        var optName = el.parents( '.redux-container' ).data( 'opt-name' );
+                        
                         $( '#redux-import' ).click(
                             function( e ) {
                                 if ( $( '#import-code-value' ).val() === "" && $( '#import-link-value' ).val() === "" ) {
                                     e.preventDefault();
                                     return false;
                                 }
-                                window.onbeforeunload = null;
-                                redux.args.ajax_save = false;
                             }
                         );
 
@@ -103,7 +103,7 @@
                                         'fast', function() {
                                             $el.slideDown(
                                                 'medium', function() {
-                                                    var options = redux.options;
+                                                    var options = redux.optName.options;
                                                     options['redux-backup'] = 1;
                                                     $( this ).text( JSON.stringify( options ) ).focus().select();
                                                 }
@@ -116,7 +116,7 @@
                                     } else {
                                         $el.slideDown(
                                             'medium', function() {
-                                                var options = redux.options;
+                                                var options = redux.optName.options;
                                                 options['redux-backup'] = 1;
                                                 $( this ).text( JSON.stringify( options ) ).focus().select();
                                             }
@@ -131,12 +131,12 @@
                                 var $id = $( this ).attr( 'id' );
                                 var $el = $( this );
                                 var $container = $el;
-                                if ( $id == "import-link-value" || $id == "import-code-value" ) {
+                                if ( $id === "import-link-value" || $id === "import-code-value" ) {
                                     $container = $( this ).parent();
                                 }
                                 $container.slideUp(
                                     'medium', function() {
-                                        if ( $id != "redux-export-link-value" ) {
+                                        if ( $id !== "redux-export-link-value" ) {
                                             $el.text( '' );
                                         }
                                     }

@@ -1,13 +1,30 @@
 <?php
+/**
+ * Copyright (c) Adrien Foulon - 2018.
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 
 // Exit if accessed directly
 if (!defined('ABSPATH')) {
     exit;
 }
 
+use Redux_Descriptor_Types as RDT;
+
 if (!class_exists('ReduxFramework_text', false)) {
 
     class ReduxFramework_text extends Redux_Field {
+
+    	public static function makeDescriptor() {
+    	    self::makeBaseDescriptor();
+    	    self::$descriptor->setInfo('Text', __('A simple text field'), ReduxFramework::$_url.'/icons/text.png');
+
+    	    //TODO maybe do something cleaner for the level
+    	    self::$descriptor->addField('text_hint.title', __("Text hint's title"), RDT::TEXT);
+    	    self::$descriptor->addField('text_hint.content', __("Text hint's title"), RDT::TEXT);
+    	    self::$descriptor->addField('autocomplete', __("Autocomplete"), RDT::BOOL);
+	    }
 
         /**
          * Field Render Function.
@@ -15,7 +32,7 @@ if (!class_exists('ReduxFramework_text', false)) {
          *
          * @since ReduxFramework 1.0.0
          */
-        function render() {
+        public function render() {
             if (!empty($this->field['data']) && empty($this->field['options'])) {
                 if (empty($this->field['args'])) {
                     $this->field['args'] = array();

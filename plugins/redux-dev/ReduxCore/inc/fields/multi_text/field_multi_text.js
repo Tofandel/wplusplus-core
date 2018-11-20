@@ -43,7 +43,7 @@
                                 $( this ).remove();
                                 
                                 var lis = el.find( '#' + id + ' li').length;
-                                if (lis == 1) {
+                                if (lis === 1) {
                                     var add = el.find( '.redux-multi-text-add' );
                                     var name = add.attr( 'data-name' );
                                     
