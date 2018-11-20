@@ -72,9 +72,9 @@ if ( ! class_exists( 'Redux_Instances', false ) ) {
 		}
 	}
 
-	if ( ! class_exists( 'ReduxFrameworkInstances' ) ) {
-		class_alias( 'Redux_Instances', 'ReduxFrameworkInstances' );
-	} else {
-		error_log('Warning: you may have issues with your redux extensions, 2 different versions of Redux have been loaded and the extensions using ReduxFrameworkInstances of the ulterior version will not work correctly');
-	}
+    if ( ! class_exists( 'ReduxFrameworkInstances' ) ) {
+        class_alias( 'Redux_Instances', 'ReduxFrameworkInstances' );
+    } else {
+        error_log('Warning: you may have issues with your redux extensions, 2 different versions of Redux have been loaded and the extensions using ReduxFrameworkInstances of the ulterior version will not work correctly, if you cannot have only one version of redux running make sure you replace all occurences of ReduxFrameworkInstances by Redux_Instances in your extensions', E_WARNING);
+    }
 }

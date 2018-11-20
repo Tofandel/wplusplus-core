@@ -45,7 +45,7 @@ if ( ! class_exists( 'Redux_Extensions', false ) ) {
 			if ( isset( $core->old_opt_name ) && $core->old_opt_name !== null ) {
 				do_action( "redux/extensions/" . $core->old_opt_name . "/before", $core );
 			}
-      require_once 'class.redux_abstract_extension.php';
+            require_once 'class.redux_abstract_extension.php';
 
 			foreach ( $folders as $folder ) {
 				if ( '.' === $folder || '..' === $folder || ! is_dir( $path . $folder ) || substr( $folder, 0, 1 ) === '.' || substr( $folder, 0, 1 ) === '@' || substr( $folder, 0, 4 ) === '_vti' ) {
