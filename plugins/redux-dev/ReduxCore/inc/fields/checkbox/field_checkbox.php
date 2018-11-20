@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Redux Framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,125 +17,144 @@
  * @author      Kevin Provance (kprovance) - always fixin' shit!
  * @version     3.0.0
  */
-// Exit if accessed directly
-if (!defined('ABSPATH')) {
-    exit;
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 // Don't duplicate me!
-if (!class_exists('ReduxFramework_checkbox', false)) {
+if ( ! class_exists( 'ReduxFramework_Checkbox', false ) ) {
 
-    /**
-     * Main ReduxFramework_checkbox class
-     *
-     * @since       1.0.0
-     */
-    class ReduxFramework_checkbox extends Redux_Field {
+	/**
+	 * Main ReduxFramework_checkbox class
+	 *
+	 * @since       1.0.0
+	 */
+	class ReduxFramework_Checkbox extends Redux_Field {
 
-        /**
-         * Field Render Function.
-         * Takes the vars and outputs the HTML for the field in the settings
-         *
-         * @since       1.0.0
-         * @access      public
-         * @return      void
-         */
-        public function render() {
-            if (!empty($this->field['data']) && empty($this->field['options'])) {
-                if (empty($this->field['args'])) {
-                    $this->field['args'] = array();
-                }
+		/**
+		 * Field Render Function.
+		 * Takes the vars and outputs the HTML for the field in the settings
+		 *
+		 * @since       1.0.0
+		 * @access      public
+		 * @return      void
+		 */
+		public function render() {
+			if ( ! empty( $this->field['data'] ) && empty( $this->field['options'] ) ) {
+				if ( empty( $this->field['args'] ) ) {
+					$this->field['args'] = array();
+				}
 
 
-                $this->field['options'] = $this->parent->get_wordpress_data($this->field['data'], $this->field['args'], $this->value);
-                if (empty($this->field['options'])) {
-                    return;
-                }
-            }
+				$this->field['options'] = $this->parent->get_wordpress_data( $this->field['data'], $this->field['args'], $this->value );
+				if ( empty( $this->field['options'] ) ) {
+					return;
+				}
+			}
 
-            $this->field['data_class'] = ( isset($this->field['multi_layout']) ) ? 'data-' . $this->field['multi_layout'] : 'data-full';
+			$this->field['data_class'] = ( isset( $this->field['multi_layout'] ) ) ? 'data-' . $this->field['multi_layout'] : 'data-full';
 
-            if (!empty($this->field['options']) && ( is_array($this->field['options']) || is_array($this->field['default']) )) {
+			if ( ! empty( $this->field['options'] ) && ( is_array( $this->field['options'] ) || is_array( $this->field['default'] ) ) ) {
 
-                echo '<ul class="' . esc_attr($this->field['data_class']) . '">';
+				echo '<ul class="' . esc_attr( $this->field['data_class'] ) . '">';
 
-                if (!isset($this->value)) {
-                    $this->value = array();
-                }
+				if ( ! isset( $this->value ) ) {
+					$this->value = array();
+				}
 
-                if (!is_array($this->value)) {
-                    $this->value = array();
-                }
+				if ( ! is_array( $this->value ) ) {
+					$this->value = array();
+				}
 
-                if (empty($this->field['options']) && isset($this->field['default']) && is_array($this->field['default'])) {
-                    $this->field['options'] = $this->field['default'];
-                }
+				if ( empty( $this->field['options'] ) && isset( $this->field['default'] ) && is_array( $this->field['default'] ) ) {
+					$this->field['options'] = $this->field['default'];
+				}
 
-                foreach ($this->field['options'] as $k => $v) {
+				foreach ( $this->field['options'] as $k => $v ) {
 
-                    if (empty($this->value[$k])) {
-                        $this->value[$k] = "";
-                    }
+					if ( empty( $this->value[ $k ] ) ) {
+						$this->value[ $k ] = '';
+					}
 
-                    echo '<li>';
-                    echo '<label for="' . esc_attr(strtr($this->parent->args['opt_name'] . '[' . $this->field['id'] . '][' . $k . ']', array(
-                        '[' => '_',
-                        ']' => ''
-                    ))) . '_' . esc_attr(array_search($k, array_keys($this->field['options']))) . '">';
-                    echo '<input type="hidden" class="checkbox-check" data-val="1" name="' . esc_attr($this->field['name'] . '[' . $k . ']' . $this->field['name_suffix']) . '" value="' . esc_attr($this->value[$k]) . '" ' . '/>';
-                    echo '<input type="checkbox" class="checkbox ' . esc_attr($this->field['class']) . '" id="' . esc_attr(strtr($this->parent->args['opt_name'] . '[' . $this->field['id'] . '][' . $k . ']', array(
-                        '[' => '_',
-                        ']' => ''
-                    ))) . '_' . esc_attr(array_search($k, array_keys($this->field['options']))) . '" value="1" ' . checked($this->value[$k], '1', false) . '/>';
-                    echo ' ' . esc_attr($v) . '</label>';
-                    echo '</li>';
-                }
+					echo '<li>';
 
-                echo '</ul>';
-            } else if (empty($this->field['data'])) {
-                echo '<ul class="data-full"><li>';
+					$ident_1 = strtr(
+						$this->parent->args['opt_name'] . '[' . $this->field['id'] . '][' . $k . ']',
+						array(
+							'[' => '_',
+							']' => '',
+						)
+					);
 
-                if (!empty($this->field['label'])) {
-                    echo '<label>';
-                }
+					$ident_2 = array_search( $k, array_keys( $this->field['options'] ), true );
+					$id      = $ident_1 . '_' . $ident_2;
 
-                // Got the "Checked" status as "0" or "1" then insert it as the "value" option
-                //$ch_value = 1; // checked($this->value, '1', false) == "" ? "0" : "1";
-                echo '<input type="hidden" class="checkbox-check" data-val="1" name="' . esc_attr($this->field['name'] . $this->field['name_suffix']) . '" value="' . esc_attr($this->value) . '" ' . '/>';
-                echo '<input type="checkbox" id="' . esc_attr(strtr($this->parent->args['opt_name'] . '[' . $this->field['id'] . ']', array(
-                    '[' => '_',
-                    ']' => ''
-                ))) . '" value="1" class="checkbox ' . esc_attr($this->field['class']) . '" ' . checked($this->value, '1', false) . '/>';
+					echo '<label for="' . esc_attr( $id ) . '">';
+					echo '<input type="hidden" class="checkbox-check" data-val="1" name="' . esc_attr( $this->field['name'] . '[' . $k . ']' . $this->field['name_suffix'] ) . '" value="' . esc_attr( $this->value[ $k ] ) . '"/>';
+					echo '<input type="checkbox" class="checkbox ' . esc_attr( $this->field['class'] ) . '" id="' . esc_attr( $id ) . '" value="1" ' . checked( $this->value[ $k ], '1', false ) . '/>';
+					echo ' ' . esc_attr( $v ) . '</label>';
+					echo '</li>';
+				}
 
-                if (!empty($this->field['label'])) {
-                    echo ' ' . $this->field['label'];
-                    echo '</label>';
-                }
+				echo '</ul>';
+			} elseif ( empty( $this->field['data'] ) ) {
+				echo '<ul class="data-full">';
+				echo '<li>';
 
-                echo '</li></ul>';
-            }
-        }
+				if ( ! empty( $this->field['label'] ) ) {
+					echo '<label>';
+				}
 
-        /**
-         * Enqueue Function.
-         * If this field requires any scripts, or css define this function and register/enqueue the scripts/css
-         *
-         * @since       1.0.0
-         * @access      public
-         * @return      void
-         */
-        public function enqueue() {
-            if ($this->parent->args['dev_mode']) {
-                wp_enqueue_style(
-                        'redux-field-checkbox-css', ReduxCore::$_url . 'inc/fields/checkbox/field_checkbox.css', array(), $this->timestamp, 'all'
-                );
-            }
+				$ident_1 = strtr(
+					$this->parent->args['opt_name'] . '[' . $this->field['id'] . ']',
+					array(
+						'[' => '_',
+						']' => '',
+					)
+				);
 
-            wp_enqueue_script(
-                    'redux-field-checkbox-js', ReduxCore::$_url . 'inc/fields/checkbox/field_checkbox' . Redux_Functions::isMin() . '.js', array('jquery', 'redux-js'), $this->timestamp, true
-            );
-        }
+				// Got the "Checked" status as "0" or "1" then insert it as the "value" option.
+				echo '<input type="hidden" class="checkbox-check" data-val="1" name="' . esc_attr( $this->field['name'] . $this->field['name_suffix'] ) . '" value="' . esc_attr( $this->value ) . '"/>';
+				echo '<input type="checkbox" id="' . esc_attr( $ident_1 ) . '" value="1" class="checkbox ' . esc_attr( $this->field['class'] ) . '" ' . checked( $this->value, '1', false ) . '/>';
 
-    }
+				if ( ! empty( $this->field['label'] ) ) {
+					echo ' ' . esc_html( $this->field['label'] );
+					echo '</label>';
+				}
 
+				echo '</li>';
+				echo '</ul>';
+			}
+		}
+
+		/**
+		 * Enqueue Function.
+		 * If this field requires any scripts, or css define this function and register/enqueue the scripts/css
+		 *
+		 * @since       1.0.0
+		 * @access      public
+		 * @return      void
+		 */
+		public function enqueue() {
+			if ( $this->parent->args['dev_mode'] ) {
+				wp_enqueue_style(
+					'redux-field-checkbox-css',
+					ReduxCore::$_url . 'inc/fields/checkbox/field_checkbox.css',
+					array(),
+					$this->timestamp,
+					'all'
+				);
+			}
+
+			wp_enqueue_script(
+				'redux-field-checkbox-js',
+				ReduxCore::$_url . 'inc/fields/checkbox/field_checkbox' . Redux_Functions::isMin() . '.js',
+				array( 'jquery', 'redux-js' ),
+				$this->timestamp,
+				true
+			);
+		}
+	}
 }

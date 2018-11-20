@@ -1,51 +1,54 @@
 <?php
-if (!class_exists('Redux_Customizer_Control_rAds', false) && !class_exists('Redux_Customizer_section_rAds', false)) {
 
-    /**
-     * Customizer section representing widget area (sidebar).
-     *
-     * @package    WordPress
-     * @subpackage Customize
-     * @since      4.1.0
-     * @see        WP_Customize_Section
-     */
-    class Redux_Customizer_section_rAds extends WP_Customize_Section {
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-        /**
-         * Type of this section.
-         *
-         * @since  4.1.0
-         * @access public
-         * @var string
-         */
-        public $type = 'redux-rAds';
+if ( ! class_exists( 'Redux_Customizer_Control_rAds', false ) && ! class_exists( 'Redux_Customizer_Section_rAds', false ) ) {
 
-        protected function render() {
-            ?>
-            <li id="accordion-section-<?php echo esc_attr($this->id); ?>" class="accordion-section"></li>
-            <?php
-        }
+	/**
+	 * Customizer section representing widget area (sidebar).
+	 *
+	 * @package    WordPress
+	 * @subpackage Customize
+	 * @since      4.1.0
+	 * @see        WP_Customize_Section
+	 */
+	class Redux_Customizer_Section_rAds extends WP_Customize_Section {
 
-    }
+		/**
+		 * Type of this section.
+		 *
+		 * @since  4.1.0
+		 * @access public
+		 * @var string
+		 */
+		public $type = 'redux-rAds';
 
-    class Redux_Customizer_Control_rAds extends WP_Customize_Control {
+		protected function render() {
+			?>
+			<li id="accordion-section-<?php echo esc_attr( $this->id ); ?>" class="accordion-section"></li>
+			<?php
+		}
 
-        public function render() {
-            
-        }
+	}
 
-        public function label() {
-            
-        }
+	class Redux_Customizer_Control_rAds extends WP_Customize_Control {
 
-        public function description() {
-            
-        }
+		public function render() {
 
-        public function title() {
-            
-        }
+		}
 
-    }
+		public function label() {
 
+		}
+
+		public function description() {
+
+		}
+
+		public function title() {
+
+		}
+	}
 }

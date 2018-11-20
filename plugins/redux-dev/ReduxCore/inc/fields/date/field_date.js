@@ -39,7 +39,7 @@
                             //$('.redux-container:first').append(el);
                             $(this).parent().append(el);
 
-                            $('#ui-datepicker-div').hide();
+                            el.hide();
                             setTimeout(function() {
                                 popover.position({
                                     my: 'left top',

@@ -1,10 +1,15 @@
 <?php
 
-// Array of Elusive Icons
-// Contributed by @WhatJustHappened
-// Last updated: 14 Sept. 2013
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/** Array of Elusive Icons
+ * Contributed by @WhatJustHappened
+ * Last updated: 14 Sept. 2013
+ */
 function get_font_icons() {
-	$elusiveIcons = array(
+	$elusive_icons = array(
 		'el el-address-book-alt',
 		'el el-address-book',
 		'el el-adjust-alt',
@@ -303,10 +308,10 @@ function get_font_icons() {
 		'el el-wrench',
 		'el el-youtube',
 		'el el-zoom-in',
-		'el el-zoom-out'
+		'el el-zoom-out',
 	);
 
-	return $elusiveIcons;
+	return $elusive_icons;
 }
 
 add_filter( 'redux/font-icons', 'get_font_icons' );

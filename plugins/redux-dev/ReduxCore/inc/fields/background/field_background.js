@@ -182,14 +182,14 @@
                 var data = $( this ).serializeArray();
                 
                 data = data[0];
-                if ( data && data.name.indexOf( '[background-' ) != -1 ) {
+                if ( data && data.name.indexOf( '[background-' ) !== -1 ) {
                     if ( data.value !== "" ) {
                         hide = false;
                         
                         data.name = data.name.split( '[background-' );
                         data.name = 'background-' + data.name[1].replace( ']', '' );
                         
-                        if ( data.name == "background-image" ) {
+                        if ( data.name === "background-image" ) {
                             css += data.name + ':url("' + data.value + '");';
                         } else {
                             css += data.name + ':' + data.value + ';';

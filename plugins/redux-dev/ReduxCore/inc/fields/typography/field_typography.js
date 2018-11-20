@@ -333,7 +333,7 @@
                           msg = ': "'+msg+'"';
                         }
                         $update_parent.find( 'p' ).html(
-                            redux_ajax_script.update_google_fonts.error.replace( '%s', $action ).replace('%msg', msg)
+                            redux_ajax_script.update_google_fonts.error.replace( '%s', $action ).replace('|msg', msg)
                         );
                         $update_parent.find( 'p' ).attr( 'aria-label', redux_ajax_script.update_google_fonts.error );
                         redux.field_objects.typography.updates( obj );
@@ -363,7 +363,7 @@
                               msg = ': "'+msg+'"';
                             }
                             $update_parent.find( 'p' ).html(
-                                redux_ajax_script.update_google_fonts.error.replace( '%s', $action ).replace('%msg', msg) );
+                                redux_ajax_script.update_google_fonts.error.replace( '%s', $action ).replace('|msg', msg) );
                             $update_parent.find( 'p' ).attr(
                                 'aria-label', redux_ajax_script.update_google_fonts.error );
                             redux.field_objects.typography.updates( obj );

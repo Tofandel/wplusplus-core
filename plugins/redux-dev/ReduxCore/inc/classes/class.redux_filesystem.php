@@ -1,300 +1,334 @@
 <?php
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-if (!class_exists('Redux_Filesystem', false)) {
+if ( ! class_exists( 'Redux_Filesystem', false ) ) {
 
-    class Redux_Filesystem {
+	class Redux_Filesystem {
 
-        /**
-         * Instance of this class.
-         *
-         * @since    1.0.0
-         * @var      object
-         */
-        protected static $instance = null;
-        protected static $direct = null;
-        private $creds = array();
-        public $fs_object = null;
-        public $parent = null;
+		/**
+		 * Instance of this class.
+		 *
+		 * @since    1.0.0
+		 * @var      object
+		 */
+		protected static $instance = null;
 
-        /**
-         * Return an instance of this class.
-         *
-         * @since     1.0.0
-         * @return    object    A single instance of this class.
-         */
-        public static function get_instance($parent = null) {
+		/**
+		 * @var null
+		 */
+		protected static $direct = null;
 
-            // If the single instance hasn't been set, set it now.
-            if (null == self::$instance) {
-                self::$instance = new self;
-            }
+		/**
+		 * @var array
+		 */
+		private $creds = array();
 
-            if ($parent !== null) {
-                self::$instance->parent = $parent;
-            }
+		/**
+		 * @var null
+		 */
+		public $fs_object = null;
 
-            return self::$instance;
-        }
+		/**
+		 * @var null
+		 */
+		public $parent = null;
 
-        public function ftp_form() {
-            if (isset($this->parent->ftp_form) && !empty($this->parent->ftp_form)) {
-                echo '<div class="wrap"><div class="error"><p>';
-                echo '<strong>' . __('File Permission Issues', 'redux-framework') . '</strong><br/>' . sprintf(__('We were unable to modify required files. Please ensure that <code>%1s</code> has the proper read-write permissions, or modify your wp-config.php file to contain your FTP login credentials as <a href="%2s" target="_blank">outlined here</a>.', 'redux-framework'), Redux_Helpers::cleanFilePath(trailingslashit(WP_CONTENT_DIR)) . '/uploads/', 'https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants');
-                echo '</p></div><h2></h2>' . '</div>';
-            }
-        }
+		/**
+		 * Return an instance of this class.
+		 *
+		 * @since     1.0.0
+		 * @return    object    A single instance of this class.
+		 */
+		public static function get_instance( $parent = null ) {
 
-        function filesystem_init($form_url, $method = '', $context = false, $fields = null) {
-            global $wp_filesystem;
+			// If the single instance hasn't been set, set it now.
+			if ( null === self::$instance ) {
+				self::$instance = new self();
+			}
 
-            if (!empty($this->creds)) {
-                return true;
-            }
+			if ( null !== $parent ) {
+				self::$instance->parent = $parent;
+			}
 
-            ob_start();
+			return self::$instance;
+		}
 
-            /* first attempt to get credentials */
-            if (false === ( $this->creds = request_filesystem_credentials($form_url, $method, false, $context) )) {
-                $this->creds = array();
-                $this->parent->ftp_form = ob_get_contents();
-                ob_end_clean();
+		public function ftp_form() {
+			if ( isset( $this->parent->ftp_form ) && ! empty( $this->parent->ftp_form ) ) {
+				echo '<div class="wrap">';
+				echo '<div class="error">';
+				echo '<p>';
+				// TODO:  Fix this tranlation mess!
+				echo '<strong>' . __( 'File Permission Issues', 'redux-framework' ) . '</strong><br/>' . sprintf( __( 'We were unable to modify required files. Please ensure that <code>%1s</code> has the proper read-write permissions, or modify your wp-config.php file to contain your FTP login credentials as <a href="%2s" target="_blank">outlined here</a>.', 'redux-framework' ), Redux_Helpers::cleanFilePath( trailingslashit( WP_CONTENT_DIR ) ) . '/uploads/', 'https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants' );
+				echo '</p>';
+				echo '</div>';
+				echo '<h2></h2>';
+				echo '</div>';
+			}
+		}
 
-                /**
-                 * if we comes here - we don't have credentials
-                 * so the request for them is displaying
-                 * no need for further processing
-                 * */
-                return false;
-            }
+		function filesystem_init( $form_url, $method = '', $context = false, $fields = null ) {
+			global $wp_filesystem;
 
-            /* now we got some credentials - try to use them */
-            if (!WP_Filesystem($this->creds)) {
-                $this->creds = array();
-                /* incorrect connection data - ask for credentials again, now with error message */
-                request_filesystem_credentials($form_url, '', true, $context);
-                $this->parent->ftp_form = ob_get_contents();
-                ob_end_clean();
+			if ( ! empty( $this->creds ) ) {
+				return true;
+			}
 
-                return false;
-            }
+			ob_start();
 
-            return true;
-        }
+			/* first attempt to get credentials */
+			if ( false === ( $this->creds = request_filesystem_credentials( $form_url, $method, false, $context ) ) ) {
+				$this->creds            = array();
+				$this->parent->ftp_form = ob_get_contents();
+				ob_end_clean();
 
-        public static function load_direct() {
-            if (self::$direct === null) {
-                require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-base.php';
-                require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-direct.php';
-                self::$direct = new WP_Filesystem_Direct(array());
-            }
-        }
+				/**
+				 * If we comes here - we don't have credentials
+				 * so the request for them is displaying
+				 * no need for further processing
+				 * */
+				return false;
+			}
 
-        public function execute($action, $file = '', $params = '') {
+			/* now we got some credentials - try to use them */
+			if ( ! WP_Filesystem( $this->creds ) ) {
+				$this->creds = array();
+				/* incorrect connection data - ask for credentials again, now with error message */
+				request_filesystem_credentials( $form_url, '', true, $context );
+				$this->parent->ftp_form = ob_get_contents();
+				ob_end_clean();
 
-            if (empty($this->parent->args)) {
-                return;
-            }
+				return false;
+			}
 
-            if (!empty($params)) {
-                extract($params);
-            }
+			return true;
+		}
 
-            // Setup the filesystem with creds
-            require_once ABSPATH . '/wp-admin/includes/template.php';
-            require_once ABSPATH . '/wp-includes/pluggable.php';
-            require_once ABSPATH . '/wp-admin/includes/file.php';
+		public static function load_direct() {
+			if ( null === self::$direct ) {
+				require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-base.php';
+				require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-direct.php';
+				self::$direct = new WP_Filesystem_Direct( array() );
+			}
+		}
 
-            if ($this->parent->args['menu_type'] == 'submenu') {
-                $page_parent = $this->parent->args['page_parent'];
-                $base = $page_parent . '?page=' . $this->parent->args['page_slug'];
-            } else {
-                $base = 'admin.php?page=' . $this->parent->args['page_slug'];
-            }
+		public function execute( $action, $file = '', $params = '' ) {
+			if ( empty( $this->parent->args ) ) {
+				return;
+			}
 
-            $url = wp_nonce_url($base, 'redux-options');
+			if ( ! empty( $params ) ) {
 
-            $this->filesystem_init($url, 'direct', dirname($file));
+				// phpcs:ignore WordPress.PHP.DontExtract
+				extract( $params );
+			}
 
-            if (!file_exists(ReduxCore::$_upload_dir)) {
-                $this->do_action('mkdir', ReduxCore::$_upload_dir);
-            }
+			// Setup the filesystem with creds.
+			require_once ABSPATH . '/wp-admin/includes/template.php';
+			require_once ABSPATH . '/wp-includes/pluggable.php';
+			require_once ABSPATH . '/wp-admin/includes/file.php';
 
-            $hash_path = trailingslashit(ReduxCore::$_upload_dir) . 'hash';
-            if (!file_exists($hash_path)) {
-                $this->do_action('put_contents', $hash_path, array(
-                    'content' => Redux_Helpers::get_hash()
-                        )
-                );
-            }
-            $version_path = trailingslashit(ReduxCore::$_upload_dir) . 'version';
-            if (!file_exists($version_path)) {
-                $this->do_action('put_contents', $version_path, array(
-                    'content' => ReduxCore::$_version
-                        )
-                );
-            }
+			if ( 'submenu' === $this->parent->args['menu_type'] ) {
+				$page_parent = $this->parent->args['page_parent'];
+				$base        = $page_parent . '?page=' . $this->parent->args['page_slug'];
+			} else {
+				$base = 'admin.php?page=' . $this->parent->args['page_slug'];
+			}
 
-            $index_path = trailingslashit(ReduxCore::$_upload_dir) . 'index.php';
-            if (!file_exists($index_path)) {
-                $this->do_action('put_contents', $index_path, array(
-                    'content' => '<?php' . PHP_EOL . '// Silence is golden.'
-                ));
-            }
+			$url = wp_nonce_url( $base, 'redux-options' );
 
-            return $this->do_action($action, $file, $params);
-        }
+			$this->filesystem_init( $url, 'direct', dirname( $file ) );
 
-        public function do_action($action, $file = '', $params = '') {
+			if ( ! file_exists( ReduxCore::$_upload_dir ) ) {
+				$this->do_action( 'mkdir', ReduxCore::$_upload_dir );
+			}
 
-            if (!empty($params)) {
-                extract($params);
-            }
+			$hash_path = trailingslashit( ReduxCore::$_upload_dir ) . 'hash';
+			if ( ! file_exists( $hash_path ) ) {
+				$this->do_action(
+					'put_contents',
+					$hash_path,
+					array(
+						'content' => Redux_Helpers::get_hash(),
+					)
+				);
+			}
 
-            global $wp_filesystem;
+			$version_path = trailingslashit( ReduxCore::$_upload_dir ) . 'version';
+			if ( ! file_exists( $version_path ) ) {
+				$this->do_action(
+					'put_contents',
+					$version_path,
+					array(
+						'content' => ReduxCore::$_version,
+					)
+				);
+			}
 
-            if (!isset($params['chmod']) || ( isset($params['chmod']) && empty($params['chmod']) )) {
-                if (defined('FS_CHMOD_FILE')) {
-                    $chmod = FS_CHMOD_FILE;
-                } else {
-                    $chmod = 0644;
-                }
-            }
-            $res = false;
-            if (!isset($recursive)) {
-                $recursive = false;
-            }
+			$index_path = trailingslashit( ReduxCore::$_upload_dir ) . 'index.php';
+			if ( ! file_exists( $index_path ) ) {
+				$this->do_action(
+					'put_contents',
+					$index_path,
+					array(
+						'content' => '<?php' . PHP_EOL . '// Silence is golden.',
+					)
+				);
+			}
 
-            //$target_dir = $wp_filesystem->find_folder( dirname( $file ) );
-            // Do unique stuff
-            if ($action == 'mkdir') {
+			return $this->do_action( $action, $file, $params );
+		}
 
-                if (defined('FS_CHMOD_DIR')) {
-                    $chmod = FS_CHMOD_DIR;
-                } else {
-                    $chmod = 0755;
-                }
-                //$res = $wp_filesystem->mkdir( $file );
-                //if ( ! $res ) {
-                wp_mkdir_p($file);
+		public function do_action( $action, $file = '', $params = '' ) {
+			if ( ! empty( $params ) ) {
 
-                $res = file_exists($file);
-                if (!$res) {
-                    //mkdir( $file, $chmod, true );
-                    call_user_func('mk' . 'dir', $file, $chmod, true);
-                    $res = file_exists($file);
-                }
-                //}
-                $index_path = trailingslashit($file) . 'index.php';
-                if (!file_exists($index_path)) {
-                    $wp_filesystem->put_contents(
-                            $index_path, '<?php' . PHP_EOL . '// Silence is golden.', FS_CHMOD_FILE // predefined mode settings for WP files
-                    );
-                }
-            } elseif ($action == 'rmdir') {
-                $res = $wp_filesystem->rmdir($file, $recursive);
-            } elseif ($action == 'copy' && !isset($this->filesystem->killswitch)) {
-                if (isset($this->parent->ftp_form) && !empty($this->parent->ftp_form)) {
-                    $res = copy($file, $destination);
-                    if ($res) {
-                        chmod($destination, $chmod);
-                    }
-                } else {
-                    $res = $wp_filesystem->copy($file, $destination, $overwrite, $chmod);
-                }
-            } elseif ($action == 'move' && !isset($this->filesystem->killswitch)) {
-                $res = $wp_filesystem->copy($file, $destination, $overwrite);
-            } elseif ($action == 'delete') {
-                $res = $wp_filesystem->delete($file, $recursive);
-            } elseif ($action == 'rmdir') {
-                $res = $wp_filesystem->rmdir($file, $recursive);
-            } elseif ($action == 'dirlist') {
-                if (!isset($include_hidden)) {
-                    $include_hidden = true;
-                }
-                $res = $wp_filesystem->dirlist($file, $include_hidden, $recursive);
-            } elseif ($action == 'put_contents' && !isset($this->filesystem->killswitch)) {
-                // Write a string to a file
-                if (isset($this->parent->ftp_form) && !empty($this->parent->ftp_form)) {
-                    self::load_direct();
-                    $res = self::$direct->put_contents($file, $content, $chmod);
-                } else {
-                    $res = $wp_filesystem->put_contents($file, $content, $chmod);
-                }
-            } elseif ($action == 'chown') {
-                // Changes file owner
-                if (isset($owner) && !empty($owner)) {
-                    $res = $wp_filesystem->chmod($file, $chmod, $recursive);
-                }
-            } elseif ($action == 'owner') {
-                // Gets file owner
-                $res = $wp_filesystem->owner($file);
-            } elseif ($action == 'chmod') {
+				// phpcs:ignore WordPress.PHP.DontExtract
+				extract( $params );
+			}
 
-                if (!isset($params['chmod']) || ( isset($params['chmod']) && empty($params['chmod']) )) {
-                    $chmod = false;
-                }
+			global $wp_filesystem;
 
-                $res = $wp_filesystem->chmod($file, $chmod, $recursive);
-            } elseif ($action == 'get_contents') {
-                // Reads entire file into a string
-                if (isset($this->parent->ftp_form) && !empty($this->parent->ftp_form)) {
-                    self::load_direct();
-                    $res = self::$direct->get_contents($file);
-                } else {
-                    $res = $wp_filesystem->get_contents($file);
-                }
-            } elseif ($action == 'get_contents_array') {
-                // Reads entire file into an array
-                $res = $wp_filesystem->get_contents_array($file);
-            } elseif ($action == 'object') {
-                $res = $wp_filesystem;
-            } elseif ($action == 'unzip') {
-                $unzipfile = unzip_file($file, $destination);
-                if ($unzipfile) {
-                    $res = true;
-                }
-            }
+			if ( ! isset( $params['chmod'] ) || ( isset( $params['chmod'] ) && empty( $params['chmod'] ) ) ) {
+				if ( defined( 'FS_CHMOD_FILE' ) ) {
+					$chmod = FS_CHMOD_FILE;
+				} else {
+					$chmod = 0644;
+				}
+			}
+			$res = false;
+			if ( ! isset( $recursive ) ) {
+				$recursive = false;
+			}
 
-            if (!$res) {
-                if ($action == 'dirlist') {
-                    if (empty($res) || $res == false || $res == '') {
-                        return;
-                    }
+			// Do unique stuff.
+			if ( 'mkdir' === $action ) {
+				if ( defined( 'FS_CHMOD_DIR' ) ) {
+					$chmod = FS_CHMOD_DIR;
+				} else {
+					$chmod = 0755;
+				}
 
-                    if (is_array($res) && empty($res)) {
-                        return;
-                    }
+				wp_mkdir_p( $file );
 
-                    if (!is_array($res)) {
-                        if (count(glob("$file*")) == 0) {
-                            return;
-                        }
-                    }
-                }
+				$res = file_exists( $file );
+				if ( ! $res ) {
+					call_user_func( 'mk' . 'dir', $file, $chmod, true );
+					$res = file_exists( $file );
+				}
 
-                $this->killswitch = true;
+				$index_path = trailingslashit( $file ) . 'index.php';
+				if ( ! file_exists( $index_path ) ) {
+					$wp_filesystem->put_contents(
+						$index_path,
+						'<?php' . PHP_EOL . '// Silence is golden.',
+						FS_CHMOD_FILE // predefined mode settings for WP files.
+					);
+				}
+			} elseif ( 'rmdir' === $action ) {
+				$res = $wp_filesystem->rmdir( $file, $recursive );
+			} elseif ( 'copy' === $action && ! isset( $this->filesystem->killswitch ) ) {
+				if ( isset( $this->parent->ftp_form ) && ! empty( $this->parent->ftp_form ) ) {
+					$res = copy( $file, $destination );
 
-                $msg = '<strong>' . __('File Permission Issues', 'redux-framework') . '</strong><br/>' . sprintf(__('We were unable to modify required files. Please ensure that <code>%1s</code> has the proper read-write permissions, or modify your wp-config.php file to contain your FTP login credentials as <a href="%2s" target="_blank">outlined here</a>.', 'redux-framework'), Redux_Helpers::cleanFilePath(trailingslashit(WP_CONTENT_DIR)) . '/uploads/', 'https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants');
+					if ( $res ) {
+						chmod( $destination, $chmod );
+					}
+				} else {
+					$res = $wp_filesystem->copy( $file, $destination, $overwrite, $chmod );
+				}
+			} elseif ( 'move' === $action && ! isset( $this->filesystem->killswitch ) ) {
+				$res = $wp_filesystem->copy( $file, $destination, $overwrite );
+			} elseif ( 'delete' === $action ) {
+				$res = $wp_filesystem->delete( $file, $recursive );
+			} elseif ( 'rmdir' === $action ) {
+				$res = $wp_filesystem->rmdir( $file, $recursive );
+			} elseif ( 'dirlist' === $action ) {
+				if ( ! isset( $include_hidden ) ) {
+					$include_hidden = true;
+				}
+				$res = $wp_filesystem->dirlist( $file, $include_hidden, $recursive );
+			} elseif ( 'put_contents' === $action && ! isset( $this->filesystem->killswitch ) ) {
+				// Write a string to a file.
+				if ( isset( $this->parent->ftp_form ) && ! empty( $this->parent->ftp_form ) ) {
+					self::load_direct();
+					$res = self::$direct->put_contents( $file, $content, $chmod );
+				} else {
+					$res = $wp_filesystem->put_contents( $file, $content, $chmod );
+				}
+			} elseif ( 'chown' === $action ) {
+				// Changes file owner.
+				if ( isset( $owner ) && ! empty( $owner ) ) {
+					$res = $wp_filesystem->chmod( $file, $chmod, $recursive );
+				}
+			} elseif ( 'owner' === $action ) {
+				// Gets file owner.
+				$res = $wp_filesystem->owner( $file );
+			} elseif ( 'chmod' === $action ) {
+				if ( ! isset( $params['chmod'] ) || ( isset( $params['chmod'] ) && empty( $params['chmod'] ) ) ) {
+					$chmod = false;
+				}
 
-                $data = array(
-                    'parent' => self::$instance->parent,
-                    'type' => 'error',
-                    'msg' => $msg,
-                    'id' => 'redux-wp-login',
-                    'dismiss' => false
-                );
+				$res = $wp_filesystem->chmod( $file, $chmod, $recursive );
+			} elseif ( 'get_contents' === $action ) {
+				// Reads entire file into a string.
+				if ( isset( $this->parent->ftp_form ) && ! empty( $this->parent->ftp_form ) ) {
+					self::load_direct();
+					$res = self::$direct->get_contents( $file );
+				} else {
+					$res = $wp_filesystem->get_contents( $file );
+				}
+			} elseif ( 'get_contents_array' === $action ) {
+				// Reads entire file into an array.
+				$res = $wp_filesystem->get_contents_array( $file );
+			} elseif ( 'object' === $action ) {
+				$res = $wp_filesystem;
+			} elseif ( 'unzip' === $action ) {
+				$unzipfile = unzip_file( $file, $destination );
+				if ( $unzipfile ) {
+					$res = true;
+				}
+			}
 
-                Redux_Admin_Notices::set_notice($data);
-            }
+			if ( ! $res ) {
+				if ( 'dirlist' === $action ) {
+					if ( empty( $res ) || false === $res || '' === $res ) {
+						return;
+					}
 
-            return $res;
-        }
+					if ( is_array( $res ) && empty( $res ) ) {
+						return;
+					}
 
-    }
+					if ( ! is_array( $res ) ) {
+						if ( count( glob( "$file*" ) ) === 0 ) {
+							return;
+						}
+					}
+				}
 
-    Redux_Filesystem::get_instance();
+				$this->killswitch = true;
+
+				// TODO:  Another translation mess to fix.
+				$msg = '<strong>' . __( 'File Permission Issues', 'redux-framework' ) . '</strong><br/>' . sprintf( __( 'We were unable to modify required files. Please ensure that <code>%1s</code> has the proper read-write permissions, or modify your wp-config.php file to contain your FTP login credentials as <a href="%2s" target="_blank">outlined here</a>.', 'redux-framework' ), Redux_Helpers::cleanFilePath( trailingslashit( WP_CONTENT_DIR ) ) . '/uploads/', 'https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants' );
+
+				$data = array(
+					'parent'  => self::$instance->parent,
+					'type'    => 'error',
+					'msg'     => $msg,
+					'id'      => 'redux-wp-login',
+					'dismiss' => false,
+				);
+
+				Redux_Admin_Notices::set_notice( $data );
+			}
+
+			return $res;
+		}
+
+	}
+
+	Redux_Filesystem::get_instance();
 }

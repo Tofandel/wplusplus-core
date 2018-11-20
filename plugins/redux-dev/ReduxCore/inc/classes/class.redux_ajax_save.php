@@ -1,203 +1,220 @@
 <?php
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-if (!class_exists('Redux_AJAX_Save', false)) {
+if ( ! class_exists( 'Redux_AJAX_Save', false ) ) {
 
-    class Redux_AJAX_Save extends Redux_Class {
+	class Redux_AJAX_Save extends Redux_Class {
 
-        public function __construct($parent) {
-            parent::__construct($parent);
+		public function __construct( $parent ) {
+			parent::__construct( $parent );
 
-            add_action("wp_ajax_" . $this->args['opt_name'] . '_ajax_save', array($this, "save"));
-        }
+			add_action( 'wp_ajax_' . $this->args['opt_name'] . '_ajax_save', array( $this, 'save' ) );
+		}
 
-        public function save() {
-            $core = $this->core();
+		public function save() {
+			$core = $this->core();
 
-            if (!wp_verify_nonce($_REQUEST['nonce'], "redux_ajax_nonce" . $this->args['opt_name'])) {
-                echo json_encode(array(
-                    'status' => esc_html__('Invalid security credential.  Please reload the page and try again.', 'redux-framework'),
-                    'action' => ''
-                ));
+			if ( isset( $_REQUEST['nonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'redux_ajax_nonce' . $this->args['opt_name'] ) ) {
+				echo wp_json_encode(
+					array(
+						'status' => esc_html__( 'Invalid security credential.  Please reload the page and try again.', 'redux-framework' ),
+						'action' => '',
+					)
+				);
 
-                die();
-            }
+				die();
+			}
 
-            if (!Redux_Helpers::current_user_can($core->args['page_permissions'])) {
-                echo json_encode(array(
-                    'status' => esc_html__('Invalid user capability.  Please reload the page and try again.', 'redux-framework'),
-                    'action' => ''
-                ));
+			if ( ! Redux_Helpers::current_user_can( $core->args['page_permissions'] ) ) {
+				echo wp_json_encode(
+					array(
+						'status' => esc_html__( 'Invalid user capability.  Please reload the page and try again.', 'redux-framework' ),
+						'action' => '',
+					)
+				);
 
-                die();
-            }
+				die();
+			}
 
-            $redux = Redux::instance($_POST['opt_name']);
+			if ( isset( $_POST['opt_name'] ) && ! empty( $_POST['opt_name'] ) && isset( $_POST['data'] ) && ! empty( $_POST['data'] ) ) {
+				$redux = Redux::instance( sanitize_text_field( wp_unslash( $_POST['opt_name'] ) ) );
 
-            if (!empty($_POST['data']) && !empty($redux->args['opt_name'])) {
+				if ( ! empty( $redux->args['opt_name'] ) ) {
 
-                $_POST['data'] = stripslashes($_POST['data']);
+					$post_data = wp_unslash( $_POST['data'] ); // WPCS: XSS ok, sanitization ok.
 
-                // New method to avoid input_var nonsense.  Thanks @harunbasic
-                $values = $this->parse_str($_POST['data']);
+					// New method to avoid input_var nonsense.  Thanks @harunbasic.
+					$values = $this->parse_str( $post_data );
 
-                $values = $values[$redux->args['opt_name']];
+					$values = $values[ $redux->args['opt_name'] ];
 
-                if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-                    $values = array_map('stripslashes_deep', $values);
-                }
+					if ( function_exists( 'get_magic_quotes_gpc' ) && get_magic_quotes_gpc() ) {
+						$values = array_map( 'stripslashes_deep', $values );
+					}
 
-                if (!empty($values)) {
-                    try {
-                        if (isset($redux->validation_ran)) {
-                            unset($redux->validation_ran);
-                        }
-                        $redux->options_class->set($redux->options_class->_validate_options($values));
-                        $do_reload = false;
-                        if (isset($core->reload_fields) && !empty($core->reload_fields)) {
-                            if (!empty($core->transients['changed_values'])) {
-                                foreach ($core->reload_fields as $idx => $val) {
-                                    if (array_key_exists($val, $core->transients['changed_values'])) {
-                                        $do_reload = true;
-                                    }
-                                }
-                            }
-                        }
+					if ( ! empty( $values ) ) {
+						try {
+							if ( isset( $redux->validation_ran ) ) {
+								unset( $redux->validation_ran );
+							}
 
-                        if ($do_reload || ( isset($values['defaults']) && !empty($values['defaults']) ) || ( isset($values['defaults-section']) && !empty($values['defaults-section']) )) {
-                            echo json_encode(array('status' => 'success', 'action' => 'reload'));
-                            die();
-                        }
+							$redux->options_class->set( $redux->options_class->validate_options( $values ) );
 
-                        $redux->enqueue_class->get_warnings_and_errors_array();
+							$do_reload = false;
+							if ( isset( $core->required_class->reload_fields ) && ! empty( $core->required_class->reload_fields ) ) {
+								if ( ! empty( $core->transients['changed_values'] ) ) {
+									foreach ( $core->required_class->reload_fields as $idx => $val ) {
+										if ( array_key_exists( $val, $core->transients['changed_values'] ) ) {
+											$do_reload = true;
+										}
+									}
+								}
+							}
 
-                        $return_array = array(
-                            'status' => 'success',
-                            'options' => $redux->options,
-                            'errors' => isset($redux->localize_data['errors']) ? $redux->localize_data['errors'] : null,
-                            'warnings' => isset($redux->localize_data['warnings']) ? $redux->localize_data['warnings'] : null,
-                            'sanitize' => isset($redux->localize_data['sanitize']) ? $redux->localize_data['sanitize'] : null,
-                        );
-                    } catch (Exception $e) {
-                        $return_array = array('status' => $e->getMessage());
-                    }
-                } else {
-                    echo json_encode(array('status' => esc_html__('Your panel has no fields. Nothing to save.', 'redux-framework')));
-                }
-            }
+							if ( $do_reload || ( isset( $values['defaults'] ) && ! empty( $values['defaults'] ) ) || ( isset( $values['defaults-section'] ) && ! empty( $values['defaults-section'] ) ) || ( isset( $values['import_code'] ) && ! empty( $values['import_code'] ) ) || ( isset( $values['import_link'] ) && ! empty( $values['import_link'] ) ) ) {
+								echo wp_json_encode(
+									array(
+										'status' => 'success',
+										'action' => 'reload',
+									)
+								);
+								die();
+							}
 
-            if (isset($core->transients['run_compiler']) && $core->transients['run_compiler']) {
+							$redux->enqueue_class->get_warnings_and_errors_array();
 
-                $core->no_output = true;
-                $core->output_class->enqueue();
+							$return_array = array(
+								'status'   => 'success',
+								'options'  => $redux->options,
+								'errors'   => isset( $redux->enqueue_class->localize_data['errors'] ) ? $redux->enqueue_class->localize_data['errors'] : null,
+								'warnings' => isset( $redux->enqueue_class->localize_data['warnings'] ) ? $redux->enqueue_class->localize_data['warnings'] : null,
+								'sanitize' => isset( $redux->enqueue_class->localize_data['sanitize'] ) ? $redux->enqueue_class->localize_data['sanitize'] : null,
+							);
+						} catch ( Exception $e ) {
+							$return_array = array( 'status' => $e->getMessage() );
+						}
+					} else {
+						echo wp_json_encode(
+							array(
+								'status' => esc_html__( 'Your panel has no fields. Nothing to save.', 'redux-framework' ),
+							)
+						);
+					}
+				}
+			}
 
-                try {
-                    /**
-                     * action 'redux/options/{opt_name}/compiler'
-                     *
-                     * @param array  options
-                     * @param string CSS that get sent to the compiler hook
-                     */
-                    do_action("redux/options/{$core->args['opt_name']}/compiler", $core->options, $core->compilerCSS, $core->transients['changed_values']);
+			if ( isset( $core->transients['run_compiler'] ) && $core->transients['run_compiler'] ) {
+				$core->no_output = true;
+				$core->output_class->enqueue();
 
-                    /**
-                     * action 'redux/options/{opt_name}/compiler/advanced'
-                     *
-                     * @param array  options
-                     * @param string CSS that get sent to the compiler hook, which sends the full Redux object
-                     */
-                    do_action("redux/options/{$core->args['opt_name']}/compiler/advanced", $core);
-                } catch (Exception $e) {
-                    $return_array = array('status' => $e->getMessage());
-                }
+				try {
+					/**
+					 * Action 'redux/options/{opt_name}/compiler'
+					 *
+					 * @param array  options
+					 * @param string CSS that get sent to the compiler hook
+					 */
+					do_action( 'redux/options/' . $core->args['opt_name'] . '/compiler', $core->options, $core->compilerCSS, $core->transients['changed_values'] );
 
-                unset($core->transients['run_compiler']);
-                $core->transient_class->set();
-            }
+					/**
+					 * Action 'redux/options/{opt_name}/compiler/advanced'
+					 *
+					 * @param array  options
+					 * @param string CSS that get sent to the compiler hook, which sends the full Redux object
+					 */
+					do_action( 'redux/options/' . $core->args['opt_name'] . '/compiler/advanced', $core );
+				} catch ( Exception $e ) {
+					$return_array = array( 'status' => $e->getMessage() );
+				}
 
-            if (isset($return_array)) {
-                if ($return_array['status'] == "success") {
-                    $panel = new Redux_Panel($redux);
-                    ob_start();
-                    $panel->notification_bar();
-                    $notification_bar = ob_get_contents();
-                    ob_end_clean();
-                    $return_array['notification_bar'] = $notification_bar;
-                }
+				unset( $core->transients['run_compiler'] );
+				$core->transient_class->set();
+			}
 
-                echo json_encode(apply_filters("redux/options/{$core->args['opt_name']}/ajax_save/response", $return_array));
-            }
+			if ( isset( $return_array ) ) {
+				if ( 'success' === $return_array['status'] ) {
+					$panel = new Redux_Panel( $redux );
+					ob_start();
+					$panel->notification_bar();
+					$notification_bar = ob_get_contents();
+					ob_end_clean();
+					$return_array['notification_bar'] = $notification_bar;
+				}
 
-            die();
-        }
+				echo wp_json_encode( apply_filters( 'redux/options/' . $core->args['opt_name'] . '/ajax_save/response', $return_array ) );
+			}
 
-        /**
-         * Parses the string into variables without the max_input_vars limitation.
-         *
-         * @since   3.5.7.11
-         * @author  harunbasic
-         * @access  private
-         *
-         * @param   string $string
-         *
-         * @return  array|false $result
-         */
-        private function parse_str($string) {
-            if ('' == $string) {
-                return false;
-            }
+			die();
+		}
 
-            $result = array();
-            $pairs = explode('&', $string);
+		/**
+		 * Parses the string into variables without the max_input_vars limitation.
+		 *
+		 * @since   3.5.7.11
+		 * @author  harunbasic
+		 * @access  private
+		 *
+		 * @param   string $string
+		 *
+		 * @return  array|false $result
+		 */
+		private function parse_str( $string ) {
+			if ( '' === $string ) {
+				return false;
+			}
 
-            foreach ($pairs as $key => $pair) {
-                // use the original parse_str() on each element
-                parse_str($pair, $params);
+			$result = array();
+			$pairs  = explode( '&', $string );
 
-                $k = key($params);
+			foreach ( $pairs as $key => $pair ) {
+				// use the original parse_str() on each element.
+				parse_str( $pair, $params );
 
-                if (!isset($result[$k])) {
-                    $result += $params;
-                } else {
-                    $result[$k] = $this->array_merge_recursive_distinct($result[$k], $params[$k]);
-                }
-            }
+				$k = key( $params );
 
-            return $result;
-        }
+				if ( ! isset( $result[ $k ] ) ) {
+					$result += $params;
+				} else {
+					$result[ $k ] = $this->array_merge_recursive_distinct( $result[ $k ], $params[ $k ] );
+				}
+			}
 
-        /**
-         * Merge arrays without converting values with duplicate keys to arrays as array_merge_recursive does.
-         * As seen here http://php.net/manual/en/function.array-merge-recursive.php#92195
-         *
-         * @since   3.5.7.11
-         * @author  harunbasic
-         * @access  private
-         *
-         * @param   array $array1
-         * @param   array $array2
-         *
-         * @return  array $merged
-         */
-        private function array_merge_recursive_distinct(array $array1, array $array2) {
-            $merged = $array1;
+			return $result;
+		}
 
-            foreach ($array2 as $key => $value) {
-                if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                    $merged[$key] = $this->array_merge_recursive_distinct($merged[$key], $value);
-                } else if (is_numeric($key) && isset($merged[$key])) {
-                    $merged[] = $value;
-                } else {
-                    $merged[$key] = $value;
-                }
-            }
+		/**
+		 * Merge arrays without converting values with duplicate keys to arrays as array_merge_recursive does.
+		 * As seen here http://php.net/manual/en/function.array-merge-recursive.php#92195
+		 *
+		 * @since   3.5.7.11
+		 * @author  harunbasic
+		 * @access  private
+		 *
+		 * @param   array $array1
+		 * @param   array $array2
+		 *
+		 * @return  array $merged
+		 */
+		private function array_merge_recursive_distinct( array $array1, array $array2 ) {
+			$merged = $array1;
 
-            return $merged;
-        }
+			foreach ( $array2 as $key => $value ) {
 
-    }
+				if ( is_array( $value ) && isset( $merged[ $key ] ) && is_array( $merged[ $key ] ) ) {
+					$merged[ $key ] = $this->array_merge_recursive_distinct( $merged[ $key ], $value );
+				} elseif ( is_numeric( $key ) && isset( $merged[ $key ] ) ) {
+					$merged[] = $value;
+				} else {
+					$merged[ $key ] = $value;
+				}
+			}
+
+			return $merged;
+		}
+
+	}
 
 }

@@ -74,10 +74,23 @@
                     data: $data
                 },
                 error: function( response ) {
-                    redux.optName.args.ajax_save = false;
                     $( '.redux-action_bar input' ).removeAttr( 'disabled' );
-                    $( button ).click();
-                    $( '.redux-action_bar input' ).attr( 'disabled', 'disabled' );
+                    
+                    if (redux.optName.args.dev_mode === true) {
+                        if ( !window.console ) console = {};
+                        console.log = console.log || function( name, data ) {};
+                        console.log( redux.optName.ajax.console );
+                        console.log( response.responseText );
+                        
+                        overlay.fadeOut( 'fast' );
+                        $( '.redux-action_bar .spinner' ).removeClass( 'is-active' );
+                        alert( redux.ajax.alert );
+                    } else {
+                        redux.optName.args.ajax_save = false;
+                        
+                        $( button ).click();
+                        $( '.redux-action_bar input' ).attr( 'disabled', 'disabled' );
+                    }
                 },
                 success: function( response ) {
                     //console.log(response);

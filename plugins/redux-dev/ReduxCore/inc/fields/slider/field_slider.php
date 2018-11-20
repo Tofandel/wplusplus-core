@@ -1,372 +1,387 @@
 <?php
 
 /**
- * Redux Framework is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * any later version.
- * Redux Framework is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with Redux Framework. If not, see <http://www.gnu.org/licenses/>.
+ * Slider Field
  *
- * @package     ReduxFramework
+ * @package     Redux Framework
  * @subpackage  Field_Slider
  * @author      Kevin Provance (kprovance)
  * @version     4.0.0
  */
-// Exit if accessed directly
-if (!defined('ABSPATH')) {
-    exit;
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-if (!class_exists('ReduxFramework_slider', false)) {
+if ( ! class_exists( 'ReduxFramework_Slider', false ) ) {
 
-    class ReduxFramework_slider extends Redux_Field {
+	class ReduxFramework_Slider extends Redux_Field {
 
-        /**
-         * Field Constructor.
-         * Required - must call the parent constructor, then assign field and value to vars, and obviously call the render field function
-         *
-         * @since ReduxFramework 3.1.8
-         */
-        private $display_none = 0;
-        private $display_label = 1;
-        private $display_text = 2;
-        private $display_select = 3;
+		/**
+		 * @var int
+		 */
+		private $display_none = 0;
 
-        public function set_defaults() {
-            $defaults = array(
-                'handles' => 1,
-                'resolution' => 1,
-                'display_value' => 'text',
-                'float_mark' => '.',
-                'forced' => true
-            );
+		/**
+		 * @var int
+		 */
+		private $display_label = 1;
 
-            $this->field = wp_parse_args($this->field, $defaults);
+		/**
+		 * @var int
+		 */
+		private $display_text = 2;
 
-            // Sanitize float mark
-            if ($this->field['float_mark'] != ',' && $this->field['float_mark'] != '.') {
-                $this->field['float_mark'] = '.';
-            }
+		/**
+		 * @var int
+		 */
+		private $display_select = 3;
 
-            // Sanitize resolution value
-            $this->field['resolution'] = $this->cleanVal($this->field['resolution']);
+		public function set_defaults() {
+			$defaults = array(
+				'handles'       => 1,
+				'resolution'    => 1,
+				'display_value' => 'text',
+				'float_mark'    => '.',
+				'forced'        => true,
+			);
 
-            // Sanitize handle value
-            if ($this->field['handles'] == 0 || $this->field['handles'] == 1) {
-                $this->field['handles'] = 1;
-            } else {
-                $this->field['handles'] = 2;
-            }
+			$this->field = wp_parse_args( $this->field, $defaults );
 
-            // Sanitize display value
-            if ($this->field['display_value'] == 'label') {
-                $this->field['display_value'] = $this->display_label;
-            } elseif ($this->field['display_value'] == 'select') {
-                $this->field['display_value'] = $this->display_select;
-            } elseif ($this->field['display_value'] == 'none') {
-                $this->field['display_value'] = $this->display_none;
-            } else {
-                $this->field['display_value'] = $this->display_text;
-            }
-        }
+			// Sanitize float mark.
+			if ( ',' !== $this->field['float_mark'] && '.' !== $this->field['float_mark'] ) {
+				$this->field['float_mark'] = '.';
+			}
 
-        private function cleanVal($var) {
-            if (is_float($var)) {
-                $cleanVar = floatval($var);
-            } else {
-                $cleanVar = intval($var);
-            }
+			// Sanitize resolution value.
+			$this->field['resolution'] = $this->cleanVal( $this->field['resolution'] );
 
-            return $cleanVar;
-        }
+			// Sanitize handle value.
+			if ( 0 === $this->field['handles'] || 1 === $this->field['handles'] ) {
+				$this->field['handles'] = 1;
+			} else {
+				$this->field['handles'] = 2;
+			}
 
-        private function cleanDefault($val) {
-            if (empty($val) && !empty($this->field['default']) && $this->cleanVal($this->field['min']) >= 1) {
-                $val = $this->cleanVal($this->field['default']);
-            }
+			// Sanitize display value.
+			if ( 'label' === $this->field['display_value'] ) {
+				$this->field['display_value'] = $this->display_label;
+			} elseif ( 'select' === $this->field['display_value'] ) {
+				$this->field['display_value'] = $this->display_select;
+			} elseif ( 'none' === $this->field['display_value'] ) {
+				$this->field['display_value'] = $this->display_none;
+			} else {
+				$this->field['display_value'] = $this->display_text;
+			}
+		}
 
-            if (empty($val) && $this->cleanVal($this->field['min']) >= 1) {
-                $val = $this->cleanVal($this->field['min']);
-            }
+		private function cleanVal( $var ) {
+			if ( is_float( $var ) ) {
+				$clear_var = floatval( $var );
+			} else {
+				$clear_var = intval( $var );
+			}
 
-            if (empty($val)) {
-                $val = 0;
-            }
+			return $clear_var;
+		}
 
-            // Extra Validation
-            if ($val < $this->field['min']) {
-                $val = $this->cleanVal($this->field['min']);
-            } else if ($val > $this->field['max']) {
-                $val = $this->cleanVal($this->field['max']);
-            }
+		private function clean_default( $val ) {
+			if ( empty( $val ) && ! empty( $this->field['default'] ) && $this->cleanVal( $this->field['min'] ) >= 1 ) {
+				$val = $this->cleanVal( $this->field['default'] );
+			}
 
-            return $val;
-        }
+			if ( empty( $val ) && $this->cleanVal( $this->field['min'] ) >= 1 ) {
+				$val = $this->cleanVal( $this->field['min'] );
+			}
 
-        private function cleanDefaultArray($val) {
-            $one = $this->value[1];
-            $two = $this->value[2];
+			if ( empty( $val ) ) {
+				$val = 0;
+			}
 
-            if (empty($one) && !empty($this->field['default'][1]) && $this->cleanVal($this->field['min']) >= 1) {
-                $one = $this->cleanVal($this->field['default'][1]);
-            }
+			// Extra Validation.
+			if ( $val < $this->field['min'] ) {
+				$val = $this->cleanVal( $this->field['min'] );
+			} elseif ( $val > $this->field['max'] ) {
+				$val = $this->cleanVal( $this->field['max'] );
+			}
 
-            if (empty($one) && $this->cleanVal($this->field['min']) >= 1) {
-                $one = $this->cleanVal($this->field['min']);
-            }
+			return $val;
+		}
 
-            if (empty($one)) {
-                $one = 0;
-            }
+		private function clean_default_array( $val ) {
+			$one = $this->value[1];
+			$two = $this->value[2];
 
-            if (empty($two) && !empty($this->field['default'][2]) && $this->cleanVal($this->field['min']) >= 1) {
-                $two = $this->cleanVal($this->field['default'][1] + 1);
-            }
+			if ( empty( $one ) && ! empty( $this->field['default'][1] ) && $this->cleanVal( $this->field['min'] ) >= 1 ) {
+				$one = $this->cleanVal( $this->field['default'][1] );
+			}
 
-            if (empty($two) && $this->cleanVal($this->field['min']) >= 1) {
-                $two = $this->cleanVal($this->field['default'][1] + 1);
-            }
+			if ( empty( $one ) && $this->cleanVal( $this->field['min'] ) >= 1 ) {
+				$one = $this->cleanVal( $this->field['min'] );
+			}
 
-            if (empty($two)) {
-                $two = $this->field['default'][1] + 1;
-            }
+			if ( empty( $one ) ) {
+				$one = 0;
+			}
 
-            $val[0] = $one;
-            $val[1] = $two;
+			if ( empty( $two ) && ! empty( $this->field['default'][2] ) && $this->cleanVal( $this->field['min'] ) >= 1 ) {
+				$two = $this->cleanVal( $this->field['default'][1] + 1 );
+			}
 
-            return $val;
-        }
+			if ( empty( $two ) && $this->cleanVal( $this->field['min'] ) >= 1 ) {
+				$two = $this->cleanVal( $this->field['default'][1] + 1 );
+			}
 
-        /**
-         * Clean the field data to the fields defaults given the parameters.
-         *
-         * @since Redux_Framework 3.1.8
-         */
-        function clean() {
+			if ( empty( $two ) ) {
+				$two = $this->field['default'][1] + 1;
+			}
 
-            // Set min to 0 if no value is set.
-            $this->field['min'] = empty($this->field['min']) ? 0 : $this->cleanVal($this->field['min']);
+			$val[0] = $one;
+			$val[1] = $two;
 
-            // Set max to min + 1 if empty.
-            $this->field['max'] = empty($this->field['max']) ? $this->field['min'] + 1 : $this->cleanVal($this->field['max']);
+			return $val;
+		}
 
-            // Set step to 1 if step is empty ot step > max.
-            $this->field['step'] = empty($this->field['step']) || $this->field['step'] > $this->field['max'] ? 1 : $this->cleanVal($this->field['step']);
+		/**
+		 * Clean the field data to the fields defaults given the parameters.
+		 *
+		 * @since Redux_Framework 3.1.8
+		 */
+		function clean() {
 
-            if (2 == $this->field['handles']) {
-                if (!is_array($this->value)) {
-                    $this->value[1] = 0;
-                    $this->value[2] = 1;
-                }
-                $this->value = $this->cleanDefaultArray($this->value);
-            } else {
-                if (is_array($this->value)) {
-                    $this->value = 0;
-                }
-                $this->value = $this->cleanDefault($this->value);
-            }
+			// Set min to 0 if no value is set.
+			$this->field['min'] = empty( $this->field['min'] ) ? 0 : $this->cleanVal( $this->field['min'] );
 
-            // More dummy checks
-            //if ( ! is_array( $this->field['default'] ) && 2 == $this->field['handles'] ) {
-            if (!is_array($this->value) && 2 == $this->field['handles']) {
-                $this->value[0] = $this->field['min'];
-                $this->value[1] = $this->field['min'] + 1;
-            }
+			// Set max to min + 1 if empty.
+			$this->field['max'] = empty( $this->field['max'] ) ? $this->field['min'] + 1 : $this->cleanVal( $this->field['max'] );
 
-            //if ( is_array( $this->field['default'] ) && 1 == $this->field['handles'] ) {
-            if (is_array($this->value) && 1 == $this->field['handles']) {
-                $this->value = $this->field['min'];
-            }
-        }
+			// Set step to 1 if step is empty ot step > max.
+			$this->field['step'] = empty( $this->field['step'] ) || $this->field['step'] > $this->field['max'] ? 1 : $this->cleanVal( $this->field['step'] );
 
-        /**
-         * Enqueue Function.
-         * If this field requires any scripts, or css define this function and register/enqueue the scripts/css
-         *
-         * @since ReduxFramework 3.1.8
-         */
-        function enqueue() {
-            $min = Redux_Functions::isMin();
+			if ( 2 === $this->field['handles'] ) {
+				if ( ! is_array( $this->value ) ) {
+					$this->value[1] = 0;
+					$this->value[2] = 1;
+				}
+				$this->value = $this->clean_default_array( $this->value );
+			} else {
+				if ( is_array( $this->value ) ) {
+					$this->value = 0;
+				}
+				$this->value = $this->clean_default( $this->value );
+			}
 
-            wp_enqueue_style('select2-css');
+			// More dummy checks.
+			if ( ! is_array( $this->value ) && 2 === $this->field['handles'] ) {
+				$this->value[0] = $this->field['min'];
+				$this->value[1] = $this->field['min'] + 1;
+			}
 
-            wp_enqueue_style(
-                    'redux-nouislider-css', ReduxCore::$_url . "assets/css/vendor/nouislider$min.css", array(), '5.0.0', 'all'
-            );
+			if ( is_array( $this->value ) && 1 === $this->field['handles'] ) {
+				$this->value = $this->field['min'];
+			}
+		}
 
-            wp_register_script(
-                    'redux-nouislider-js', ReduxCore::$_url . 'assets/js/vendor/nouislider/redux.jquery.nouislider' . $min . '.js', array('jquery'), '5.0.0', true
-            );
+		/**
+		 * Enqueue Function.
+		 * If this field requires any scripts, or css define this function and register/enqueue the scripts/css
+		 *
+		 * @since ReduxFramework 3.1.8
+		 */
+		public function enqueue() {
+			$min = Redux_Functions::isMin();
 
-            wp_enqueue_script(
-                    'redux-field-slider-js', ReduxCore::$_url . 'inc/fields/slider/field_slider' . $min . '.js', array('jquery', 'redux-nouislider-js', 'redux-js', 'select2-js'), $this->timestamp, true
-            );
+			wp_enqueue_style( 'select2-css' );
 
-            if ($this->parent->args['dev_mode']) {
-                wp_enqueue_style(
-                        'redux-field-slider-css', ReduxCore::$_url . 'inc/fields/slider/field_slider.css', array(), $this->timestamp, 'all'
-                );
-            }
-        }
+			wp_enqueue_style(
+				'redux-nouislider-css',
+				ReduxCore::$_url . "assets/css/vendor/nouislider$min.css",
+				array(),
+				'5.0.0',
+				'all'
+			);
 
-        /**
-         * Field Render Function.
-         * Takes the vars and outputs the HTML for the field in the settings
-         *
-         * @since ReduxFramework 0.0.4
-         */
-        function render() {
-            $this->clean();
+			wp_register_script(
+				'redux-nouislider-js',
+				ReduxCore::$_url . 'assets/js/vendor/nouislider/redux.jquery.nouislider' . $min . '.js',
+				array( 'jquery' ),
+				'5.0.0',
+				true
+			);
 
-            $fieldID = $this->field['id'];
-            $fieldName = $this->field['name'] . $this->field['name_suffix'];
+			wp_enqueue_script(
+				'redux-field-slider-js',
+				ReduxCore::$_url . 'inc/fields/slider/field_slider' . $min . '.js',
+				array( 'jquery', 'redux-nouislider-js', 'redux-js', 'select2-js' ),
+				$this->timestamp,
+				true
+			);
 
-            // Set handle number variable.
-            $twoHandles = false;
-            if (2 == $this->field['handles']) {
-                $twoHandles = true;
-            }
+			if ( $this->parent->args['dev_mode'] ) {
+				wp_enqueue_style(
+					'redux-field-slider-css',
+					ReduxCore::$_url . 'inc/fields/slider/field_slider.css',
+					array(),
+					$this->timestamp,
+					'all'
+				);
+			}
+		}
 
-            // Set default values(s)
-            if (true == $twoHandles) {
-                $valOne = $this->value[0];
-                $valTwo = $this->value[1];
+		/**
+		 * Field Render Function.
+		 * Takes the vars and outputs the HTML for the field in the settings
+		 *
+		 * @since ReduxFramework 0.0.4
+		 */
+		public function render() {
+			$this->clean();
 
-                $html = 'data-default-one=' . $valOne . ' ';
-                $html .= 'data-default-two=' . $valTwo . ' ';
+			$field_id   = $this->field['id'];
+			$field_name = $this->field['name'] . $this->field['name_suffix'];
 
-                $nameOne = $fieldName . '[1]';
-                $nameTwo = $fieldName . '[2]';
+			// Set handle number variable.
+			$two_handles = false;
+			if ( 2 === $this->field['handles'] ) {
+				$two_handles = true;
+			}
 
-                $idOne = $fieldID . '[1]';
-                $idTwo = $fieldID . '[2]';
-            } else {
-                $valOne = $this->value;
-                $valTwo = '';
+			// Set default values(s).
+			if ( true === $two_handles ) {
+				$val_one = $this->value[0];
+				$val_two = $this->value[1];
 
-                $html = 'data-default-one=' . $valOne;
+				$html  = 'data-default-one=' . $val_one . ' ';
+				$html .= 'data-default-two=' . $val_two . ' ';
 
-                $nameOne = $fieldName;
-                $nameTwo = '';
+				$name_one = $field_name . '[1]';
+				$name_two = $field_name . '[2]';
 
-                $idOne = $fieldID;
-                $idTwo = '';
-            }
+				$id_one = $field_id . '[1]';
+				$id_two = $field_id . '[2]';
+			} else {
+				$val_one = $this->value;
+				$val_two = '';
 
-            $showInput = false;
-            $showLabel = false;
-            $showSelect = false;
+				$html = 'data-default-one=' . $val_one;
 
-            // TEXT output
-            if ($this->display_text == $this->field['display_value']) {
-                $showInput = true;
-                echo '<input type="text"
-                         name="' . esc_attr($nameOne) . '"
-                         id="' . esc_attr($idOne) . '"
-                         value="' . esc_attr($valOne) . '"
-                         class="redux-slider-input redux-slider-input-one-' . esc_attr($fieldID) . ' ' . esc_attr($this->field['class']) . '"/>';
+				$name_one = $field_name;
+				$name_two = '';
 
-                // LABEL output
-            } elseif ($this->display_label == $this->field['display_value']) {
-                $showLabel = true;
+				$id_one = $field_id;
+				$id_two = '';
+			}
 
-                $labelNum = $twoHandles ? '-one' : '';
+			$show_input  = false;
+			$show_label  = false;
+			$show_select = false;
 
-                echo '<div class="redux-slider-label' . esc_attr($labelNum) . '"
-                       id="redux-slider-label-one-' . esc_attr($fieldID) . '"
-                       name="' . esc_attr($nameOne) . '">
+			// TEXT output.
+			if ( $this->display_text === $this->field['display_value'] ) {
+				$show_input = true;
+				echo '<input 
+						type="text"
+                        name="' . esc_attr( $name_one ) . '"
+                        id="' . esc_attr( $id_one ) . '"
+                        value="' . esc_attr( $val_one ) . '"
+                        class="redux-slider-input redux-slider-input-one-' . esc_attr( $field_id ) . ' ' . esc_attr( $this->field['class'] ) . '"/>';
+
+				// LABEL output.
+			} elseif ( $this->display_label === $this->field['display_value'] ) {
+				$show_label = true;
+
+				$label_num = $two_handles ? '-one' : '';
+
+				echo '<div class="redux-slider-label' . esc_attr( $label_num ) . '"
+                       id="redux-slider-label-one-' . esc_attr( $field_id ) . '"
+                       name="' . esc_attr( $name_one ) . '">
                   </div>';
 
-                // SELECT output
-            } elseif ($this->display_select == $this->field['display_value']) {
-                $showSelect = true;
+				// SELECT output.
+			} elseif ( $this->display_select === $this->field['display_value'] ) {
+				$show_select = true;
 
-                if (isset($this->field['select2'])) {
-                    $this->field['select2'] = wp_parse_args($this->field['select2'], $this->select2_config);
-                } else {
-                    $this->field['select2'] = $this->select2_config;
-                }
+				if ( isset( $this->field['select2'] ) ) {
+					$this->field['select2'] = wp_parse_args( $this->field['select2'], $this->select2_config );
+				} else {
+					$this->field['select2'] = $this->select2_config;
+				}
 
-                $this->field['select2'] = Redux_Functions::sanitize_camel_case_array_keys($this->field['select2']);
+				$this->field['select2'] = Redux_Functions::sanitize_camel_case_array_keys( $this->field['select2'] );
 
-                $select2_data = Redux_Functions::create_data_string($this->field['select2']);
+				$select2_data = Redux_Functions::create_data_string( $this->field['select2'] );
 
-                echo '<select class="redux-slider-select-one redux-slider-select-one-' . esc_attr($fieldID) . ' ' . esc_attr($this->field['class']) . '"
-                          name="' . esc_attr($nameOne) . '"
-                          id="' . esc_attr($idOne) . '"' . esc_attr($select2_data) . '>
-                 </select>';
-            }
+				echo '<select 
+						class="redux-slider-select-one redux-slider-select-one-' . esc_attr( $field_id ) . ' ' . esc_attr( $this->field['class'] ) . '"
+                        name="' . esc_attr( $name_one ) . '"
+                        id="' . esc_attr( $id_one ) . '" ' . esc_attr( $select2_data ) . '></select>';
+			}
 
-            // DIV output
-            echo
-            '<div
-                class="redux-slider-container ' . esc_attr($this->field['class']) . '"
-                id="' . esc_attr($fieldID) . '"
-                data-id="' . esc_attr($fieldID) . '"
-                data-min="' . esc_attr($this->field['min']) . '"
-                data-max="' . esc_attr($this->field['max']) . '"
-                data-step="' . esc_attr($this->field['step']) . '"
-                data-handles="' . esc_attr($this->field['handles']) . '"
-                data-display="' . esc_attr($this->field['display_value']) . '"
-                data-rtl="' . esc_attr(is_rtl()) . '"
-                data-forced="' . esc_attr($this->field['forced']) . '"
-                data-float-mark="' . esc_attr($this->field['float_mark']) . '"
-                data-resolution="' . esc_attr($this->field['resolution']) . '" ' . esc_html($html) . '>
-            </div>';
+			// DIV output.
+			echo '<div
+	                class="redux-slider-container ' . esc_attr( $this->field['class'] ) . '"
+	                id="' . esc_attr( $field_id ) . '"
+	                data-id="' . esc_attr( $field_id ) . '"
+	                data-min="' . esc_attr( $this->field['min'] ) . '"
+	                data-max="' . esc_attr( $this->field['max'] ) . '"
+	                data-step="' . esc_attr( $this->field['step'] ) . '"
+	                data-handles="' . esc_attr( $this->field['handles'] ) . '"
+	                data-display="' . esc_attr( $this->field['display_value'] ) . '"
+	                data-rtl="' . esc_attr( is_rtl() ) . '"
+	                data-forced="' . esc_attr( $this->field['forced'] ) . '"
+	                data-float-mark="' . esc_attr( $this->field['float_mark'] ) . '"
+	                data-resolution="' . esc_attr( $this->field['resolution'] ) . '" ' . esc_html( $html ) . '></div>';
 
-            // Double slider output
-            if (true == $twoHandles) {
+			// Double slider output.
+			if ( true === $two_handles ) {
 
-                // TEXT
-                if (true == $showInput) {
-                    echo '<input type="text"
-                             name="' . esc_attr($nameTwo) . '"
-                             id="' . esc_attr($idTwo) . '"
-                             value="' . esc_attr($valTwo) . '"
-                             class="redux-slider-input redux-slider-input-two-' . esc_attr($fieldID) . ' ' . esc_attr($this->field['class']) . '"/>';
-                }
+				// TEXT.
+				if ( true === $show_input ) {
+					echo '<input 
+							type="text"
+                            name="' . esc_attr( $name_two ) . '"
+                            id="' . esc_attr( $id_two ) . '"
+                            value="' . esc_attr( $val_two ) . '"
+                            class="redux-slider-input redux-slider-input-two-' . esc_attr( $field_id ) . ' ' . esc_attr( $this->field['class'] ) . '"/>';
+				}
 
-                // LABEL
-                if (true == $showLabel) {
-                    echo '<div class="redux-slider-label-two"
-                           id="redux-slider-label-two-' . esc_attr($fieldID) . '"
-                           name="' . esc_attr($nameTwo) . '">
-                      </div>';
-                }
+				// LABEL.
+				if ( true === $show_label ) {
+					echo '<div 
+							class="redux-slider-label-two"
+                            id="redux-slider-label-two-' . esc_attr( $field_id ) . '"
+                            name="' . esc_attr( $name_two ) . '"></div>';
+				}
 
-                // SELECT
-                if (true == $showSelect) {
-                    echo '<select class="redux-slider-select-two redux-slider-select-two-' . esc_attr($fieldID) . ' ' . esc_attr($this->field['class']) . '"
-                              name="' . esc_attr($nameTwo) . '"
-                              id="' . esc_attr($idTwo) . '"' . esc_attr($select2_data) . '>
-                     </select>';
-                }
-            }
+				// SELECT.
+				if ( true === $show_select ) {
+					echo '<select 
+								class="redux-slider-select-two redux-slider-select-two-' . esc_attr( $field_id ) . ' ' . esc_attr( $this->field['class'] ) . '"
+                                name="' . esc_attr( $name_two ) . '"
+                                id="' . esc_attr( $id_two ) . '" ' . esc_attr( $select2_data ) . '></select>';
+				}
+			}
 
-            // NO output (input hidden)
-            if ($this->display_none == $this->field['display_value'] || $this->display_label == $this->field['display_value']) {
-                echo '<input type="hidden"
-                         class="redux-slider-value-one-' . esc_attr($fieldID) . ' ' . esc_attr($this->field['class']) . '"
-                         name="' . esc_attr($nameOne) . '"
-                         id="' . esc_attr($idOne) . '"
-                         value="' . esc_attr($valOne) . '"/>';
+			// NO output (input hidden).
+			if ( $this->display_none === $this->field['display_value'] || $this->display_label === $this->field['display_value'] ) {
+				echo '<input 
+							type="hidden"
+	                        class="redux-slider-value-one-' . esc_attr( $field_id ) . ' ' . esc_attr( $this->field['class'] ) . '"
+	                        name="' . esc_attr( $name_one ) . '"
+	                        id="' . esc_attr( $id_one ) . '"
+	                        value="' . esc_attr( $val_one ) . '"/>';
 
-                // double slider hidden output
-                if (true == $twoHandles) {
-                    echo '<input type="hidden"
-                             class="redux-slider-value-two-' . esc_attr($fieldID) . ' ' . esc_attr($this->field['class']) . '"
-                             name="' . esc_attr($nameTwo) . '"
-                             id="' . esc_attr($idTwo) . '"
-                             value="' . esc_attr($valTwo) . '"/>';
-                }
-            }
-        }
-
-    }
-
+				// double slider hidden output.
+				if ( true === $two_handles ) {
+					echo '<input 
+								type="hidden"
+	                            class="redux-slider-value-two-' . esc_attr( $field_id ) . ' ' . esc_attr( $this->field['class'] ) . '"
+	                            name="' . esc_attr( $name_two ) . '"
+	                            id="' . esc_attr( $id_two ) . '"
+	                            value="' . esc_attr( $val_two ) . '"/>';
+				}
+			}
+		}
+	}
 }

@@ -31,7 +31,7 @@
         );
 
         // Save button clicked
-        el.find( '.redux-action_bar input' ).on(
+        el.find( '.redux-action_bar input, #redux-import-action input' ).on(
             'click', function( e ) {
                 if ( $( this ).attr( 'name' ) === redux.optName.args.opt_name + '[defaults]' ) {
                     // Defaults button clicked
@@ -43,6 +43,10 @@
                     if ( !confirm( redux.optName.args.reset_section_confirm ) ) {
                         return false;
                     }
+                } else if ( $( this ).attr( 'name' ) == 'import' ) {
+                    if ( !confirm( redux.optName.args.import_section_confirm ) ) {
+                        return false;
+                    }                    
                 }
 
                 window.onbeforeunload = null;
