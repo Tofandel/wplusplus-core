@@ -20,10 +20,10 @@ abstract class ShortcodeMapper implements \Tofandel\Core\Interfaces\ShortcodeMap
 	/**
 	 * Handles the mapping logic
 	 *
-	 * @param array $info
+	 * @param ShortcodeDescriptor $info
 	 *
 	 */
-	abstract public static function map( array $info );
+	abstract public static function map( ShortcodeDescriptor $info );
 
 	/**
 	 * Handles the parameter mapping logic

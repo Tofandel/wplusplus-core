@@ -259,7 +259,7 @@ final class LicenceManager implements SubModule, \Tofandel\Core\Interfaces\Licen
 	 * The hooks of the submodule
 	 */
 	public function actionsAndFilters() {
-		add_action( 'wpp_redux_' . $this->parent->getReduxOptName() . '_config', [ $this, 'addSection' ], 50, 1 );
+		add_action( 'wpp/redux/' . $this->parent->getReduxOptName() . '/config', [ $this, 'addSection' ], 50, 1 );
 	}
 
 	public function addSection( ReduxFramework $framework ) {

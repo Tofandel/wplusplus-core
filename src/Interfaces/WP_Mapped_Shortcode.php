@@ -24,5 +24,14 @@ interface WP_Mapped_Shortcode extends WP_Shortcode {
 
 	public static function setInfo( $name, $description = '', $category = '', $icon = '' );
 
-	public static function setParam( ShortcodeParameter $param );
+	/**
+	 * @param string $name
+	 * @param string $title
+	 * @param string $type ShortcodeParametersTypes::const
+	 * @param string $description
+	 * @param string $category
+	 *
+	 * @return ShortcodeParameter
+	 */
+	public static function addParameter( $name, $title, $type, $description = '', $category = '' );
 }

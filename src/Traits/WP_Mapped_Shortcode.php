@@ -9,8 +9,8 @@ namespace Tofandel\Core\Traits;
 
 use Tofandel\Core\Interfaces\ShortcodeMapper;
 use Tofandel\Core\Interfaces\WP_Plugin;
+use Tofandel\Core\Objects\ShortcodeDescriptor;
 use Tofandel\Core\Objects\ShortcodeParameter;
-use Tofandel\Core\ShortcodeMappers\VC_Mapper;
 
 /**
  * Class WP_Shortcode
@@ -27,6 +27,9 @@ trait WP_Mapped_Shortcode {
 	public static $atts = array();
 
 	//Don't touch
+	/**
+	 * @var ShortcodeDescriptor
+	 */
 	protected static $_info;
 
 	protected static $last_param;
@@ -37,15 +40,23 @@ trait WP_Mapped_Shortcode {
 	protected static $mappers = array();
 
 	public static function setInfo( $name, $description = '', $category = '', $icon = '' ) {
-		self::$_info              = new \stdClass();
-		self::$_info->name        = $name;
-		self::$_info->description = $description;
-		self::$_info->category    = $category;
-		self::$_info->icon        = $icon;
+		static::$_info = new ShortcodeDescriptor( static::class );
+		static::$_info->setInfo( $name, $description, $category, $icon );
+
+		return static::$_info;
 	}
 
-	public static function setParam( ShortcodeParameter $param ) {
-		static::$_info->params[ $param->getName() ] = $param;
+	/**
+	 * @param string $name
+	 * @param string $title
+	 * @param string $type ShortcodeParametersTypes::const
+	 * @param string $description
+	 * @param string $category
+	 *
+	 * @return ShortcodeParameter
+	 */
+	public static function addParameter( $name, $title, $type, $description = '', $category = '' ) {
+		return static::$_info->addParameter( $name, $title, $type, $description, $category );
 	}
 
 	/**
@@ -53,29 +64,10 @@ trait WP_Mapped_Shortcode {
 	 */
 	abstract public static function mapping();
 
-	/**
-	 * @return ShortcodeMapper[]
-	 */
-	public static function initMappers() {
-		static $mappers;
-
-		if ( ! isset( $mappers ) ) {
-			self::$mappers = apply_filters( 'wpp_shortcode_mappers', array( VC_Mapper::class ) );
-			foreach ( self::$mappers as $mapper ) {
-				if ( $mapper::shouldMap() ) {
-					$mappers[] = $mapper;
-				}
-			}
-		}
-
-		return $mappers;
-	}
-
-
 	public static function SubModuleInit( WP_Plugin &$parent = null ) {
 		self::ParentSubModuleInit( $parent );
 
-		if ( $mappers = self::initMappers() ) {
+		if ( $mappers = ShortcodeDescriptor::initMappers() ) {
 			ShortcodeParameter::setDefaultAttributes( static::$atts );
 			self::mapping();
 			foreach ( $mappers as $mapper ) {

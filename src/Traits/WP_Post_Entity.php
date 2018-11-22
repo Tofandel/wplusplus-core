@@ -7,6 +7,8 @@
 
 namespace Tofandel\Core\Traits;
 
+use Tofandel\Core\Interfaces\WP_Plugin;
+
 /**
  * Class WP_Post_Entity
  *
@@ -18,8 +20,16 @@ namespace Tofandel\Core\Traits;
  * @property $post_parent
  */
 trait WP_Post_Entity {
-	use WP_Entity;
-	use Initializable;
+	use WP_Entity {
+		__construct as WP_Entity_construct;
+	}
+	use StaticSubModule {
+		SubModuleInit as ParentSubModuleInit;
+	}
+
+	public function __construct( $read = 0 ) {
+		$this->WP_Entity_construct( $read );
+	}
 
 	public static $capability = null;
 
@@ -45,14 +55,21 @@ trait WP_Post_Entity {
 		return strtolower( $name->getShortName() );
 	}
 
-	public static function __StaticInit() {
+	/**
+	 * SubModule constructor.
+	 *
+	 * @param WP_Plugin|null $parent
+	 */
+	public static function SubModuleInit( WP_Plugin &$parent = null ) {
+		static::ParentSubModuleInit( $parent );
+
 		$post_type = static::StaticPostType();
 		if ( ! isset( static::$capability ) ) {
 			static::$capability = $post_type;
 		}
 		$class = static::class;
 		add_action( 'init', function () use ( $post_type, $class ) {
-			register_post_type( $post_type, call_user_func( array( $class, 'post_type_options' ) ) );
+			register_post_type( $post_type, call_user_func( array( static::class, 'post_type_options' ) ) );
 		} );
 	}
 

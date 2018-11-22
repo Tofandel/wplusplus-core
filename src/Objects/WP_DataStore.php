@@ -8,7 +8,7 @@
 namespace Tofandel\Core\Objects;
 
 use Exception;
-use Tofandel\Core\Traits\Singleton;
+use Tofandel\Core\Traits\Initializable;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,22 +16,15 @@ defined( 'ABSPATH' ) || exit;
  * Data store class.
  */
 class WP_DataStore {
-	use Singleton;
+	use Initializable;
 
 	/**
-	 * Contains an array of default WC supported data stores.
+	 * Contains an array of default supported data stores.
 	 * Format of object name => class name.
-	 * Example: 'product' => 'WC_Product_Data_Store_CPT'
-	 * You can also pass something like product_<type> for product stores and
-	 * that type will be used first when available, if a store is requested like
-	 * this and doesn't exist, then the store would fall back to 'product'.
-	 * Ran through `woocommerce_data_stores`.
 	 *
 	 * @var array
 	 */
-	private $stores = array(
-		'coupon' => 'WC_Coupon_Data_Store_CPT',
-	);
+	public static $stores = array();
 
 	/**
 	 * Contains the name of the current data store's class name.
@@ -49,8 +42,7 @@ class WP_DataStore {
 
 
 	/**
-	 * Tells WC_Data_Store which object (coupon, product, order, etc)
-	 * store we want to work with.
+	 * Tells WP_DataStore which object store we want to work with.
 	 *
 	 * @throws Exception When validation fails.
 	 *
@@ -58,7 +50,7 @@ class WP_DataStore {
 	 */
 	public function __construct( $object_type ) {
 		$this->object_type = $object_type;
-		$this->stores      = apply_filters( 'wpp_data_stores', $this->stores );
+		$this->stores      = apply_filters( 'wpp/data_stores', static::$stores );
 
 		// If this object type can't be found, check to see if we can load one
 		// level up (so if product-type isn't found, we try product).
@@ -68,9 +60,9 @@ class WP_DataStore {
 		}
 
 		if ( array_key_exists( $object_type, $this->stores ) ) {
-			$store = apply_filters( 'wpp_' . $object_type . '_data_store', $this->stores[ $object_type ] );
+			$store = apply_filters( 'wpp/data_store/' . $object_type, $this->stores[ $object_type ] );
 			if ( is_object( $store ) ) {
-				if ( ! $store instanceof WC_Object_Data_Store_Interface ) {
+				if ( ! $store instanceof WPP_Object_Data_Store_Interface ) {
 					throw new Exception( 'Invalid data store.' );
 				}
 				$this->current_class_name = get_class( $store );
@@ -109,10 +101,10 @@ class WP_DataStore {
 	 * @param string $object_type Name of object.
 	 *
 	 * @since 3.0.0
-	 * @return WC_Data_Store
+	 * @return self
 	 */
 	public static function load( $object_type ) {
-		return new WC_Data_Store( $object_type );
+		return new self( $object_type );
 	}
 
 	/**
@@ -141,7 +133,7 @@ class WP_DataStore {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param WC_Data $data WooCommerce data instance.
+	 * @param WPP_Data $data WooCommerce data instance.
 	 */
 	public function create( &$data ) {
 		$this->instance->create( $data );
@@ -152,7 +144,7 @@ class WP_DataStore {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param WC_Data $data WooCommerce data instance.
+	 * @param WPP_Data $data WooCommerce data instance.
 	 */
 	public function update( &$data ) {
 		$this->instance->update( $data );
@@ -163,7 +155,7 @@ class WP_DataStore {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param WC_Data $data WooCommerce data instance.
+	 * @param WPP_Data $data WooCommerce data instance.
 	 * @param array $args Array of args to pass to the delete method.
 	 */
 	public function delete( &$data, $args = array() ) {

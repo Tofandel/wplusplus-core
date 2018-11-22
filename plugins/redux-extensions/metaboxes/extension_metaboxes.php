@@ -87,7 +87,11 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 			self::$instances[] = &$this;
 
-			add_action( 'admin_init', array( $this, 'init_all' ), 0, PHP_INT_MAX );
+			if (did_action('admin_init') && is_admin()) {
+				self::init_all();
+			} else {
+				add_action( 'admin_init', array( self::class, 'init_all' ), 0, PHP_INT_MAX );
+			}
 			//$this->init();
 		} // __construct()
 

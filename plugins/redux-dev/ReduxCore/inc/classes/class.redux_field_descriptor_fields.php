@@ -25,7 +25,7 @@ class Redux_Field_Descriptor_Fields implements ArrayAccess {
         if (!Redux_Descriptor_Types::isValidType($type)) {
             throw new Exception('Unknown type ' . $type . ' for option ' . $name);
         }
-        if (!is_string($title)) {
+        if (!is_string($title) || empty($title)) {
             $title = ucfirst($name);
         }
         $this->options = array(

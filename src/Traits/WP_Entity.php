@@ -190,7 +190,7 @@ trait WP_Entity {
 	public function save() {
 		if ( $this->data_store ) {
 			// Trigger action before saving to the DB. Allows you to adjust object props before save.
-			do_action( 'wpp_before_' . $this->object_type . '_object_save', $this, $this->data_store );
+			do_action( 'wpp/post/' . $this->object_type . '/save', $this, $this->data_store );
 
 			if ( $this->get_id() ) {
 				$this->data_store->update( $this );
@@ -667,7 +667,7 @@ trait WP_Entity {
 	 * @return string
 	 */
 	protected function get_hook_prefix() {
-		return 'wpp_' . $this->object_type . '_get_';
+		return 'wpp/post/' . $this->object_type . '/get/';
 	}
 
 	/**
@@ -711,7 +711,7 @@ trait WP_Entity {
 				return;
 			}
 
-			if ( is_a( $value, 'WC_DateTime' ) ) {
+			if ( is_a( $value, WP_DateTime::class ) ) {
 				$datetime = $value;
 			} elseif ( is_numeric( $value ) ) {
 				// Timestamps are handled as UTC timestamps in all cases.

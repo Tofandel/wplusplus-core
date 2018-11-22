@@ -9,6 +9,7 @@
 namespace Tofandel\Core\Interfaces;
 
 
+use Tofandel\Core\Objects\ShortcodeDescriptor;
 use Tofandel\Core\Objects\ShortcodeParameter;
 
 interface ShortcodeMapper {
@@ -22,10 +23,10 @@ interface ShortcodeMapper {
 	/**
 	 * Handles the mapping logic
 	 *
-	 * @param array $info
+	 * @param ShortcodeDescriptor $info
 	 *
 	 */
-	public static function map( array $info );
+	public static function map( ShortcodeDescriptor $info );
 
 	/**
 	 * Handles the parameter mapping logic

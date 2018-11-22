@@ -1085,7 +1085,7 @@ abstract class WP_Plugin implements \Tofandel\Core\Interfaces\WP_Plugin {
 			 * @var ReduxFramework $module
 			 */
 			$this->reduxInit( $module );
-			do_action( 'wpp_redux_' . $this->redux_opt_name . '_config', $module );
+			do_action( 'wpp/redux/' . $this->redux_opt_name . '/config', $module );
 		}
 	}
 

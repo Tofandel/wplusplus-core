@@ -9,6 +9,7 @@
 namespace Tofandel\Core\ShortcodeMappers;
 
 
+use Tofandel\Core\Objects\ShortcodeDescriptor;
 use Tofandel\Core\Objects\ShortcodeMapper;
 use Tofandel\Core\Objects\ShortcodeParameter;
 use Tofandel\Core\Traits\Initializable;
@@ -58,10 +59,10 @@ class VC_Mapper extends ShortcodeMapper {
 	/**
 	 * Handles the mapping logic
 	 *
-	 * @param array $info
+	 * @param ShortcodeDescriptor $info
 	 *
 	 */
-	public static function map( array $info ) {
+	public static function map( ShortcodeDescriptor $info ) {
 		add_action( 'vc_before_mapping', function () use ( $info ) {
 			/**
 			 * @var \stdClass $info
@@ -74,10 +75,10 @@ class VC_Mapper extends ShortcodeMapper {
 				self::mapParameter( $param );
 			}
 			$map = array(
-				'category'    => $info->category,
-				'description' => $info->description,
-				'name'        => $info->name,
-				'icon'        => $info->icon,
+				'category'    => $info->getCategory(),
+				'description' => $info->getDescription(),
+				'name'        => $info->getTitle(),
+				'icon'        => $info->getIcon(),
 				'params'      => $params
 			);
 			vc_map( $map );
@@ -99,7 +100,7 @@ class VC_Mapper extends ShortcodeMapper {
 			'description' => $p->getDescription(),
 			'std'         => $p->getDefault(),
 			'group'       => $p->getCategory(),
-			'value'       => $p->getChoices(),
+			'value'       => $p->choices,
 		), $p->getMapperOptions( self::class ) );
 	}
 }
