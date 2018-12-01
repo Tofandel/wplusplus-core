@@ -65,8 +65,8 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 		public function __construct( $parent ) {
 			global $pagenow;
 
-			$this->parent                          = $parent;
-			$this->parent->extensions['metaboxes'] = $this;
+			$this->parent                            = $parent;
+			$this->parent->extensions[ 'metaboxes' ] = $this;
 
 			if ( empty( $this->_extension_dir ) ) {
 				$this->_extension_dir = trailingslashit( str_replace( '\\', '/', dirname( __FILE__ ) ) );
@@ -87,10 +87,10 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 			self::$instances[] = &$this;
 
-			if (did_action('admin_init') && is_admin()) {
+			if ( did_action( 'init' ) && is_admin() ) {
 				self::init_all();
-			} else {
-				add_action( 'admin_init', array( self::class, 'init_all' ), 0, PHP_INT_MAX );
+			} elseif ( is_admin() ) {
+				add_action( 'init', array( self::class, 'init_all' ), 0, PHP_INT_MAX );
 			}
 			//$this->init();
 		} // __construct()
@@ -103,10 +103,10 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 		public function add_box_classes( $classes ) {
 			$classes[] = 'redux-metabox';
-			$classes[] = 'redux-' . $this->parent->args['opt_name'];
+			$classes[] = 'redux-' . $this->parent->args[ 'opt_name' ];
 
-			if ( $this->parent->args['class'] != "" ) {
-				$classes[] = $this->parent->args['class'];
+			if ( $this->parent->args[ 'class' ] != "" ) {
+				$classes[] = $this->parent->args[ 'class' ];
 			}
 
 			return $classes;
@@ -121,10 +121,10 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 		public function init() {
 			global $pagenow;
 
-			$this->boxes = apply_filters( 'redux/metaboxes/' . $this->parent->args['opt_name'] . '/boxes', $this->boxes, $this->parent->args['opt_name'] );
+			$this->boxes = apply_filters( 'redux/metaboxes/' . $this->parent->args[ 'opt_name' ] . '/boxes', $this->boxes, $this->parent->args[ 'opt_name' ] );
 
 			if ( empty( $this->boxes ) && class_exists( 'Redux_Metaboxes' ) ) {
-				$this->boxes = Redux_Metaboxes::constructBoxes( $this->parent->args['opt_name'] );
+				$this->boxes = Redux_Metaboxes::constructBoxes( $this->parent->args[ 'opt_name' ] );
 			}
 
 			if ( empty( $this->boxes ) || ! is_array( $this->boxes ) ) {
@@ -141,33 +141,33 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 			add_action( 'the_post', array( $this, '_loop_start' ), 0 );
 			add_action( 'loop_end', array( $this, '_loop_end' ), 0 );
 
-			if ( isset( $_SERVER["HTTP_HOST"] ) ) {
-				$this->base_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-				$this->post_id  = $this->url_to_postid( ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] );
+			if ( isset( $_SERVER[ "HTTP_HOST" ] ) ) {
+				$this->base_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER[ "HTTP_HOST" ] . $_SERVER[ "REQUEST_URI" ];
+				$this->post_id  = $this->url_to_postid( ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER[ "HTTP_HOST" ] . $_SERVER[ "REQUEST_URI" ] );
 			}
-			if ( is_admin() && isset( $_GET['post_type'] ) && ! empty( $_GET['post_type'] ) ) {
-				$this->post_type = $_GET['post_type'];
+			if ( is_admin() && isset( $_GET[ 'post_type' ] ) && ! empty( $_GET[ 'post_type' ] ) ) {
+				$this->post_type = $_GET[ 'post_type' ];
 			} else {
 				$this->post_type = get_post_type( $this->post_id );
 			}
 
 			foreach ( $this->boxes as $bk => $box ) {
 				// If the post ids for this box are set, we're limiting to the current post id
-				if ( isset( $box['post_ids'] ) && ! empty( $box['post_ids'] ) ) {
-					if ( ! is_array( $box['post_ids'] ) ) {
-						$box['post_ids'] = array( $box['post_ids'] );
+				if ( isset( $box[ 'post_ids' ] ) && ! empty( $box[ 'post_ids' ] ) ) {
+					if ( ! is_array( $box[ 'post_ids' ] ) ) {
+						$box[ 'post_ids' ] = array( $box[ 'post_ids' ] );
 					}
-					if ( ! in_array( $this->post_id, $box['post_ids'] ) ) {
+					if ( ! in_array( $this->post_id, $box[ 'post_ids' ] ) ) {
 						continue;
 					}
 				}
 
-				if ( ! empty( $box['sections'] ) ) {
-					$this->sections = $box['sections'];
+				if ( ! empty( $box[ 'sections' ] ) ) {
+					$this->sections = $box[ 'sections' ];
 
-					array_merge( $this->parent->sections, $box['sections'] );
+					array_merge( $this->parent->sections, $box[ 'sections' ] );
 
-					$this->post_types = wp_parse_args( $this->post_types, $box['post_types'] );
+					$this->post_types = wp_parse_args( $this->post_types, $box[ 'post_types' ] );
 
 					//if ( is_admin() && ( $pagenow == "post-new.php" || $pagenow == "post.php" ) ) {
 					// NEST IN THE BOX ID
@@ -176,7 +176,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 					// Checking to overide the parent variables
 					$addField = false;
 
-					foreach ( $box['post_types'] as $type ) {
+					foreach ( $box[ 'post_types' ] as $type ) {
 						if ( $this->post_type == $type ) {
 							$addField = true;
 						}
@@ -186,34 +186,34 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 					if ( $addField || ( ( is_admin() && ( $pagenow == "post-new.php" || $pagenow == "post.php" ) ) || ( ! is_admin() ) ) ) {
 						$runHooks = true;
 
-						$boxID = 'redux-' . $this->parent->args['opt_name'] . '-metabox-' . $box['id'];
+						$boxID = 'redux-' . $this->parent->args[ 'opt_name' ] . '-metabox-' . $box[ 'id' ];
 
-						if ( isset( $box['page_template'] ) && $this->post_type == "page" ) {
-							if ( ! is_array( $box['page_template'] ) ) {
-								$box['page_template'] = array( $box['page_template'] );
+						if ( isset( $box[ 'page_template' ] ) && $this->post_type == "page" ) {
+							if ( ! is_array( $box[ 'page_template' ] ) ) {
+								$box[ 'page_template' ] = array( $box[ 'page_template' ] );
 							}
 
-							$this->wp_links[ $boxID ]['page_template'] = isset( $this->wp_links[ $boxID ]['page_template'] ) ? wp_parse_args( $this->wp_links[ $boxID ]['page_template'], $box['page_template'] ) : $box['page_template'];
+							$this->wp_links[ $boxID ][ 'page_template' ] = isset( $this->wp_links[ $boxID ][ 'page_template' ] ) ? wp_parse_args( $this->wp_links[ $boxID ][ 'page_template' ], $box[ 'page_template' ] ) : $box[ 'page_template' ];
 						}
 
-						if ( isset( $box['post_format'] ) && ( in_array( $this->post_type, $this->post_types ) || $this->post_type == "" ) ) {
-							if ( ! is_array( $box['post_format'] ) ) {
-								$box['post_format'] = array( $box['post_format'] );
+						if ( isset( $box[ 'post_format' ] ) && ( in_array( $this->post_type, $this->post_types ) || $this->post_type == "" ) ) {
+							if ( ! is_array( $box[ 'post_format' ] ) ) {
+								$box[ 'post_format' ] = array( $box[ 'post_format' ] );
 							}
 
 							//$this->wp_links[ $boxID ]['post_format'] = isset( $this->wp_links[ $boxID ]['post_format'] ) ? wp_parse_args( $this->wp_links['post_format'], $box['post_format'] ) : $box['post_format'];
-							$this->wp_links[ $boxID ]['post_format'] = isset( $this->wp_links[ $boxID ]['post_format'] ) ? wp_parse_args( $this->wp_links[ $boxID ]['post_format'], $box['post_format'] ) : $box['post_format'];
+							$this->wp_links[ $boxID ][ 'post_format' ] = isset( $this->wp_links[ $boxID ][ 'post_format' ] ) ? wp_parse_args( $this->wp_links[ $boxID ][ 'post_format' ], $box[ 'post_format' ] ) : $box[ 'post_format' ];
 						}
 
 						$this->meta[ $this->post_id ] = $this->get_meta( $this->post_id );
 
-						foreach ( $box['sections'] as $sk => $section ) {
-							if ( isset( $section['fields'] ) && ! empty( $section['fields'] ) ) {
-								foreach ( $section['fields'] as $fk => $field ) {
+						foreach ( $box[ 'sections' ] as $sk => $section ) {
+							if ( isset( $section[ 'fields' ] ) && ! empty( $section[ 'fields' ] ) ) {
+								foreach ( $section[ 'fields' ] as $fk => $field ) {
 
-									if ( ! isset( $field['class'] ) ) {
-										$field['class']                                         = "";
-										$this->boxes[ $bk ]['sections'][ $sk ]['fields'][ $fk ] = $field;
+									if ( ! isset( $field[ 'class' ] ) ) {
+										$field[ 'class' ]                                           = "";
+										$this->boxes[ $bk ][ 'sections' ][ $sk ][ 'fields' ][ $fk ] = $field;
 									}
 
 									//if ( stripos( $field['class'], 'redux-field-init' ) === 0 ) {
@@ -221,42 +221,42 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 									//}
 
 									if ( $addField || ( ( is_admin() && ( $pagenow == "post-new.php" || $pagenow == "post.php" ) ) || ( ! is_admin() ) ) ) {
-										if ( empty( $field['id'] ) ) {
+										if ( empty( $field[ 'id' ] ) ) {
 											continue;
 										}
 
-										if ( isset( $field['default'] ) ) {
-											$this->options_defaults[ $field['id'] ] = $field['default'];
+										if ( isset( $field[ 'default' ] ) ) {
+											$this->options_defaults[ $field[ 'id' ] ] = $field[ 'default' ];
 										} else {
-											$this->options_defaults[ $field['id'] ] = $this->_field_default( $field );
+											$this->options_defaults[ $field[ 'id' ] ] = $this->_field_default( $field );
 										}
 
-										foreach ( $box['post_types'] as $type ) {
-											$this->post_type_fields[ $type ][ $field['id'] ] = 1;
+										foreach ( $box[ 'post_types' ] as $type ) {
+											$this->post_type_fields[ $type ][ $field[ 'id' ] ] = 1;
 										}
 
-										if ( isset( $field['output'] ) && ! empty( $field['output'] ) ) {
-											$this->output[ $field['id'] ] = isset( $this->output[ $field['id'] ] ) ? array_merge( $field['output'], $this->output[ $field['id'] ] ) : $field['output'];
+										if ( isset( $field[ 'output' ] ) && ! empty( $field[ 'output' ] ) ) {
+											$this->output[ $field[ 'id' ] ] = isset( $this->output[ $field[ 'id' ] ] ) ? array_merge( $field[ 'output' ], $this->output[ $field[ 'id' ] ] ) : $field[ 'output' ];
 										}
 
 										// Detect what field types are being used
-										if ( ! isset( $this->parent->fields[ $field['type'] ][ $field['id'] ] ) ) {
-											$this->parent->fields[ $field['type'] ][ $field['id'] ] = 1;
+										if ( ! isset( $this->parent->fields[ $field[ 'type' ] ][ $field[ 'id' ] ] ) ) {
+											$this->parent->fields[ $field[ 'type' ] ][ $field[ 'id' ] ] = 1;
 										} else {
-											$this->parent->fields[ $field['type'] ] = array( $field['id'] => 1 );
+											$this->parent->fields[ $field[ 'type' ] ] = array( $field[ 'id' ] => 1 );
 										}
 
-										if ( isset( $this->options_defaults[ $field['id'] ] ) ) {
-											$this->toReplace[ $field['id'] ] = $field;
+										if ( isset( $this->options_defaults[ $field[ 'id' ] ] ) ) {
+											$this->toReplace[ $field[ 'id' ] ] = $field;
 										}
 									}
 
-									if ( ! isset( $this->parent->options[ $field['id'] ] ) ) {
-										$this->parent->sections[ ( count( $this->parent->sections ) - 1 ) ]['fields'][] = $field;
+									if ( ! isset( $this->parent->options[ $field[ 'id' ] ] ) ) {
+										$this->parent->sections[ ( count( $this->parent->sections ) - 1 ) ][ 'fields' ][] = $field;
 									}
 
-									if ( ! isset( $this->meta[ $this->post_id ][ $field['id'] ] ) ) {
-										$this->meta[ $this->post_id ][ $field['id'] ] = $this->options_defaults[ $field['id'] ];
+									if ( ! isset( $this->meta[ $this->post_id ][ $field[ 'id' ] ] ) ) {
+										$this->meta[ $this->post_id ][ $field[ 'id' ] ] = $this->options_defaults[ $field[ 'id' ] ];
 									}
 
 									// Only override if it exists and it's not the default
@@ -300,24 +300,24 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 		}
 
 		function replace_field( $field ) {
-			if ( isset( $this->toReplace[ $field['id'] ] ) ) {
-				$field = $this->toReplace[ $field['id'] ];
+			if ( isset( $this->toReplace[ $field[ 'id' ] ] ) ) {
+				$field = $this->toReplace[ $field[ 'id' ] ];
 			}
 
 			return $field;
 		}
 
 		function _override_can_output_css( $field ) {
-			if ( isset( $this->output[ $field['id'] ] ) ) {
-				$field['force_output'] = true;
+			if ( isset( $this->output[ $field[ 'id' ] ] ) ) {
+				$field[ 'force_output' ] = true;
 			}
 
 			return $field;
 		}
 
 		function _output_css( $field ) {
-			if ( isset( $this->output[ $field['id'] ] ) ) {
-				$field['output'] = $this->output[ $field['id'] ];
+			if ( isset( $this->output[ $field[ 'id' ] ] ) ) {
+				$field[ 'output' ] = $this->output[ $field[ 'id' ] ];
 			}
 
 			return $field;
@@ -361,9 +361,9 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 				$the_post = $post;
 			}
 
-			if ( isset( $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ] ) ) {
-				$GLOBALS[ $this->parent->args['global_variable'] ] = $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ];
-				unset( $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ] );
+			if ( isset( $GLOBALS[ $this->parent->args[ 'global_variable' ] . '-loop' ] ) ) {
+				$GLOBALS[ $this->parent->args[ 'global_variable' ] ] = $GLOBALS[ $this->parent->args[ 'global_variable' ] . '-loop' ];
+				unset( $GLOBALS[ $this->parent->args[ 'global_variable' ] . '-loop' ] );
 			}
 
 			// Override these values if they differ from the admin panel defaults.  ;)
@@ -374,15 +374,15 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 				}
 
 				// Backup the args
-				$GLOBALS[ $this->parent->args['global_variable'] . '-loop' ] = $GLOBALS[ $this->parent->args['global_variable'] ];
-				$GLOBALS[ $this->parent->args['global_variable'] ]           = wp_parse_args( $meta, $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ] );
+				$GLOBALS[ $this->parent->args[ 'global_variable' ] . '-loop' ] = $GLOBALS[ $this->parent->args[ 'global_variable' ] ];
+				$GLOBALS[ $this->parent->args[ 'global_variable' ] ]           = wp_parse_args( $meta, $GLOBALS[ $this->parent->args[ 'global_variable' ] . '-loop' ] );
 			}
 		}
 
 		public function _loop_end() {
-			if ( isset( $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ] ) ) {
-				$GLOBALS[ $this->parent->args['global_variable'] ] = $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ];
-				unset( $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ] );
+			if ( isset( $GLOBALS[ $this->parent->args[ 'global_variable' ] . '-loop' ] ) ) {
+				$GLOBALS[ $this->parent->args[ 'global_variable' ] ] = $GLOBALS[ $this->parent->args[ 'global_variable' ] . '-loop' ];
+				unset( $GLOBALS[ $this->parent->args[ 'global_variable' ] . '-loop' ] );
 			}
 		}
 
@@ -393,18 +393,18 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 			// Enqueue css
 			foreach ( $this->boxes as $key => $box ) {
-				if ( empty( $box['sections'] ) ) {
+				if ( empty( $box[ 'sections' ] ) ) {
 					continue;
 				}
 
-				if ( isset( $box['post_types'] ) ) {
-					$types = array_merge( $box['post_types'], $types );
+				if ( isset( $box[ 'post_types' ] ) ) {
+					$types = array_merge( $box[ 'post_types' ], $types );
 				}
 
-				if ( isset( $box['post_types'] ) && ! empty( $box['post_types'] ) ) {
-					if ( ! is_array( $box['post_types'] ) ) {
-						$box['post_types']                 = array( $box['post_types'] );
-						$this->boxes[ $key ]['post_types'] = $box['post_types'];
+				if ( isset( $box[ 'post_types' ] ) && ! empty( $box[ 'post_types' ] ) ) {
+					if ( ! is_array( $box[ 'post_types' ] ) ) {
+						$box[ 'post_types' ]                 = array( $box[ 'post_types' ] );
+						$this->boxes[ $key ][ 'post_types' ] = $box[ 'post_types' ];
 					}
 				}
 			}
@@ -413,14 +413,14 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 				global $post;
 
 				if ( in_array( $post->post_type, $types ) ) {
-					$this->parent->transients = $this->parent->transients_check = get_transient( $this->parent->args['opt_name'] . '-transients-metaboxes' );
+					$this->parent->transients = $this->parent->transients_check = get_transient( $this->parent->args[ 'opt_name' ] . '-transients-metaboxes' );
 
-					if ( isset( $this->parent->transients['notices'] ) ) {
-						$this->notices                              = $this->parent->transients['notices'];
-						$this->parent->transients['last_save_mode'] = "metaboxes";
+					if ( isset( $this->parent->transients[ 'notices' ] ) ) {
+						$this->notices                                = $this->parent->transients[ 'notices' ];
+						$this->parent->transients[ 'last_save_mode' ] = "metaboxes";
 					}
 
-					delete_transient( $this->parent->args['opt_name'] . '-transients-metaboxes' );
+					delete_transient( $this->parent->args[ 'opt_name' ] . '-transients-metaboxes' );
 					$this->parent->_enqueue();
 
 					do_action( "redux/metaboxes/{$this->parent->args['opt_name']}/enqueue" );
@@ -474,12 +474,12 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 				return $this->post_id;
 			}
 
-			if ( isset( $_GET['post'] ) && ! empty( $_GET['post'] ) && is_numeric( $_GET['post'] ) ) {
-				return $_GET['post'];
+			if ( isset( $_GET[ 'post' ] ) && ! empty( $_GET[ 'post' ] ) && is_numeric( $_GET[ 'post' ] ) ) {
+				return $_GET[ 'post' ];
 			}
 
-			if ( is_admin() && $pagenow == "post.php" && isset( $_POST['post_ID'] ) && ! empty( $_POST['post_ID'] ) && is_numeric( $_POST['post_ID'] ) ) {
-				return $_POST['post_ID'];
+			if ( is_admin() && $pagenow == "post.php" && isset( $_POST[ 'post_ID' ] ) && ! empty( $_POST[ 'post_ID' ] ) && is_numeric( $_POST[ 'post_ID' ] ) ) {
+				return $_POST[ 'post_ID' ];
 			}
 
 			$post_id = url_to_postid( $url );
@@ -489,7 +489,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 			// First, check to see if there is a 'p=N' or 'page_id=N' to match against
 			if ( preg_match( '#[?&](p|page_id|attachment_id)=(\d+)#', $url, $values ) ) {
-				$id = absint( $values[2] );
+				$id = absint( $values[ 2 ] );
 				if ( $id ) {
 					return $id;
 				}
@@ -513,33 +513,33 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 					// Get rid of the #anchor
 					$url_split = explode( '#', $tempUrl );
-					$tempUrl   = $url_split[0];
+					$tempUrl   = $url_split[ 0 ];
 
 					// Get rid of URL ?query=string
 					$url_query = explode( '&', $tempUrl );
-					$tempUrl   = $url_query[0];
+					$tempUrl   = $url_query[ 0 ];
 
 					// Get rid of ? mark
 					$url_query = explode( '?', $tempUrl );
 
-					if ( isset( $url_query[1] ) && ! empty( $url_query[1] ) && strpos( $url_query[1], '=' ) ) {
-						$url_query = explode( '=', $url_query[1] );
+					if ( isset( $url_query[ 1 ] ) && ! empty( $url_query[ 1 ] ) && strpos( $url_query[ 1 ], '=' ) ) {
+						$url_query = explode( '=', $url_query[ 1 ] );
 
-						if ( isset( $url_query[0] ) && isset( $url_query[1] ) ) {
+						if ( isset( $url_query[ 0 ] ) && isset( $url_query[ 1 ] ) ) {
 							$args = array(
-								'name'      => $url_query[1],
-								'post_type' => $url_query[0],
+								'name'      => $url_query[ 1 ],
+								'post_type' => $url_query[ 0 ],
 								'showposts' => 1,
 							);
 
 							if ( $post = get_posts( $args ) ) {
-								return $post[0]->ID;
+								return $post[ 0 ]->ID;
 							}
 						}
 					}
 					//END ADDITION
 
-					foreach ( $GLOBALS['wp_post_types'] as $key => $value ) {
+					foreach ( $GLOBALS[ 'wp_post_types' ] as $key => $value ) {
 						if ( isset( $_GET[ $key ] ) && ! empty( $_GET[ $key ] ) ) {
 							$args = array(
 								'name'      => $_GET[ $key ],
@@ -548,7 +548,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 							);
 
 							if ( $post = get_posts( $args ) ) {
-								return $post[0]->ID;
+								return $post[ 0 ]->ID;
 							}
 						}
 					}
@@ -557,11 +557,11 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 			// Get rid of the #anchor
 			$url_split = explode( '#', $url );
-			$url       = $url_split[0];
+			$url       = $url_split[ 0 ];
 
 			// Get rid of URL ?query=string
 			$url_query = explode( '?', $url );
-			$url       = $url_query[0];
+			$url       = $url_query[ 0 ];
 
 			// Set the correct URL scheme.
 			$scheme = parse_url( home_url(), PHP_URL_SCHEME );
@@ -588,7 +588,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 			} else {
 				// Chop off /path/to/blog
 				$home_path = parse_url( home_url() );
-				$home_path = isset( $home_path['path'] ) ? $home_path['path'] : '';
+				$home_path = isset( $home_path[ 'path' ] ) ? $home_path[ 'path' ] : '';
 				$url       = str_replace( $home_path, '', $url );
 			}
 
@@ -642,8 +642,8 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 					foreach ( $rewrite as $key => $value ) {
 						if ( preg_match( '/post_type=([^&]+)/i', $value, $matched ) ) {
-							if ( isset( $matched[1] ) && ! in_array( $matched[1], $post_types ) ) {
-								$post_types[] = $matched[1];
+							if ( isset( $matched[ 1 ] ) && ! in_array( $matched[ 1 ], $post_types ) ) {
+								$post_types[] = $matched[ 1 ];
 							}
 						}
 					}
@@ -652,8 +652,8 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 						if ( in_array( $key, $post_types ) ) {
 							$custom_post_type = true;
 
-							$query['post_type'] = $key;
-							$query['postname']  = $value;
+							$query[ 'post_type' ] = $key;
+							$query[ 'postname' ]  = $value;
 						}
 					}
 
@@ -662,7 +662,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 					 *************************************************************************/
 
 					// Taken from class-wp.php
-					foreach ( $GLOBALS['wp_post_types'] as $post_type => $t ) {
+					foreach ( $GLOBALS[ 'wp_post_types' ] as $post_type => $t ) {
 						if ( isset( $t->query_var ) ) {
 							$post_type_query_vars[ $t->query_var ] = $post_type;
 						}
@@ -691,25 +691,25 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 							}
 
 							if ( isset( $post_type_query_vars[ $wpvar ] ) ) {
-								$query['post_type'] = $post_type_query_vars[ $wpvar ];
-								$query['name']      = $query[ $wpvar ];
+								$query[ 'post_type' ] = $post_type_query_vars[ $wpvar ];
+								$query[ 'name' ]      = $query[ $wpvar ];
 							}
 						}
 					}
 					// Do the query
-					if ( isset( $query['pagename'] ) && ! empty( $query['pagename'] ) ) {
+					if ( isset( $query[ 'pagename' ] ) && ! empty( $query[ 'pagename' ] ) ) {
 						$args = array(
-							'name'      => $query['pagename'],
+							'name'      => $query[ 'pagename' ],
 							'post_type' => 'page',
 							'showposts' => 1,
 						);
 
 						if ( $post = get_posts( $args ) ) {
-							return $post[0]->ID;
+							return $post[ 0 ]->ID;
 						}
 					}
 
-					if ( ( ! isset( $query['page'] ) || empty( $query['page'] ) ) && ( ! isset( $query['pagename'] ) || empty( $query['pagename'] ) ) ) {
+					if ( ( ! isset( $query[ 'page' ] ) || empty( $query[ 'page' ] ) ) && ( ! isset( $query[ 'pagename' ] ) || empty( $query[ 'pagename' ] ) ) ) {
 						return 0;
 					}
 
@@ -719,7 +719,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 						return $query->post->ID;
 					} else {
 						// WooCommerce override
-						if ( isset( $query->query['post_type'] ) && $query->query['post_type'] == "product" && class_exists( 'WooCommerce' ) ) {
+						if ( isset( $query->query[ 'post_type' ] ) && $query->query[ 'post_type' ] == "product" && class_exists( 'WooCommerce' ) ) {
 							return get_option( 'woocommerce_shop_page_id' );
 						}
 
@@ -735,36 +735,36 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 		public function _default_values() {
 			if ( ! empty( $this->boxes ) && empty( $this->options_defaults ) ) {
 				foreach ( $this->boxes as $key => $box ) {
-					if ( empty( $box['sections'] ) ) {
+					if ( empty( $box[ 'sections' ] ) ) {
 						continue;
 					}
 
 					// fill the cache
-					foreach ( $box['sections'] as $sk => $section ) {
-						if ( ! isset( $section['id'] ) ) {
-							if ( ! is_numeric( $sk ) || ! isset( $section['title'] ) ) {
-								$section['id'] = $sk;
+					foreach ( $box[ 'sections' ] as $sk => $section ) {
+						if ( ! isset( $section[ 'id' ] ) ) {
+							if ( ! is_numeric( $sk ) || ! isset( $section[ 'title' ] ) ) {
+								$section[ 'id' ] = $sk;
 							} else {
-								$section['id'] = sanitize_title( $section['title'], $sk );
+								$section[ 'id' ] = sanitize_title( $section[ 'title' ], $sk );
 							}
-							$this->boxes[ $key ]['sections'][ $sk ] = $section;
+							$this->boxes[ $key ][ 'sections' ][ $sk ] = $section;
 						}
-						if ( isset( $section['fields'] ) ) {
-							foreach ( $section['fields'] as $k => $field ) {
+						if ( isset( $section[ 'fields' ] ) ) {
+							foreach ( $section[ 'fields' ] as $k => $field ) {
 
-								if ( empty ( $field['id'] ) && empty ( $field['type'] ) ) {
+								if ( empty ( $field[ 'id' ] ) && empty ( $field[ 'type' ] ) ) {
 									continue;
 								}
 
-								if ( in_array( $field['type'], array( 'ace_editor' ) ) && isset ( $field['options'] ) ) {
-									$this->boxes[ $key ]['sections'][ $sk ]['fields'][ $k ]['args'] = $field['options'];
-									unset ( $this->boxes[ $key ]['sections'][ $sk ]['fields'][ $k ]['options'] );
+								if ( in_array( $field[ 'type' ], array( 'ace_editor' ) ) && isset ( $field[ 'options' ] ) ) {
+									$this->boxes[ $key ][ 'sections' ][ $sk ][ 'fields' ][ $k ][ 'args' ] = $field[ 'options' ];
+									unset ( $this->boxes[ $key ][ 'sections' ][ $sk ][ 'fields' ][ $k ][ 'options' ] );
 								}
 
-								if ( $field['type'] == "section" && isset ( $field['indent'] ) && $field['indent'] == "true" ) {
-									$field['class']                                         = isset( $field['class'] ) ? $field['class'] : '';
-									$field['class']                                         .= "redux-section-indent-start";
-									$this->boxes[ $key ]['sections'][ $sk ]['fields'][ $k ] = $field;
+								if ( $field[ 'type' ] == "section" && isset ( $field[ 'indent' ] ) && $field[ 'indent' ] == "true" ) {
+									$field[ 'class' ]                                           = isset( $field[ 'class' ] ) ? $field[ 'class' ] : '';
+									$field[ 'class' ]                                           .= "redux-section-indent-start";
+									$this->boxes[ $key ][ 'sections' ][ $sk ][ 'fields' ][ $k ] = $field;
 								}
 
 								$this->parent->field_default_values( $field );
@@ -786,51 +786,51 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 			}
 
 			foreach ( $this->boxes as $key => $box ) {
-				if ( empty( $box['sections'] ) ) {
+				if ( empty( $box[ 'sections' ] ) ) {
 					continue;
 				}
 
-				if ( isset( $box['permissions'] ) && ! empty( $box['permissions'] ) && ! ReduxFramework::current_user_can( $box['permissions'] ) ) {
+				if ( isset( $box[ 'permissions' ] ) && ! empty( $box[ 'permissions' ] ) && ! ReduxFramework::current_user_can( $box[ 'permissions' ] ) ) {
 					continue;
 				}
 
 				// Save users from themselves
-				if ( isset( $box['position'] ) && ! in_array( strtolower( $box['position'] ), array(
+				if ( isset( $box[ 'position' ] ) && ! in_array( strtolower( $box[ 'position' ] ), array(
 						'normal',
 						'advanced',
 						'side',
 						'woocommerce'
 					) )
 				) {
-					unset( $box['position'] );
+					unset( $box[ 'position' ] );
 				}
 
-				if ( isset( $box['priority'] ) && ! in_array( strtolower( $box['priority'] ), array(
+				if ( isset( $box[ 'priority' ] ) && ! in_array( strtolower( $box[ 'priority' ] ), array(
 						'high',
 						'core',
 						'default',
 						'low',
 					) )
 				) {
-					unset( $box['priority'] );
+					unset( $box[ 'priority' ] );
 				}
 
 				$defaults = array(
-					'id'         => $key . '-' . $this->parent->args['opt_name'],
+					'id'         => $key . '-' . $this->parent->args[ 'opt_name' ],
 					'post_types' => array( 'page', 'post' ),
 					'position'   => 'normal',
 					'priority'   => 'high',
 				);
 
 				$box = wp_parse_args( $box, $defaults );
-				if ( isset( $box['post_types'] ) && ! empty( $box['post_types'] ) ) {
-					foreach ( $box['post_types'] as $posttype ) {
-						if ( isset( $box['title'] ) ) {
-							$title = $box['title'];
+				if ( isset( $box[ 'post_types' ] ) && ! empty( $box[ 'post_types' ] ) ) {
+					foreach ( $box[ 'post_types' ] as $posttype ) {
+						if ( isset( $box[ 'title' ] ) ) {
+							$title = $box[ 'title' ];
 						} else {
-							if ( isset( $box['sections'] ) && count( $box['sections'] ) == 1 && isset( $box['sections'][0]['fields'] ) && count( $box['sections'][0]['fields'] ) == 1 && isset( $box['sections'][0]['fields'][0]['title'] ) ) {
+							if ( isset( $box[ 'sections' ] ) && count( $box[ 'sections' ] ) == 1 && isset( $box[ 'sections' ][ 0 ][ 'fields' ] ) && count( $box[ 'sections' ][ 0 ][ 'fields' ] ) == 1 && isset( $box[ 'sections' ][ 0 ][ 'fields' ][ 0 ][ 'title' ] ) ) {
 								// If only one field in this box
-								$title = $box['sections'][0]['fields'][0]['title'];
+								$title = $box[ 'sections' ][ 0 ][ 'fields' ][ 0 ][ 'title' ];
 							} else {
 								$title = ucfirst( $posttype ) . " " . __( 'Options', 'req-core' );
 							}
@@ -838,8 +838,8 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 						}
 
 						$args = array(
-							'position' => $box['position'],
-							'sections' => $box['sections'],
+							'position' => $box[ 'position' ],
+							'sections' => $box[ 'sections' ],
 							'key'      => $key
 						);
 
@@ -848,41 +848,41 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 							$this->orig_args = $this->parent->args;
 						}
 
-						if ( isset( $box['args'] ) ) {
-							$this->parent->args = wp_parse_args( $box['args'], $this->orig_args );
-						} else if ( $this->parent->args != $this->orig_args ) {
+						if ( isset( $box[ 'args' ] ) ) {
+							$this->parent->args = wp_parse_args( $box[ 'args' ], $this->orig_args );
+						} elseif ( $this->parent->args != $this->orig_args ) {
 							$this->parent->args = $this->orig_args;
 						}
 
-						add_filter( 'postbox_classes_' . $posttype . '_' . 'redux-' . $this->parent->args['opt_name'] . '-metabox-' . $box['id'], array(
+						add_filter( 'postbox_classes_' . $posttype . '_' . 'redux-' . $this->parent->args[ 'opt_name' ] . '-metabox-' . $box[ 'id' ], array(
 							$this,
 							'add_box_classes'
 						) );
 
-						if ( isset( $box['post_format'] ) ) {
-							add_filter( 'postbox_classes_' . $posttype . '_' . 'redux-' . $this->parent->args['opt_name'] . '-metabox-' . $box['id'], array(
+						if ( isset( $box[ 'post_format' ] ) ) {
+							add_filter( 'postbox_classes_' . $posttype . '_' . 'redux-' . $this->parent->args[ 'opt_name' ] . '-metabox-' . $box[ 'id' ], array(
 								$this,
 								'add_box_hide_class'
 							) );
 						}
-						if ( $box['position'] != 'woocommerce' ) {
+						if ( $box[ 'position' ] != 'woocommerce' ) {
 
 							add_meta_box( $this->get_box_id( $box ), $title, array(
 								$this,
 								'generate_boxes'
-							), $posttype, $box['position'], $box['priority'], $args );
+							), $posttype, $box[ 'position' ], $box[ 'priority' ], $args );
 						} else {
 							add_filter( 'woocommerce_product_data_tabs', function ( $product_data_tabs ) use ( $box ) {
 								$classes = array();
-								foreach ( (array) $box['product_types'] as $type ) {
+								foreach ( (array) $box[ 'product_types' ] as $type ) {
 									$classes[] = 'show_if_' . $type;
 								}
 								//Todo priority
 								$product_data_tabs[ $this->get_box_id( $box ) ] = array(
-									'label'    => $box['title'],
+									'label'    => $box[ 'title' ],
 									'target'   => $this->get_box_id( $box ),
 									'class'    => $classes,
-									'priority' => $box['priority']
+									'priority' => $box[ 'priority' ]
 								);
 
 								return $product_data_tabs;
@@ -899,7 +899,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 		} // add_meta_boxes()
 
 		public function get_box_id( $box ) {
-			return 'redux-' . $this->parent->args['opt_name'] . '-metabox-' . $box['id'];
+			return 'redux-' . $this->parent->args[ 'opt_name' ] . '-metabox-' . $box[ 'id' ];
 		}
 
 		function _field_default( $field_id ) {
@@ -913,8 +913,8 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 			$this->options = $this->parent->options;
 
-			if ( isset( $this->parent->options[ $field_id['id'] ] ) && isset( $this->parent->options_defaults[ $field_id['id'] ] ) && $this->parent->options[ $field_id['id'] ] != $this->parent->options_defaults[ $field_id['id'] ] ) {
-				return $this->parent->options[ $field_id['id'] ];
+			if ( isset( $this->parent->options[ $field_id[ 'id' ] ] ) && isset( $this->parent->options_defaults[ $field_id[ 'id' ] ] ) && $this->parent->options[ $field_id[ 'id' ] ] != $this->parent->options_defaults[ $field_id[ 'id' ] ] ) {
+				return $this->parent->options[ $field_id[ 'id' ] ];
 			} else {
 				if ( empty( $this->options_defaults ) ) {
 					$this->_default_values(); // fill cache
@@ -922,12 +922,12 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 
 				$data = '';
 				if ( ! empty( $this->options_defaults ) ) {
-					$data = isset( $this->options_defaults[ $field_id['id'] ] ) ? $this->options_defaults[ $field_id['id'] ] : '';
+					$data = isset( $this->options_defaults[ $field_id[ 'id' ] ] ) ? $this->options_defaults[ $field_id[ 'id' ] ] : '';
 				}
 
-				if ( empty( $data ) && isset( $this->parent->options_defaults[ $field_id['id'] ] ) ) {
+				if ( empty( $data ) && isset( $this->parent->options_defaults[ $field_id[ 'id' ] ] ) ) {
 					//$data = $this->parent->options_defaults[$field_id['id']];
-					$data = isset( $this->parent->options_defaults[ $field_id['id'] ] ) ? $this->parent->options_defaults[ $field_id['id'] ] : '';
+					$data = isset( $this->parent->options_defaults[ $field_id[ 'id' ] ] ) ? $this->parent->options_defaults[ $field_id[ 'id' ] ] : '';
 				}
 
 				return $data;
@@ -946,12 +946,12 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 				if ( ! empty( $oData ) ) {
 					foreach ( $oData as $key => $value ) {
 						if ( count( $value ) == 1 ) {
-							$this->meta[ $id ][ $key ] = maybe_unserialize( $value[0] );
+							$this->meta[ $id ][ $key ] = maybe_unserialize( $value[ 0 ] );
 						} else {
 							$new_value = array_map( 'maybe_unserialize', $value );
 
 							if ( is_array( $new_value ) ) {
-								$this->meta[ $id ][ $key ] = $new_value[0];
+								$this->meta[ $id ][ $key ] = $new_value[ 0 ];
 							} else {
 								$this->meta[ $id ][ $key ] = $new_value;
 							}
@@ -959,17 +959,17 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 					}
 				}
 
-				if ( isset( $this->meta[ $id ][ $this->parent->args['opt_name'] ] ) ) {
-					$data = maybe_unserialize( $this->meta[ $id ][ $this->parent->args['opt_name'] ] );
+				if ( isset( $this->meta[ $id ][ $this->parent->args[ 'opt_name' ] ] ) ) {
+					$data = maybe_unserialize( $this->meta[ $id ][ $this->parent->args[ 'opt_name' ] ] );
 
 					foreach ( $data as $key => $value ) {
 						$this->meta[ $id ][ $key ] = $value;
 						update_post_meta( $id, $key, $value );
 					}
 
-					unset( $this->meta[ $id ][ $this->parent->args['opt_name'] ] );
+					unset( $this->meta[ $id ][ $this->parent->args[ 'opt_name' ] ] );
 
-					delete_post_meta( $id, $this->parent->args['opt_name'] );
+					delete_post_meta( $id, $this->parent->args[ 'opt_name' ] );
 				}
 			}
 
@@ -1014,19 +1014,19 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 			wp_dequeue_script( 'json-view-js' );
 
 			$sidebar  = true;
-			$sections = $metabox['args']['sections'];
-			if ( $metabox['args']['position'] == "side" || count( $sections ) == 1 || ( isset( $metabox['args']['sidebar'] ) && $metabox['args']['sidebar'] === false ) ) {
+			$sections = $metabox[ 'args' ][ 'sections' ];
+			if ( $metabox[ 'args' ][ 'position' ] == "side" || count( $sections ) == 1 || ( isset( $metabox[ 'args' ][ 'sidebar' ] ) && $metabox[ 'args' ][ 'sidebar' ] === false ) ) {
 				$sidebar = false; // Show the section dividers or not
 			}
 			wp_nonce_field( 'redux_metaboxes_meta_nonce', 'redux_metaboxes_meta_nonce' );
 			?>
 			<input type="hidden" id="currentSection"
-				   name="<?php echo esc_attr( $this->parent->args['opt_name'] ); ?>[redux-metabox-section]" value=""/>
-			<div data-index="<?php echo esc_attr( $metabox['args']['key'] ); ?>"
-				 data-opt-name="<?php echo esc_attr( $this->parent->args['opt_name'] ); ?>"
-				 class="redux-container<?php echo ( $sidebar ) ? ' redux-has-sections' : ' redux-no-sections'; ?> redux-box-<?php echo $metabox['args']['position']; ?>">
+				   name="<?php echo esc_attr( $this->parent->args[ 'opt_name' ] ); ?>[redux-metabox-section]" value=""/>
+			<div data-index="<?php echo esc_attr( $metabox[ 'args' ][ 'key' ] ); ?>"
+				 data-opt-name="<?php echo esc_attr( $this->parent->args[ 'opt_name' ] ); ?>"
+				 class="redux-container<?php echo ( $sidebar ) ? ' redux-has-sections' : ' redux-no-sections'; ?> redux-box-<?php echo $metabox[ 'args' ][ 'position' ]; ?>">
 				<div class="redux-notices">
-					<?php if ( $metabox['args']['position'] != "side" || ( isset( $metabox['args']['sidebar'] ) && $metabox['args']['sidebar'] !== false ) ) { ?>
+					<?php if ( $metabox[ 'args' ][ 'position' ] != "side" || ( isset( $metabox[ 'args' ][ 'sidebar' ] ) && $metabox[ 'args' ][ 'sidebar' ] !== false ) ) { ?>
 						<div class="saved_notice admin-notice notice-blue" style="display:none;">
 							<strong><?php echo apply_filters( "redux-imported-text-{$this->parent->args['opt_name']}", __( 'Settings Imported!', 'req-core' ) ) ?></strong>
 						</div>
@@ -1051,11 +1051,11 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 						<ul class="redux-group-menu">
 							<?php
 							foreach ( $sections as $sKey => $section ) {
-								if ( isset( $section['permissions'] ) && ! empty( $section['permissions'] ) && ! ReduxFramework::current_user_can( $section['permissions'] ) ) {
+								if ( isset( $section[ 'permissions' ] ) && ! empty( $section[ 'permissions' ] ) && ! ReduxFramework::current_user_can( $section[ 'permissions' ] ) ) {
 									continue;
 								}
 
-								$this->parent->section_menu( $sKey, $section, '_box_' . $metabox['id'], $sections );
+								$this->parent->section_menu( $sKey, $section, '_box_' . $metabox[ 'id' ], $sections );
 							}
 							?>
 						</ul>
@@ -1065,38 +1065,38 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 				<div class="redux-main">
 					<?php
 					foreach ( $sections as $sKey => $section ) {
-						if ( isset( $section['permissions'] ) && ! empty( $section['permissions'] ) && ! ReduxFramework::current_user_can( $section['permissions'] ) ) {
+						if ( isset( $section[ 'permissions' ] ) && ! empty( $section[ 'permissions' ] ) && ! ReduxFramework::current_user_can( $section[ 'permissions' ] ) ) {
 							continue;
 						}
-						if ( isset( $section['fields'] ) && ! empty( $section['fields'] ) ) {
-							if ( isset( $section['args'] ) ) {
-								$this->parent->args = wp_parse_args( $section['args'], $this->orig_args );
-							} else if ( $this->parent->args != $this->orig_args ) {
+						if ( isset( $section[ 'fields' ] ) && ! empty( $section[ 'fields' ] ) ) {
+							if ( isset( $section[ 'args' ] ) ) {
+								$this->parent->args = wp_parse_args( $section[ 'args' ], $this->orig_args );
+							} elseif ( $this->parent->args != $this->orig_args ) {
 								$this->parent->args = $this->orig_args;
 							}
 
-							$hide             = $sidebar ? "" : ' display-group';
-							$section['class'] = isset( $section['class'] ) ? ' ' . $section['class'] : '';
-							echo '<div id="' . $sKey . '_box_' . $metabox['id'] . '_section_group' . '" class="redux-group-tab' . $section['class'] . ' redux_metabox_panel' . $hide . '">';
+							$hide               = $sidebar ? "" : ' display-group';
+							$section[ 'class' ] = isset( $section[ 'class' ] ) ? ' ' . $section[ 'class' ] : '';
+							echo '<div id="' . $sKey . '_box_' . $metabox[ 'id' ] . '_section_group' . '" class="redux-group-tab' . $section[ 'class' ] . ' redux_metabox_panel' . $hide . '">';
 
-							if ( isset( $section['title'] ) && ! empty( $section['title'] ) ) {
-								echo '<h3 class="redux-section-title">' . $section['title'] . '</h3>';
+							if ( isset( $section[ 'title' ] ) && ! empty( $section[ 'title' ] ) ) {
+								echo '<h3 class="redux-section-title">' . $section[ 'title' ] . '</h3>';
 							}
 
-							if ( isset( $section['desc'] ) && ! empty( $section['desc'] ) ) {
-								echo '<div class="redux-section-desc">' . $section['desc'] . '</div>';
+							if ( isset( $section[ 'desc' ] ) && ! empty( $section[ 'desc' ] ) ) {
+								echo '<div class="redux-section-desc">' . $section[ 'desc' ] . '</div>';
 							}
 
 							echo '<table class="form-table"><tbody>';
-							foreach ( $section['fields'] as $fKey => $field ) {
-								if ( isset( $field['permissions'] ) && ! empty( $field['permissions'] ) && ! ReduxFramework::current_user_can( $field['permissions'] ) ) {
+							foreach ( $section[ 'fields' ] as $fKey => $field ) {
+								if ( isset( $field[ 'permissions' ] ) && ! empty( $field[ 'permissions' ] ) && ! ReduxFramework::current_user_can( $field[ 'permissions' ] ) ) {
 									continue;
 								}
-								$field['name'] = $this->parent->args['opt_name'] . '[' . $field['id'] . ']';
+								$field[ 'name' ] = $this->parent->args[ 'opt_name' ] . '[' . $field[ 'id' ] . ']';
 
 								$is_hidden = false;
 								$ex_style  = '';
-								if ( isset( $field['hidden'] ) && $field['hidden'] ) {
+								if ( isset( $field[ 'hidden' ] ) && $field[ 'hidden' ] ) {
 									$is_hidden = true;
 									$ex_style  = ' style="border-bottom: none;"';
 								}
@@ -1114,7 +1114,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 								}
 
 								if ( $sidebar ) {
-									if ( ! ( isset( $metabox['args']['sections'] ) && count( $metabox['args']['sections'] ) == 1 && isset( $metabox['args']['sections'][0]['fields'] ) && count( $metabox['args']['sections'][0]['fields'] ) == 1 ) && isset( $field['title'] ) ) {
+									if ( ! ( isset( $metabox[ 'args' ][ 'sections' ] ) && count( $metabox[ 'args' ][ 'sections' ] ) == 1 && isset( $metabox[ 'args' ][ 'sections' ][ 0 ][ 'fields' ] ) && count( $metabox[ 'args' ][ 'sections' ][ 0 ][ 'fields' ] ) == 1 ) && isset( $field[ 'title' ] ) ) {
 										echo '<th scope="row">';
 										if ( ! empty( $th ) ) {
 											echo $th;
@@ -1126,16 +1126,16 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 									echo '<td>' . $th . '';
 								}
 
-								if ( $field['type'] == "section" && $field['indent'] == "true" ) {
-									$field['class'] = isset( $field['class'] ) ? $field['class'] : '';
-									$field['class'] .= "redux-section-indent-start";
+								if ( $field[ 'type' ] == "section" && $field[ 'indent' ] == "true" ) {
+									$field[ 'class' ] = isset( $field[ 'class' ] ) ? $field[ 'class' ] : '';
+									$field[ 'class' ] .= "redux-section-indent-start";
 								}
 
-								if ( ! isset( $this->meta[ $this->post_id ][ $field['id'] ] ) ) {
-									$this->meta[ $this->post_id ][ $field['id'] ] = "";
+								if ( ! isset( $this->meta[ $this->post_id ][ $field[ 'id' ] ] ) ) {
+									$this->meta[ $this->post_id ][ $field[ 'id' ] ] = "";
 								}
 
-								$this->parent->_field_input( $field, $this->meta[ $this->post_id ][ $field['id'] ] );
+								$this->parent->_field_input( $field, $this->meta[ $this->post_id ][ $field[ 'id' ] ] );
 								echo '</td></tr>';
 							}
 							echo '</tbody></table>';
@@ -1165,22 +1165,22 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 		 * @return int
 		 */
 		function meta_boxes_save( $post_id, $post ) {
-			if ( isset( $_POST['vc_inline'] ) && $_POST['vc_inline'] ) {
+			if ( isset( $_POST[ 'vc_inline' ] ) && $_POST[ 'vc_inline' ] ) {
 				return $post_id;
 			}
 
-			if ( isset( $_POST['post_ID'] ) && $_POST['post_ID'] != $post_id ) {
+			if ( isset( $_POST[ 'post_ID' ] ) && $_POST[ 'post_ID' ] != $post_id ) {
 				return $post_id;
 			}
 
 			// Check if our nonce is set.
-			if ( ! isset( $_POST['redux_metaboxes_meta_nonce'] ) || ! isset ( $_POST[ $this->parent->args['opt_name'] ] ) ) {
+			if ( ! isset( $_POST[ 'redux_metaboxes_meta_nonce' ] ) || ! isset ( $_POST[ $this->parent->args[ 'opt_name' ] ] ) ) {
 				return $post_id;
 			}
 
 			//$meta = $this->get_meta( $post_id );
 
-			$nonce = $_POST['redux_metaboxes_meta_nonce'];
+			$nonce = $_POST[ 'redux_metaboxes_meta_nonce' ];
 			// Verify that the nonce is valid.
 			// Validate fields (if needed)
 			if ( ! wp_verify_nonce( $nonce, 'redux_metaboxes_meta_nonce' ) ) {
@@ -1199,28 +1199,28 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 			}
 
 			// Import
-			if ( isset( $_POST[ $this->parent->args['opt_name'] ]['import_code'] ) && ! empty( $_POST[ $this->parent->args['opt_name'] ]['import_code'] ) ) {
-				$import = json_decode( stripslashes( $_POST[ $this->parent->args['opt_name'] ]['import_code'] ), true );
-				unset( $_POST[ $this->parent->args['opt_name'] ]['import_code'] );
+			if ( isset( $_POST[ $this->parent->args[ 'opt_name' ] ][ 'import_code' ] ) && ! empty( $_POST[ $this->parent->args[ 'opt_name' ] ][ 'import_code' ] ) ) {
+				$import = json_decode( stripslashes( $_POST[ $this->parent->args[ 'opt_name' ] ][ 'import_code' ] ), true );
+				unset( $_POST[ $this->parent->args[ 'opt_name' ] ][ 'import_code' ] );
 
-				foreach ( $_POST[ $this->parent->args['opt_name'] ] as $key => $value ) {
+				foreach ( $_POST[ $this->parent->args[ 'opt_name' ] ] as $key => $value ) {
 					if ( ! isset( $import[ $key ] ) ) {
 						$import[ $key ] = $value;
 					}
 				}
 
-				$_POST[ $this->parent->args['opt_name'] ] = $import;
+				$_POST[ $this->parent->args[ 'opt_name' ] ] = $import;
 			}
 
 			$toSave               = array();
 			$toCompare            = array();
 			$toDelete             = array();
 			$DontSaveDefaultsToDB = true;
-			if ( isset( $this->parent->args['metaboxes_save_defaults'] ) && $this->parent->args['metaboxes_save_defaults'] ) {
+			if ( isset( $this->parent->args[ 'metaboxes_save_defaults' ] ) && $this->parent->args[ 'metaboxes_save_defaults' ] ) {
 				$DontSaveDefaultsToDB = false;
 			}
 
-			foreach ( $_POST[ $this->parent->args['opt_name'] ] as $key => $value ) {
+			foreach ( $_POST[ $this->parent->args[ 'opt_name' ] ] as $key => $value ) {
 				// Have to remove the escaping for array comparison
 				if ( is_array( $value ) ) {
 					foreach ( $value as $k => $v ) {
@@ -1269,28 +1269,28 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 			}
 
 			if ( ! empty( $this->parent->errors ) || ! empty( $this->parent->warnings ) ) {
-				$this->parent->transients['notices'] = ( isset( $this->parent->transients['notices'] ) && is_array( $this->parent->transients['notices'] ) ) ? $this->parent->transients['notices'] : array();
+				$this->parent->transients[ 'notices' ] = ( isset( $this->parent->transients[ 'notices' ] ) && is_array( $this->parent->transients[ 'notices' ] ) ) ? $this->parent->transients[ 'notices' ] : array();
 
-				if ( ! isset( $this->parent->transients['notices']['errors'] ) || $this->parent->transients['notices']['errors'] != $this->parent->errors ) {
-					$this->parent->transients['notices']['errors'] = $this->parent->errors;
-					$updateTransients                              = true;
+				if ( ! isset( $this->parent->transients[ 'notices' ][ 'errors' ] ) || $this->parent->transients[ 'notices' ][ 'errors' ] != $this->parent->errors ) {
+					$this->parent->transients[ 'notices' ][ 'errors' ] = $this->parent->errors;
+					$updateTransients                                  = true;
 				}
 
-				if ( ! isset( $this->parent->transients['notices']['warnings'] ) || $this->parent->transients['notices']['warnings'] != $this->parent->warnings ) {
-					$this->parent->transients['notices']['warnings'] = $this->parent->warnings;
-					$updateTransients                                = true;
+				if ( ! isset( $this->parent->transients[ 'notices' ][ 'warnings' ] ) || $this->parent->transients[ 'notices' ][ 'warnings' ] != $this->parent->warnings ) {
+					$this->parent->transients[ 'notices' ][ 'warnings' ] = $this->parent->warnings;
+					$updateTransients                                    = true;
 				}
 
 				if ( isset( $updateTransients ) ) {
-					$this->parent->transients['notices']['override'] = 1;
-					set_transient( $this->parent->args['opt_name'] . '-transients-metaboxes', $this->parent->transients );
+					$this->parent->transients[ 'notices' ][ 'override' ] = 1;
+					set_transient( $this->parent->args[ 'opt_name' ] . '-transients-metaboxes', $this->parent->transients );
 				}
 			}
 
 			$updated = false;
 			$diff    = array();
 
-			$check = $this->post_type_fields[ $_POST['post_type'] ];
+			$check = $this->post_type_fields[ $_POST[ 'post_type' ] ];
 
 			$toSave = apply_filters( 'redux/metaboxes/save', $toSave, $toCompare, $this->sections );
 
@@ -1334,12 +1334,12 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 		 * @return void
 		 */
 		function pre_post_update( $post_id ) {
-			if ( isset( $_POST['_visibility'] ) ) {
-				update_post_meta( $post_id, '_visibility', stripslashes( $_POST['_visibility'] ) );
+			if ( isset( $_POST[ '_visibility' ] ) ) {
+				update_post_meta( $post_id, '_visibility', stripslashes( $_POST[ '_visibility' ] ) );
 			}
 
-			if ( isset( $_POST['_stock_status'] ) ) {
-				update_post_meta( $post_id, '_stock_status', stripslashes( $_POST['_stock_status'] ) );
+			if ( isset( $_POST[ '_stock_status' ] ) ) {
+				update_post_meta( $post_id, '_stock_status', stripslashes( $_POST[ '_stock_status' ] ) );
 			}
 		} // pre_post_update()
 
@@ -1350,15 +1350,15 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 		 * @return void
 		 */
 		function meta_boxes_show_errors() {
-			if ( isset( $this->notices['errors'] ) && ! empty( $this->notices['errors'] ) ) {
+			if ( isset( $this->notices[ 'errors' ] ) && ! empty( $this->notices[ 'errors' ] ) ) {
 				echo '<div id="redux_metaboxes_errors" class="error fade">';
-				echo '<p><strong><span></span> ' . count( $this->notices['errors'] ) . ' ' . __( 'error(s) were found!', 'req-core' ) . '</strong></p>';
+				echo '<p><strong><span></span> ' . count( $this->notices[ 'errors' ] ) . ' ' . __( 'error(s) were found!', 'req-core' ) . '</strong></p>';
 				echo '</div>';
 			}
 
-			if ( isset( $this->notices['warnings'] ) && ! empty( $this->notices['warnings'] ) ) {
+			if ( isset( $this->notices[ 'warnings' ] ) && ! empty( $this->notices[ 'warnings' ] ) ) {
 				echo '<div id="redux_metaboxes_warnings" class="error fade" style="border-left-color: #E8E20C;">';
-				echo '<p><strong><span></span> ' . count( $this->notices['warnings'] ) . ' ' . __( 'warnings(s) were found!', 'req-core' ) . '</strong></p>';
+				echo '<p><strong><span></span> ' . count( $this->notices[ 'warnings' ] ) . ' ' . __( 'warnings(s) were found!', 'req-core' ) . '</strong></p>';
 				echo '</div>';
 			}
 		} // meta_boxes_show_errors()
@@ -1371,7 +1371,7 @@ if ( ! class_exists( 'ReduxFramework_extension_metaboxes', false ) ) {
 if ( ! function_exists( 'redux_metaboxes_loop_start' ) ) {
 	function redux_metaboxes_loop_start( $opt_name, $the_post = array() ) {
 		$redux     = Redux_Instances::get_instance( $opt_name );
-		$metaboxes = $redux->extensions['metaboxes'];
+		$metaboxes = $redux->extensions[ 'metaboxes' ];
 
 		$metaboxes->_loop_start( $the_post );
 	}
@@ -1380,7 +1380,7 @@ if ( ! function_exists( 'redux_metaboxes_loop_start' ) ) {
 if ( ! function_exists( 'redux_metaboxes_loop_end' ) ) {
 	function redux_metaboxes_loop_end( $opt_name, $the_post = array() ) {
 		$redux     = Redux_Instances::get_instance( $opt_name );
-		$metaboxes = $redux->extensions['metaboxes'];
+		$metaboxes = $redux->extensions[ 'metaboxes' ];
 
 		$metaboxes->_loop_end();
 	}
@@ -1390,7 +1390,7 @@ if ( ! function_exists( 'redux_metaboxes_loop_end' ) ) {
 if ( ! function_exists( 'redux_post_meta' ) ) {
 	/**
 	 * @param string $opt_name
-	 * @param array $thePost
+	 * @param array  $thePost
 	 * @param string $meta_key
 	 * @param string $def_val
 	 *
@@ -1404,15 +1404,15 @@ if ( ! function_exists( 'redux_post_meta' ) ) {
 		}
 
 		$redux     = Redux_Instances::get_instance( $opt_name );
-		$metaboxes = $redux->extensions['metaboxes'];
+		$metaboxes = $redux->extensions[ 'metaboxes' ];
 
 		if ( isset( $thePost ) && is_array( $thePost ) ) {
 			$thePost = $post;
 		} elseif ( ! isset( $thePost ) || $thePost == 0 ) {
 			return $def_val;
-		} else if ( is_numeric( $thePost ) ) {
+		} elseif ( is_numeric( $thePost ) ) {
 			$thePost = get_post( $thePost );
-		} else if ( ! is_object( $thePost ) ) {
+		} elseif ( ! is_object( $thePost ) ) {
 			$thePost = $post;
 		}
 

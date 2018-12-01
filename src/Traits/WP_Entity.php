@@ -281,10 +281,11 @@ trait WP_Entity {
 			) );
 
 		if ( ! $has_setter_or_getter ) {
+			/* translators: %s: $key Key to check */
+			wpp_doing_it_wrong( __FUNCTION__, sprintf( __( 'Generic add/update/get meta methods should not be used for internal meta data, including "%s". Use getters and setters.' ), $key ), '1.0' );
+
 			return false;
 		}
-		/* translators: %s: $key Key to check */
-		wpp_doing_it_wrong( __FUNCTION__, sprintf( __( 'Generic add/update/get meta methods should not be used for internal meta data, including "%s". Use getters and setters.' ), $key ), '1.0' );
 
 		return true;
 	}

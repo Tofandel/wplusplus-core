@@ -17,8 +17,7 @@ if ( defined( 'WPP_MUPLUGIN' ) ) {
 	}
 
 	add_filter( 'theme_root', 'wpp_before_theme_loaded' );
-}
-else {
+} else {
 	define( 'WPP_MUPLUGIN', false );
 }
 
@@ -107,8 +106,7 @@ if ( ! function_exists( 'wpp_has_shortcode' ) ) {
 					return true;
 				}
 			}
-		}
-		else {
+		} else {
 			$shortcode_tags = array( $shortcode => '' );
 			if ( has_shortcode( $string, $shortcode ) ) {
 				$shortcode_tags = $old;
@@ -197,8 +195,7 @@ if ( ! function_exists( 'wpp_apply_filter' ) ) {
 	function wpp_apply_filters( $filter, $value ) {
 		if ( ! has_filter( $filter ) ) {
 			return $value;
-		}
-		else {
+		} else {
 			$args = func_get_args();
 
 			return call_user_func_array( 'apply_filters', $args );
@@ -348,8 +345,7 @@ if ( ! function_exists( 'get_object_transient' ) ) {
 
 		if ( wp_using_ext_object_cache() ) {
 			$value = wp_cache_get( $object_id . '_' . $transient, "{$object}_transient" );
-		}
-		else {
+		} else {
 			$transient_option  = '_transient_' . $transient;
 			$transient_timeout = '_transient_timeout_' . $transient;
 			$timeout           = get_metadata( $object, $object_id, $transient_timeout, true );
@@ -434,8 +430,7 @@ if ( ! function_exists( 'set_object_transient' ) ) {
 
 		if ( wp_using_ext_object_cache() ) {
 			$result = wp_cache_set( $object_id . '_' . $transient, $value, "{$object}_transient", $expiration );
-		}
-		else {
+		} else {
 			$transient_timeout = '_transient_timeout_' . $transient;
 			$transient_option  = '_transient_' . $transient;
 			if ( false === get_metadata( $object, $object_id, $transient_option, true ) ) {
@@ -443,8 +438,7 @@ if ( ! function_exists( 'set_object_transient' ) ) {
 					add_metadata( $object, $object_id, $transient_timeout, time() + $expiration, true );
 				}
 				$result = add_metadata( $object, $object_id, $transient_option, $value, true );
-			}
-			else {
+			} else {
 				// If expiration is requested, but the transient has no timeout option,
 				// delete, then re-create transient rather than update.
 				$update = true;
@@ -454,8 +448,7 @@ if ( ! function_exists( 'set_object_transient' ) ) {
 						add_metadata( $object, $object_id, $transient_timeout, time() + $expiration, true );
 						$result = add_metadata( $object, $object_id, $transient_option, $value, true );
 						$update = false;
-					}
-					else {
+					} else {
 						update_metadata( $object, $object_id, $transient_timeout, time() + $expiration );
 					}
 				}
@@ -531,8 +524,7 @@ if ( ! function_exists( 'delete_object_transient' ) ) {
 
 		if ( wp_using_ext_object_cache() ) {
 			$result = wp_cache_delete( $transient, "{$object}_transient" );
-		}
-		else {
+		} else {
 			$option_timeout = '_transient_timeout_' . $transient;
 			$option         = '_transient_' . $transient;
 			$result         = delete_metadata( $object, $object_id, $option );
@@ -616,8 +608,7 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 			$user->ID         = (int) $user_id;
 			$userdata         = get_userdata( $user_id );
 			$user->user_login = wp_slash( $userdata->user_login );
-		}
-		else {
+		} else {
 			$update = false;
 		}
 
@@ -658,8 +649,7 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 		if ( isset( $_POST[ 'url' ] ) ) {
 			if ( empty ( $_POST[ 'url' ] ) || $_POST[ 'url' ] == 'http://' ) {
 				$user->user_url = '';
-			}
-			else {
+			} else {
 				$user->user_url = esc_url_raw( $_POST[ 'url' ] );
 				$protocols      = implode( '|', array_map( 'preg_quote', wp_allowed_protocols() ) );
 				$user->user_url = preg_match( '/^(' . $protocols . '):/is', $user->user_url ) ? $user->user_url : 'http://' . $user->user_url;
@@ -699,11 +689,9 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 				$locale = sanitize_text_field( $_POST[ 'locale' ] );
 				if ( 'site-default' === $locale ) {
 					$locale = '';
-				}
-				elseif ( '' === $locale ) {
+				} elseif ( '' === $locale ) {
 					$locale = 'en_US';
-				}
-				elseif ( ! in_array( $locale, get_available_languages(), true ) ) {
+				} elseif ( ! in_array( $locale, get_available_languages(), true ) ) {
 					$locale = '';
 				}
 
@@ -777,11 +765,9 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 		/* checking email address */
 		if ( empty( $user->user_email ) ) {
 			$errors->add( 'empty_email', __( '<strong>ERROR</strong>: Please enter an email address.' ), array( 'form-field' => 'email' ) );
-		}
-		elseif ( ! is_email( $user->user_email ) ) {
+		} elseif ( ! is_email( $user->user_email ) ) {
 			$errors->add( 'invalid_email', __( '<strong>ERROR</strong>: The email address isn&#8217;t correct.' ), array( 'form-field' => 'email' ) );
-		}
-		elseif ( ( $owner_id = email_exists( $user->user_email ) ) && ( ! $update || ( $owner_id != $user->ID ) ) ) {
+		} elseif ( ( $owner_id = email_exists( $user->user_email ) ) && ( ! $update || ( $owner_id != $user->ID ) ) ) {
 			$errors->add( 'email_exists', __( '<strong>ERROR</strong>: This email is already registered, please choose another one.' ), array( 'form-field' => 'email' ) );
 		}
 
@@ -802,8 +788,7 @@ if ( ! function_exists( 'wpp_edit_user' ) ) {
 
 		if ( $update ) {
 			$user_id = wp_update_user( $user );
-		}
-		else {
+		} else {
 			$user_id = wp_insert_user( $user );
 			$notify  = isset( $_POST[ 'send_user_notification' ] ) ? 'user' : '';
 
@@ -841,13 +826,27 @@ if ( ! defined( 'A_YEAR_IN_S' ) ) {
 	define( 'A_YEAR_IN_S', A_DAY_IN_S * 365 );
 }
 
+if ( ! function_exists( 'wpp_comp' ) ) {
+	function wpp_comp( $a, $b ) {
+		if ( PHP_MAJOR_VERSION >= 7 ) {
+			return $a <=> $b;
+		} else {
+			if ( $a == $b ) {
+				return 0;
+			}
+
+			return ( ( $a < $b ) * 2 ) - 1;
+		}
+	}
+}
+
 if ( ! function_exists( 'wpp_is_float' ) ) {
 	function wpp_is_float( $val ) {
-		if ( ! is_scalar( $val ) ) {
+		if ( ! is_scalar( $val ) || empty( $val ) ) {
 			return false;
 		}
 
-		return is_float( $val + 0 );
+		return wpp_is_integer( $val ) || @is_float( $val + 0 );
 	}
 }
 
@@ -997,8 +996,7 @@ if ( ! function_exists( 'wpp_order_by' ) ) {
 				$k = $path[ $i ];
 				if ( isset( $v1[ $k ] ) ) {
 					$v1 = $v1[ $k ];
-				}
-				else {
+				} else {
 					$v1 = '0';
 				}
 			}
@@ -1007,8 +1005,7 @@ if ( ! function_exists( 'wpp_order_by' ) ) {
 				$k = $path[ $i ];
 				if ( isset( $v2[ $k ] ) ) {
 					$v2 = $v2[ $k ];
-				}
-				else {
+				} else {
 					$v2 = '0';
 				}
 			}
@@ -1048,8 +1045,7 @@ if ( ! function_exists( 'wpp_group_by' ) ) {
 				$k = $path[ $i ];
 				if ( isset( $v[ $k ] ) ) {
 					$v = $v[ $k ];
-				}
-				else {
+				} else {
 					$v = '0';
 				}
 			}
@@ -1058,8 +1054,7 @@ if ( ! function_exists( 'wpp_group_by' ) ) {
 			}
 			if ( ! empty( $new_array[ $v ] ) ) {
 				$new_array[ $v ] = array_merge_recursive( $new_array[ $v ], $a );
-			}
-			else {
+			} else {
 				$new_array[ $v ] = $a;
 			}
 		}
@@ -1081,12 +1076,10 @@ if ( ! function_exists( 'wpp_remove_empty_elements' ) ) {
 			if ( is_array( $value ) ) {
 				if ( empty( $value ) ) {
 					unset( $array[ $key ] );
-				}
-				else {
+				} else {
 					$array[ $key ] = wpp_remove_empty_elements( $value );
 				}
-			}
-			else {
+			} else {
 				if ( empty( $value ) ) {
 					unset( $array[ $key ] );
 				}
@@ -1110,8 +1103,7 @@ if ( ! function_exists( 'wpp_timezone_offset' ) ) {
 			$timezone_object = new DateTimeZone( $timezone );
 
 			return $timezone_object->getOffset( new DateTime( 'now' ) );
-		}
-		else {
+		} else {
 			return floatval( get_option( 'gmt_offset', 0 ) ) * HOUR_IN_SECONDS;
 		}
 	}
@@ -1135,8 +1127,7 @@ if ( ! function_exists( 'wpp_string_to_timestamp' ) ) {
 
 		if ( null === $from_timestamp ) {
 			$next_timestamp = strtotime( $time_string );
-		}
-		else {
+		} else {
 			$next_timestamp = strtotime( $time_string, $from_timestamp );
 		}
 
@@ -1210,8 +1201,7 @@ if ( ! function_exists( 'wpp_doing_it_wrong' ) ) {
 		if ( wp_doing_ajax() ) {
 			do_action( 'doing_it_wrong_run', $function, $message, $version );
 			error_log( "{$function} was called incorrectly. {$message}. This message was added in version {$version}." );
-		}
-		else {
+		} else {
 			_doing_it_wrong( $function, $message, $version );
 		}
 		// @codingStandardsIgnoreEnd

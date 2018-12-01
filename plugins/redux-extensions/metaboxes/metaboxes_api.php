@@ -35,7 +35,9 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 		public static $args = array();
 
 		public static function load() {
-			add_action( 'admin_init', 'Redux_Metaboxes::_enqueue', 0, PHP_INT_MAX - 1 );
+			if ( is_admin() ) {
+				add_action( 'init', 'Redux_Metaboxes::_enqueue', 0, PHP_INT_MAX - 1 );
+			}
 		}
 
 		public static function _enqueue() {
@@ -90,16 +92,16 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 
 
 		public static function constructArgs( $opt_name ) {
-			$args             = self::$args[ $opt_name ];
-			$args['opt_name'] = $opt_name;
-			if ( ! isset( $args['menu_title'] ) ) {
-				$args['menu_title'] = ucfirst( $opt_name ) . ' Options';
+			$args               = self::$args[ $opt_name ];
+			$args[ 'opt_name' ] = $opt_name;
+			if ( ! isset( $args[ 'menu_title' ] ) ) {
+				$args[ 'menu_title' ] = ucfirst( $opt_name ) . ' Options';
 			}
-			if ( ! isset( $args['page_title'] ) ) {
-				$args['page_title'] = ucfirst( $opt_name ) . ' Options';
+			if ( ! isset( $args[ 'page_title' ] ) ) {
+				$args[ 'page_title' ] = ucfirst( $opt_name ) . ' Options';
 			}
-			if ( ! isset( $args['page_slug'] ) ) {
-				$args['page_slug'] = $opt_name . '_options';
+			if ( ! isset( $args[ 'page_slug' ] ) ) {
+				$args[ 'page_slug' ] = $opt_name . '_options';
 			}
 
 			return $args;
@@ -113,8 +115,8 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 			}
 
 			foreach ( self::$boxes[ $opt_name ] as $box_id => $box ) {
-				$box['sections'] = self::constructSections( $opt_name, $box['id'] );
-				$boxes[]         = $box;
+				$box[ 'sections' ] = self::constructSections( $opt_name, $box[ 'id' ] );
+				$boxes[]           = $box;
 			}
 			ksort( $boxes );
 
@@ -128,13 +130,13 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 			}
 
 			foreach ( self::$sections[ $opt_name ] as $section_id => $section ) {
-				if ( $section['box_id'] == $box_id ) {
-					$p = $section['priority'];
+				if ( $section[ 'box_id' ] == $box_id ) {
+					$p = $section[ 'priority' ];
 					while ( isset( $sections[ $p ] ) ) {
 						$p ++;
 					}
-					$section['fields'] = self::constructFields( $opt_name, $section_id );
-					$sections[ $p ]    = $section;
+					$section[ 'fields' ] = self::constructFields( $opt_name, $section_id );
+					$sections[ $p ]      = $section;
 				}
 
 			}
@@ -151,8 +153,8 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 			}
 
 			foreach ( self::$fields[ $opt_name ] as $key => $field ) {
-				if ( $field['section_id'] == $section_id ) {
-					$p = $field['priority'];
+				if ( $field[ 'section_id' ] == $section_id ) {
+					$p = $field[ 'priority' ];
 					while ( isset( $fields[ $p ] ) ) {
 						$p ++;
 					}
@@ -184,37 +186,37 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 
 			if ( ! empty( $opt_name ) && is_array( $section ) && ! empty( $section ) ) {
 
-				if ( ! isset( $section['id'] ) ) {
-					if ( isset( $section['title'] ) ) {
-						$section['id'] = strtolower( sanitize_html_class( $section['title'] ) );
+				if ( ! isset( $section[ 'id' ] ) ) {
+					if ( isset( $section[ 'title' ] ) ) {
+						$section[ 'id' ] = strtolower( sanitize_html_class( $section[ 'title' ] ) );
 					} else {
-						$section['id'] = "section";
+						$section[ 'id' ] = "section";
 					}
 
-					if ( isset( self::$sections[ $opt_name ][ $section['id'] ] ) ) {
-						$orig = $section['id'];
+					if ( isset( self::$sections[ $opt_name ][ $section[ 'id' ] ] ) ) {
+						$orig = $section[ 'id' ];
 						$i    = 0;
-						while ( isset( self::$sections[ $opt_name ][ $section['id'] ] ) ) {
-							$section['id'] = $orig . '_' . $i;
+						while ( isset( self::$sections[ $opt_name ][ $section[ 'id' ] ] ) ) {
+							$section[ 'id' ] = $orig . '_' . $i;
 						}
 					}
 				}
 
-				if ( ! isset( $section['priority'] ) ) {
-					$section['priority'] = self::getPriority( $opt_name, 'sections' );
+				if ( ! isset( $section[ 'priority' ] ) ) {
+					$section[ 'priority' ] = self::getPriority( $opt_name, 'sections' );
 				}
 
 
-				if ( isset( $section['fields'] ) ) {
-					if ( ! empty( $section['fields'] ) && is_array( $section['fields'] ) ) {
-						self::processFieldsArray( $opt_name, $section['id'], $section['fields'] );
+				if ( isset( $section[ 'fields' ] ) ) {
+					if ( ! empty( $section[ 'fields' ] ) && is_array( $section[ 'fields' ] ) ) {
+						self::processFieldsArray( $opt_name, $section[ 'id' ], $section[ 'fields' ] );
 					}
-					unset( $section['fields'] );
+					unset( $section[ 'fields' ] );
 				}
-				self::$sections[ $opt_name ][ $section['id'] ] = $section;
+				self::$sections[ $opt_name ][ $section[ 'id' ] ] = $section;
 
 			} else {
-				self::$errors[ $opt_name ]['section']['empty'] = "Unable to create a section due an empty section array or the section variable passed was not an array.";
+				self::$errors[ $opt_name ][ 'section' ][ 'empty' ] = "Unable to create a section due an empty section array or the section variable passed was not an array.";
 
 				return;
 			}
@@ -226,9 +228,9 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 					if ( ! is_array( $section ) ) {
 						continue;
 					}
-					$section['box_id'] = $box_id;
-					if ( ! isset( $section['fields'] ) || ! is_array( $section['fields'] ) ) {
-						$section['fields'] = array();
+					$section[ 'box_id' ] = $box_id;
+					if ( ! isset( $section[ 'fields' ] ) || ! is_array( $section[ 'fields' ] ) ) {
+						$section[ 'fields' ] = array();
 					}
 
 					self::setSection( $opt_name, $section );
@@ -243,7 +245,7 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 					if ( ! is_array( $field ) ) {
 						continue;
 					}
-					$field['section_id'] = $section_id;
+					$field[ 'section_id' ] = $section_id;
 					self::setField( $opt_name, $field );
 				}
 			}
@@ -263,10 +265,10 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 
 			if ( ! empty( $opt_name ) && is_array( $field ) && ! empty( $field ) ) {
 
-				if ( ! isset( $field['priority'] ) ) {
-					$field['priority'] = self::getPriority( $opt_name, 'fields' );
+				if ( ! isset( $field[ 'priority' ] ) ) {
+					$field[ 'priority' ] = self::getPriority( $opt_name, 'fields' );
 				}
-				self::$fields[ $opt_name ][ $field['id'] ] = $field;
+				self::$fields[ $opt_name ][ $field[ 'id' ] ] = $field;
 			}
 		}
 
@@ -275,32 +277,32 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 			self::check_opt_name( $opt_name );
 
 			if ( ! empty( $opt_name ) && is_array( $box ) && ! empty( $box ) ) {
-				if ( ! isset( $box['id'] ) ) {
-					if ( isset( $box['title'] ) ) {
-						$box['id'] = strtolower( sanitize_html_class( $box['title'] ) );
+				if ( ! isset( $box[ 'id' ] ) ) {
+					if ( isset( $box[ 'title' ] ) ) {
+						$box[ 'id' ] = strtolower( sanitize_html_class( $box[ 'title' ] ) );
 					} else {
-						$box['id'] = "box";
+						$box[ 'id' ] = "box";
 					}
 
-					if ( isset( self::$boxes[ $opt_name ][ $box['id'] ] ) ) {
-						$orig = $box['id'];
+					if ( isset( self::$boxes[ $opt_name ][ $box[ 'id' ] ] ) ) {
+						$orig = $box[ 'id' ];
 						$i    = 0;
-						while ( isset( self::$boxes[ $opt_name ][ $box['id'] ] ) ) {
-							$box['id'] = $orig . '_' . $i;
+						while ( isset( self::$boxes[ $opt_name ][ $box[ 'id' ] ] ) ) {
+							$box[ 'id' ] = $orig . '_' . $i;
 						}
 					}
 				}
 
-				if ( isset( $box['sections'] ) ) {
-					if ( ! empty( $box['sections'] ) && is_array( $box['sections'] ) ) {
-						self::processSectionsArray( $opt_name, $box['id'], $box['sections'] );
+				if ( isset( $box[ 'sections' ] ) ) {
+					if ( ! empty( $box[ 'sections' ] ) && is_array( $box[ 'sections' ] ) ) {
+						self::processSectionsArray( $opt_name, $box[ 'id' ], $box[ 'sections' ] );
 					}
-					unset( $box['sections'] );
+					unset( $box[ 'sections' ] );
 				}
-				self::$boxes[ $opt_name ][ $box['id'] ] = $box;
+				self::$boxes[ $opt_name ][ $box[ 'id' ] ] = $box;
 
 			} else {
-				self::$errors[ $opt_name ]['box']['empty'] = "Unable to create a box due an empty box array or the box variable passed was not an array.";
+				self::$errors[ $opt_name ][ 'box' ][ 'empty' ] = "Unable to create a box due an empty box array or the box variable passed was not an array.";
 
 				return;
 			}
@@ -348,15 +350,15 @@ if ( ! class_exists( 'Redux_Metaboxes', false ) ) {
 				self::$boxes[ $opt_name ] = array();
 			}
 			if ( ! isset( self::$priority[ $opt_name ] ) ) {
-				self::$priority[ $opt_name ]['args'] = 1;
+				self::$priority[ $opt_name ][ 'args' ] = 1;
 			}
 			if ( ! isset( self::$sections[ $opt_name ] ) ) {
-				self::$sections[ $opt_name ]             = array();
-				self::$priority[ $opt_name ]['sections'] = 1;
+				self::$sections[ $opt_name ]               = array();
+				self::$priority[ $opt_name ][ 'sections' ] = 1;
 			}
 			if ( ! isset( self::$fields[ $opt_name ] ) ) {
-				self::$fields[ $opt_name ]             = array();
-				self::$priority[ $opt_name ]['fields'] = 1;
+				self::$fields[ $opt_name ]               = array();
+				self::$priority[ $opt_name ][ 'fields' ] = 1;
 			}
 			if ( ! isset( self::$errors[ $opt_name ] ) ) {
 				self::$errors[ $opt_name ] = array();
