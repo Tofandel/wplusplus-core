@@ -33,6 +33,9 @@
     "tgmpa/tgm-plugin-activation": ">=2.6",
     "yahnis-elsts/plugin-update-checker": "*"
   },
+  "require-dev": {
+    "phpunit/phpunit": "^7"
+  },
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {

@@ -1,8 +1,8 @@
 <?php
 namespace Composer\Installers;
 
-use Composer\IO\IOInterface;
 use Composer\Composer;
+use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 
 abstract class BaseInstaller
