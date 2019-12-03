@@ -1,4 +1,4 @@
-### This project has been moved to https://gitlab.tukan.hu/wplusplus/wplusplus-core
+### This repository has been moved to https://gitlab.tukan.hu/wplusplus/wplusplus-core
 
 # W++ Core
 A Wordpress Plugin acting as core for other of my plugins
